@@ -11,7 +11,9 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import Badge from "@/components/ui/Badge";
 import VariantSelector from "@/components/product/VariantSelector";
 import { ProductDetailSkeleton } from "@/components/ui/Skeleton";
+import Image from "next/image";
 import { getCategoryIcon, getCategoryColor } from "@/lib/categoryIcons";
+import { getProductImage } from "@/lib/productImages";
 import type { Product, ProductVariant } from "@/lib/types";
 
 export default function ProductDetailPage() {
@@ -70,6 +72,7 @@ export default function ProductDetailPage() {
 
   const icon = getCategoryIcon(product.category);
   const color = getCategoryColor(product.category);
+  const productImage = getProductImage(product.name);
 
   return (
     <>
@@ -89,9 +92,15 @@ export default function ProductDetailPage() {
             {/* Left — Info */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-[2px] glass flex items-center justify-center text-[24px]">
-                  {icon}
-                </div>
+                {productImage ? (
+                  <div className="w-12 h-12 rounded-[2px] overflow-hidden flex-shrink-0">
+                    <Image src={productImage} alt={product.name} width={48} height={48} className="w-full h-full object-contain" />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-[2px] glass flex items-center justify-center text-[24px]">
+                    {icon}
+                  </div>
+                )}
                 <Badge color={color}>{product.category}</Badge>
               </div>
 
