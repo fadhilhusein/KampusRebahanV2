@@ -54,6 +54,9 @@ function CheckoutContent() {
 
   const sellPrice = variant ? variant.price : 0;
   const totalSell = sellPrice * quantity;
+  const stock = variant?.stock ?? 0;
+  const stockExceeded = stock > 0 && quantity > stock;
+  const outOfStock = stock === 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -178,15 +181,24 @@ function CheckoutContent() {
               <div>
                 <label className="block text-[12px] text-white/50 mb-2">
                   Jumlah <span className="text-white/20">(unit)</span>
+                  {stock > 0 && <span className="text-white/20 ml-1">· Stok: {stock}</span>}
                 </label>
                 <input
                   type="number"
                   min={1}
-                  max={variant?.stock ?? 10}
+                  max={stock || 100}
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                  className={`w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white border focus:outline-none transition-colors bg-transparent ${
+                    stockExceeded ? "border-primary/60 focus:border-primary" : "border-white/10 focus:border-white/30"
+                  }`}
                 />
+                {outOfStock && (
+                  <p className="text-[12px] text-primary mt-2">Stok habis. Produk ini tidak tersedia saat ini.</p>
+                )}
+                {stockExceeded && (
+                  <p className="text-[12px] text-primary mt-2">Jumlah melebihi stok tersedia ({stock} unit).</p>
+                )}
               </div>
 
               {/* Total */}
@@ -215,8 +227,8 @@ function CheckoutContent() {
                 </div>
               )}
 
-              <ButtonPrimary type="submit" disabled={loading} className="w-full py-3 text-[14px]">
-                {loading ? "Memproses..." : "Buat Order →"}
+              <ButtonPrimary type="submit" disabled={loading || stockExceeded || outOfStock} className="w-full py-3 text-[14px]">
+                {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}
               </ButtonPrimary>
 
               <p className="text-[11px] text-white/20 text-center">
