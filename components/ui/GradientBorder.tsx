@@ -10,7 +10,8 @@ export default function GradientBorder({ children, className = "" }: GradientBor
     <div
       className={`relative p-px rounded-[2px] ${className}`}
       style={{
-        background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.08) 100%)",
+        // background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.08) 100%)",
+        background: "linear-gradient(152deg,rgba(224, 9, 9, 0.40) 0%, rgba(255, 255, 255, 0) 46%, rgba(255, 255, 255, 0.25) 100%)",
       }}
     >
       <div className="relative rounded-[2px] bg-black/80 h-full w-full">
