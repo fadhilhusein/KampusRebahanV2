@@ -122,22 +122,25 @@ export default function ProductDetailPage() {
                 </GlassCard>
               )}
 
-              <ButtonPrimary
-                className="w-full py-3 text-[14px] justify-center"
-                disabled={!selected || selected.stock === 0}
-                onClick={() => {
-                  if (selected)
-                    router.push(
-                      `/checkout?variant_id=${selected.id}&product_id=${product.id}`
-                    );
-                }}
-              >
-                {selected?.stock === 0 ? "Stok Habis" : "Beli Sekarang"}
-              </ButtonPrimary>
+              {/* Right — Variant selector */}
+              <div className="mb-6 md:hidden">
+                <GradientBorder>
+                  <div className="p-5">
+                    <h2 className="text-[14px] font-medium text-white/60">
+                      Pilih Varian
+                    </h2>
+                    <VariantSelector
+                      variants={product.variants}
+                      selected={selected}
+                      onSelect={setSelected}
+                    />
+                  </div>
+                </GradientBorder>
+              </div>              
 
               {/* Terms accordion */}
               {selected?.terms && (
-                <div className="mt-6">
+                <div className="mb-6">
                   <button
                     onClick={() => setTermsOpen(!termsOpen)}
                     className="w-full flex items-center justify-between text-[13px] text-white/50 hover:text-white transition-colors py-3 border-t border-white/8 cursor-pointer"
@@ -160,10 +163,23 @@ export default function ProductDetailPage() {
                   )}
                 </div>
               )}
+
+              <ButtonPrimary
+                className="w-full py-3 text-[14px] justify-center"
+                disabled={!selected || selected.stock === 0}
+                onClick={() => {
+                  if (selected)
+                    router.push(
+                      `/checkout?variant_id=${selected.id}&product_id=${product.id}`
+                    );
+                }}
+              >
+                {selected?.stock === 0 ? "Stok Habis" : "Beli Sekarang"}
+              </ButtonPrimary>
             </div>
 
             {/* Right — Variant selector */}
-            <div>
+            <div className="hidden md:inline">
               <GradientBorder>
                 <div className="p-5">
                   <h2 className="text-[14px] font-medium text-white/60 mb-4">
