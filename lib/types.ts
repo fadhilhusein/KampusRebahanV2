@@ -1,0 +1,89 @@
+export interface ProductVariant {
+  id: string;
+  name: string;
+  price: number;
+  duration: string;
+  type: "Private" | "Sharing" | "Invite";
+  warranty: string;
+  stock: number;
+  terms: string | null;
+  delivery_terms: string | null;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  variants: ProductVariant[];
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export type ProductsResponse = ApiResponse<Product[]>;
+
+export interface OrderPayload {
+  variant_id: string;
+  quantity?: number;
+  voucher_code?: string;
+  email_invite?: string;
+  is_test?: boolean;
+}
+
+export interface OrderResult {
+  order_id: string;
+  status: string;
+  payment_status: string;
+  total_amount: number;
+  current_balance: number;
+  is_test?: boolean;
+}
+
+export type OrderResponse = ApiResponse<OrderResult>;
+
+export interface BalanceResult {
+  balance: number;
+  currency: string;
+}
+
+export type BalanceResponse = ApiResponse<BalanceResult>;
+
+export type AccountDetail = Record<string, unknown>;
+
+export interface Transaction {
+  order_id: string;
+  db_order_id: string;
+  total_amount: number;
+  status: string;
+  db_status: string;
+  payment_status: string;
+  products: Product[];
+  account_details: AccountDetail[];
+  created_at: string;
+  productName: string;
+  variantName: string;
+  duration: string;
+  type: string;
+  quantity: number;
+  paymentMethod: string;
+}
+
+export type WebhookEvent =
+  | "order.processing"
+  | "order.completed"
+  | "order.failed";
+
+export interface WebhookPayload {
+  event: WebhookEvent;
+  data: {
+    order_id: string;
+    status: string;
+    payment_status: string;
+    total_amount: number;
+    [key: string]: unknown;
+  };
+}

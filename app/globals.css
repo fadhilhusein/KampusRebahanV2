@@ -1,26 +1,51 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #E11D48;
+  --color-secondary: #4338CA;
+  --color-tertiary: #F97316;
+  --color-nebula-bg: #000000;
+  --color-surface: #FFFFFF;
+
+  --radius-card: 2px;
+  --radius-btn: 9999px;
+
+  --blur-glass: 12px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #000000;
+  --foreground: #FFFFFF;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: rgba(0,0,0,0) 0 0 0 0, rgba(255,255,255,0.15) 0 0 50px 0;
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: rgba(0,0,0,0) 0 0 0 0, rgba(255,255,255,0.2) 0 0 20px 0;
+}
+
+.gradient-border {
+  position: relative;
+  background: linear-gradient(rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 1px);
+}
+
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  pointer-events: none;
 }

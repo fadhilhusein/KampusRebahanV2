@@ -1,0 +1,155 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import ButtonPrimary from "@/components/ui/ButtonPrimary";
+
+const BASE_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Produk" },
+  { href: "/transactions", label: "Transaksi" },
+];
+
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const adminUser = (session?.user as { isAdmin?: boolean })?.isAdmin === true;
+  const links = adminUser
+    ? [...BASE_LINKS, { href: "/admin", label: "Admin" }]
+    : BASE_LINKS;
+
+  async function handleSignOut() {
+    await signOut({ redirect: false });
+    router.push("/");
+    router.refresh();
+  }
+
+  return (
+    <header className="fixed top-0 inset-x-0 z-50">
+      <div className="glass border-b border-white/8 backdrop-blur-[12px]">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
+            <span className="text-white font-semibold text-[14px] tracking-tight">
+              Kampus<span className="text-primary">Rebahan</span>
+            </span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-[12px] font-medium transition-colors duration-150 ${
+                  pathname === link.href
+                    ? "text-white"
+                    : "text-white/50 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
+            {status === "authenticated" ? (
+              <div className="hidden md:flex items-center gap-3">
+                <span className="text-[12px] text-white/40 max-w-[140px] truncate">
+                  {session.user?.name ?? session.user?.email}
+                </span>
+                <button
+                  onClick={handleSignOut}
+                  className="text-[12px] text-white/50 hover:text-white transition-colors cursor-pointer"
+                >
+                  Keluar
+                </button>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-3">
+                <Link href="/auth/signin">
+                  <span className="text-[12px] text-white/50 hover:text-white transition-colors cursor-pointer">
+                    Masuk
+                  </span>
+                </Link>
+                <Link href="/products">
+                  <ButtonPrimary>Beli Sekarang</ButtonPrimary>
+                </Link>
+              </div>
+            )}
+
+            {/* Hamburger */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden flex flex-col gap-1.5 p-1 cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              <span
+                className={`block h-px w-5 bg-white transition-all duration-200 origin-center ${
+                  mobileOpen ? "rotate-45 translate-y-[7px]" : ""
+                }`}
+              />
+              <span
+                className={`block h-px w-5 bg-white transition-all duration-200 ${
+                  mobileOpen ? "opacity-0" : ""
+                }`}
+              />
+              <span
+                className={`block h-px w-5 bg-white transition-all duration-200 origin-center ${
+                  mobileOpen ? "-rotate-45 -translate-y-[7px]" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-white/8 px-6 py-4 flex flex-col gap-1">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={`text-[14px] font-medium py-2.5 transition-colors duration-150 ${
+                  pathname === link.href ? "text-white" : "text-white/50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-3 border-t border-white/8 mt-1 space-y-2">
+              {status === "authenticated" ? (
+                <>
+                  <div className="text-[12px] text-white/30 py-1">
+                    {session.user?.name ?? session.user?.email}
+                  </div>
+                  <button
+                    onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                    className="text-[14px] text-white/50 py-2 text-left cursor-pointer"
+                  >
+                    Keluar
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/signin" onClick={() => setMobileOpen(false)}>
+                    <ButtonPrimary variant="ghost" className="w-full py-2.5">Masuk</ButtonPrimary>
+                  </Link>
+                  <Link href="/products" onClick={() => setMobileOpen(false)}>
+                    <ButtonPrimary className="w-full py-2.5">Beli Sekarang</ButtonPrimary>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
