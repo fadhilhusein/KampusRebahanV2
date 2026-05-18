@@ -35,9 +35,10 @@ export default function Navbar() {
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
-            <span className="text-white font-semibold text-[14px] tracking-tight">
+            {/* <span className="text-white font-semibold text-[14px] tracking-tight">
               Kampus<span className="text-primary">Rebahan</span>
-            </span>
+            </span> */}
+            <img src="/logo_website.png" alt="Kampus Rebahan" className="h-12 w-auto" />
           </Link>
 
           {/* Desktop nav */}
