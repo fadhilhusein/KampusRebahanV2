@@ -86,7 +86,7 @@ export default function TransactionsPage() {
               <p className="text-white/30 text-[16px]">Belum ada transaksi.</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               {transactions.map((tx) => (
                 <Link key={tx.order_id} href={`/transactions/${tx.order_id}`}>
                   <GradientBorder>

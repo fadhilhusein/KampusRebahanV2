@@ -1,4 +1,5 @@
 import Link from "next/link";
+import * as motion from "motion/react-client";
 import GlassCard from "@/components/ui/GlassCard";
 import type { Product } from "@/lib/types";
 
@@ -17,38 +18,58 @@ export default function CategoryGrid({ products }: CategoryGridProps) {
   if (categories.length === 0) return null;
 
   return (
-    <section className="py-16 px-8 border-t border-white/6">
+    <motion.section
+      className="py-16 px-8 border-t border-white/6"
+      initial={{ opacity: 0, y: 42 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.65, ease: "easeOut" }}
+    >
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           <h2 className="text-[32px] font-semibold text-white tracking-tight mb-2">
             Kategori
           </h2>
           <p className="text-[14px] text-white/40">
             Temukan produk berdasarkan kategori
           </p>
-        </div>
+        </motion.div>
 
         <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map(([category, count]) => (
-            <Link
+          {categories.map(([category, count], index) => (
+            <motion.div
               key={category}
-              href={`/products?category=${encodeURIComponent(category)}`}
+              initial={{ opacity: 0, y: 18, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.45, delay: index * 0.045, ease: "easeOut" }}
+              whileHover={{ y: -3, scale: 1.03 }}
             >
-              <GlassCard
-                hover
-                className="px-5 py-3 flex items-center gap-3"
+              <Link
+                href={`/products?category=${encodeURIComponent(category)}`}
               >
-                <span className="text-[14px] font-medium text-white">
-                  {category}
-                </span>
-                <span className="text-[11px] text-white/30 bg-white/8 rounded-full px-2 py-0.5">
-                  {count}
-                </span>
-              </GlassCard>
-            </Link>
+                <GlassCard
+                  hover
+                  className="px-5 py-3 flex items-center gap-3"
+                >
+                  <span className="text-[14px] font-medium text-white">
+                    {category}
+                  </span>
+                  <span className="text-[11px] text-white/30 bg-white/8 rounded-full px-2 py-0.5">
+                    {count}
+                  </span>
+                </GlassCard>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
