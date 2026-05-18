@@ -32,7 +32,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 inset-x-0 z-50">
       <div className="glass border-b border-white/8 backdrop-blur-[12px]">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div className="relative max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
             {/* <span className="text-white font-semibold text-[14px] tracking-tight">
@@ -42,7 +42,10 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav
+            className="hidden md:flex absolute items-center gap-6"
+            style={{ left: "50%", transform: "translateX(-50%)" }}
+          >
             {links.map((link) => (
               <Link
                 key={link.href}
