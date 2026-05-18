@@ -101,12 +101,19 @@ function PaymentInstructions({ order }: { order: Order }) {
             <div className="text-[13px] text-white/50">Scan QR code berikut</div>
             <div className="inline-block bg-white p-3 rounded-[4px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/qris.png" alt="QRIS KampusRebahan" className="w-52 h-52 object-contain" />
+              <img src="/qris.png" alt="QRIS KampusRebahan" className="w-72 h-72 object-contain" />
             </div>
             <div className="space-y-0.5">
               <div className="text-[13px] font-semibold text-white">KampusRebahan</div>
               <div className="text-[11px] text-white/40">NMID: ID1026520725130</div>
             </div>
+            <a
+              href="/qris.png"
+              download="QRIS-KampusRebahan.png"
+              className="inline-flex items-center gap-1.5 text-[12px] text-white/40 hover:text-white border border-white/15 hover:border-white/30 rounded-[2px] px-4 py-2 transition-colors"
+            >
+              ↓ Download QRIS
+            </a>
           </div>
         ) : (
           <div className="space-y-3">
