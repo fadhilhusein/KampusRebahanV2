@@ -15,6 +15,23 @@ export const metadata: Metadata = {
     siteName: "KampusRebahan",
     type: "website",
     locale: "id_ID",
+    url: "https://kampus-rebahan.my.id",
+    title: "KampusRebahan — Akun Digital Premium",
+    description: "Dapatkan akun Netflix, Spotify, Disney+, dan ratusan layanan digital premium dengan harga terjangkau.",
+    images: [
+      {
+        url: "/KAMPUSREBAHAN.jpg",
+        width: 1200,
+        height: 630,
+        alt: "KampusRebahan — Akun Digital Premium",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KampusRebahan — Akun Digital Premium",
+    description: "Dapatkan akun Netflix, Spotify, Disney+, dan ratusan layanan digital premium dengan harga terjangkau.",
+    images: ["/KAMPUSREBAHAN.jpg"],
   },
 };
 
