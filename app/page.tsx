@@ -32,7 +32,7 @@ export default async function HomePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 overflow-x-hidden w-full max-w-full">
+      <main className="flex-1 overflow-x-hidden overflow-y-hidden w-full max-w-full">
         <Hero />
         {products.length > 0 && (
           <>
