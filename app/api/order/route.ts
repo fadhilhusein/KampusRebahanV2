@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { warungApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { getMarkupPercent } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     const costPrice = foundVariant.price;
-    const markupPct = Number(process.env.MARKUP_PERCENT ?? "0");
+    const markupPct = await getMarkupPercent();
     const sellPrice = Math.ceil(costPrice * (1 + markupPct / 100));
 
     // Generate unique payment code 1-999 so admin can identify payments by exact amount

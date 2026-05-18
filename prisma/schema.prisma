@@ -56,6 +56,12 @@ enum OrderStatus {
   REJECTED
 }
 
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 model UserOrder {
   id        String   @id @default(cuid())
   userId    String

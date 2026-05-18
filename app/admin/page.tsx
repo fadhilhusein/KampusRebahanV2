@@ -58,6 +58,9 @@ export default function AdminPage() {
   const [filter, setFilter] = useState("ALL");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [msg, setMsg] = useState("");
+  const [markup, setMarkup] = useState<number | "">("");
+  const [markupLoading, setMarkupLoading] = useState(false);
+  const [markupMsg, setMarkupMsg] = useState("");
 
   async function fetchOrders() {
     setLoading(true);
@@ -72,7 +75,26 @@ export default function AdminPage() {
     setLoading(false);
   }
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => {
+    fetchOrders();
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setMarkup(d.data.markup_percent); });
+  }, []);
+
+  async function saveMarkup(e: React.FormEvent) {
+    e.preventDefault();
+    setMarkupLoading(true);
+    setMarkupMsg("");
+    const res = await fetch("/api/admin/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ markup_percent: Number(markup) }),
+    });
+    const data = await res.json();
+    setMarkupMsg(data.message ?? (data.success ? "Tersimpan" : "Gagal"));
+    setMarkupLoading(false);
+  }
 
   async function confirm(orderId: string) {
     setActionLoading(orderId);
@@ -119,6 +141,41 @@ export default function AdminPage() {
             <h1 className="text-[32px] font-semibold text-white tracking-tight mb-1">Admin Dashboard</h1>
             <p className="text-[13px] text-white/30">Kelola order masuk dan konfirmasi pembayaran.</p>
           </div>
+
+          {/* Markup Setting */}
+          <GlassCard className="p-5 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1">
+                <div className="text-[12px] text-white/40 mb-0.5">Markup Harga</div>
+                <div className="text-[11px] text-white/25">Persentase markup yang diterapkan ke semua harga produk.</div>
+              </div>
+              <form onSubmit={saveMarkup} className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1 glass border border-white/10 rounded-[2px] px-3 py-2">
+                  <input
+                    type="number"
+                    min={0}
+                    max={1000}
+                    step={0.1}
+                    value={markup}
+                    onChange={(e) => setMarkup(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="bg-transparent text-[14px] text-white w-16 focus:outline-none"
+                    placeholder="0"
+                  />
+                  <span className="text-[13px] text-white/40">%</span>
+                </div>
+                <button
+                  type="submit"
+                  disabled={markupLoading}
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-white hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  {markupLoading ? "..." : "Simpan"}
+                </button>
+              </form>
+            </div>
+            {markupMsg && (
+              <div className="mt-3 text-[12px] text-secondary/80">{markupMsg}</div>
+            )}
+          </GlassCard>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">

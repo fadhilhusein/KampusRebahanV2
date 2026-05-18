@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { warungApi } from "@/lib/api";
+import { getMarkupPercent } from "@/lib/settings";
 import type { Product } from "@/lib/types";
 
 export async function GET() {
@@ -7,7 +8,7 @@ export async function GET() {
     const data = await warungApi.getProducts();
 
     if (data.success) {
-      const markup = Number(process.env.MARKUP_PERCENT ?? "0");
+      const markup = await getMarkupPercent();
       if (markup > 0) {
         data.data = data.data.map((product: Product) => ({
           ...product,
