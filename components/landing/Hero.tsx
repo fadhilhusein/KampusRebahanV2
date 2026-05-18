@@ -77,7 +77,7 @@ export default function Hero() {
         <div className="flex items-center justify-center gap-10 mt-16">
           {[
             { label: "Produk Tersedia", value: "50+" },
-            { label: "Jam Layanan", value: "20/7" },
+            { label: "Jam Layanan", value: "6AM - 10PM" },
             { label: "Uptime Layanan", value: "99.9%" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
