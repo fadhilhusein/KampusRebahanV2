@@ -53,6 +53,7 @@ interface AdminOrder {
 export default function AdminPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("ALL");
@@ -70,17 +71,38 @@ export default function AdminPage() {
       return;
     }
     const data = await res.json();
-    if (data.success) setOrders(data.data);
-    else setError(data.message ?? "Forbidden");
+    if (data.success) {
+      setOrders(data.data);
+      setUserCount(data.userCount ?? 0);
+    } else setError(data.message ?? "Forbidden");
     setLoading(false);
   }
 
   useEffect(() => {
-    fetchOrders();
+    let cancelled = false;
+    async function loadInitialOrders() {
+      const res = await fetch("/api/admin/orders");
+      if (cancelled) return;
+      if (res.status === 403 || res.status === 401) {
+        router.replace("/");
+        return;
+      }
+      const data = await res.json();
+      if (cancelled) return;
+      if (data.success) {
+        setOrders(data.data);
+        setUserCount(data.userCount ?? 0);
+      } else setError(data.message ?? "Forbidden");
+      setLoading(false);
+    }
+
+    loadInitialOrders();
     fetch("/api/admin/settings")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setMarkup(d.data.markup_percent); });
-  }, []);
+      .then((d) => { if (!cancelled && d.success) setMarkup(d.data.markup_percent); });
+
+    return () => { cancelled = true; };
+  }, [router]);
 
   async function saveMarkup(e: React.FormEvent) {
     e.preventDefault();
@@ -178,9 +200,10 @@ export default function AdminPage() {
           </GlassCard>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
             {[
               { label: "Total Order", value: String(orders.length) },
+              { label: "User Terdaftar", value: String(userCount) },
               { label: "Pending", value: String(pendingCount), highlight: pendingCount > 0 },
               { label: "Revenue", value: formatPrice(totalRevenue) },
               { label: "Profit", value: formatPrice(totalProfit) },
