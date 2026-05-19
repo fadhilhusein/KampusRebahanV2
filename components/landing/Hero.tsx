@@ -42,7 +42,7 @@ export default function Hero() {
 
       <div className="relative z-10 text-center max-w-6xl w-full mx-auto">
         <motion.div
-          className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 mb-8"
+          className="inline-flex items-center gap-2 glass backdrop-blur-[12px] bg-black/70 rounded-full px-4 py-1.5 mb-8"
           initial={{ opacity: 0, y: 18, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" }}
