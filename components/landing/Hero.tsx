@@ -11,20 +11,21 @@ export default function Hero() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#030407_0%,#090205_35%,#4c0618_78%,#72081f_100%)]" />
       <DitheringShader
         width={1920}
         height={1080}
         shape="wave"
         type="8x8"
-        colorBack="#02040a"
-        colorFront="#e11d48"
+        colorBack="#11030a"
+        colorFront="#ff1f5b"
         pxSize={3}
-        speed={0.45}
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+        speed={0.22}
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
         style={{ position: "absolute", width: "100%", height: "100%" }}
       />
-      <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(0,0,0,0)_34%),linear-gradient(to_bottom,rgba(0,0,0,0.08),rgba(0,0,0,0.78))]" />
+      <div className="absolute inset-0 bg-black/25" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(0,0,0,0)_34%),linear-gradient(to_bottom,rgba(0,0,0,0.04),rgba(0,0,0,0.58))]" />
 
       <motion.div
         className="absolute inset-0 opacity-[0.05]"
