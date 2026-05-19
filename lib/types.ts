@@ -16,6 +16,7 @@ export interface Product {
   category: string;
   description: string;
   variants: ProductVariant[];
+  soldCount?: number;
 }
 
 export interface ApiResponse<T> {

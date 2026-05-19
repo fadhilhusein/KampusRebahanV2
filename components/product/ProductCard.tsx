@@ -14,6 +14,11 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
+function getStableRating(name: string) {
+  const score = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return (4.7 + (score % 3) / 10).toFixed(1);
+}
+
 interface ProductCardProps {
   product: Product;
 }
@@ -24,6 +29,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const icon = getCategoryIcon(product.category);
   const color = getCategoryColor(product.category);
   const productImage = getProductImage(product.name);
+  const rating = getStableRating(product.name);
+  const soldCount = product.soldCount ?? 0;
 
   return (
     <Link href={`/products/${product.id}`}>
@@ -53,6 +60,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           <h3 className="text-[16px] font-semibold text-white mb-2 group-hover:text-white/90 transition-colors">
             {product.name}
           </h3>
+
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px]">
+            <div className="flex items-center gap-1 text-tertiary">
+              <span className="tracking-[1px]" aria-hidden="true">★★★★★</span>
+              <span className="font-medium text-white/60">{rating}</span>
+            </div>
+            <span className="h-1 w-1 rounded-full bg-white/15" />
+            <span className="text-white/35">{soldCount} terjual</span>
+          </div>
 
           {product.description && (
             <p className="text-[12px] text-white/40 leading-5 mb-4 line-clamp-2 flex-1">
