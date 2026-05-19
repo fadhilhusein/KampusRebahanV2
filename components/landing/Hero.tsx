@@ -1,6 +1,7 @@
 import Link from "next/link";
 import * as motion from "motion/react-client";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import { DitheringShader } from "@/components/ui/dithering-shader";
 
 export default function Hero() {
   return (
@@ -10,34 +11,30 @@ export default function Hero() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <motion.div
-        className="orb w-[500px] h-[500px] top-[-100px] left-[-100px] opacity-20"
-        style={{ background: "#E11D48" }}
-        animate={{ x: [0, 34, -18, 0], y: [0, 22, 8, 0], scale: [1, 1.08, 0.96, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      <DitheringShader
+        width={1920}
+        height={1080}
+        shape="wave"
+        type="8x8"
+        colorBack="#02040a"
+        colorFront="#e11d48"
+        pxSize={3}
+        speed={0.45}
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+        style={{ position: "absolute", width: "100%", height: "100%" }}
       />
-      <motion.div
-        className="orb w-[400px] h-[400px] bottom-[-80px] right-[-80px] opacity-15"
-        style={{ background: "#4338CA" }}
-        animate={{ x: [0, -28, 16, 0], y: [0, -24, 12, 0], scale: [1, 0.94, 1.1, 1] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="orb w-[300px] h-[300px] top-[30%] right-[20%] opacity-10"
-        style={{ background: "#F97316" }}
-        animate={{ x: [0, 18, -22, 0], y: [0, -18, 20, 0], scale: [1, 1.12, 0.98, 1] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
+      <div className="absolute inset-0 bg-black/45" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(0,0,0,0)_34%),linear-gradient(to_bottom,rgba(0,0,0,0.08),rgba(0,0,0,0.78))]" />
 
       <motion.div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgb(255 255 255) 1px, #ffffff00 1px), linear-gradient(90deg, rgb(255 242 242) 2px, #000000 2px)",
+            "linear-gradient(rgb(255 255 255) 1px, #ffffff00 1px), linear-gradient(90deg, rgb(255 255 255) 1px, #ffffff00 1px)",
           backgroundSize: "40px 40px",
         }}
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.03 }}
+        animate={{ opacity: 0.05 }}
         transition={{ duration: 1.2, delay: 0.2 }}
       />
 
