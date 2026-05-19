@@ -79,7 +79,7 @@ export default function RecentPurchaseBanner() {
 
   return (
     <motion.div
-      className="fixed inset-x-0 top-18 z-[60] px-5"
+      className="fixed inset-x-0 top-18 z-[40] px-5"
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.9, ease: "easeOut" }}
