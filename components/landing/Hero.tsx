@@ -2,6 +2,7 @@ import Link from "next/link";
 import * as motion from "motion/react-client";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { DitheringShader } from "@/components/ui/dithering-shader";
+import RecentPurchaseBanner from "@/components/landing/RecentPurchaseBanner";
 
 export default function Hero() {
   return (
@@ -132,6 +133,7 @@ export default function Hero() {
           ))}
         </motion.div>
       </div>
+      <RecentPurchaseBanner />
     </motion.section>
   );
 }
