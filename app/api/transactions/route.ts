@@ -21,10 +21,31 @@ export async function GET() {
     }
 
     // Primary source: DB orders (all statuses, sell price)
-    const dbOrders = await prisma.order.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-    });
+    const [dbOrders, reviews] = await Promise.all([
+      prisma.order.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.productReview.findMany({
+        where: { userId },
+        include: { user: { select: { name: true } } },
+      }),
+    ]);
+
+    const reviewByOrderId = new Map(
+      reviews.map((review) => [
+        review.orderId,
+        {
+          id: review.id,
+          orderId: review.orderId,
+          productName: review.productName,
+          rating: review.rating,
+          testimonial: review.testimonial,
+          userName: review.user.name || "Pelanggan",
+          createdAt: review.createdAt.toISOString(),
+        },
+      ])
+    );
 
     // Secondary: warungrebahan API for account_details on completed orders
     const apiData = await warungApi.getTransactions();
@@ -53,6 +74,7 @@ export async function GET() {
         type: order.type,
         quantity: order.quantity,
         paymentMethod: order.paymentMethod,
+        review: reviewByOrderId.get(order.id) ?? null,
       };
     });
 

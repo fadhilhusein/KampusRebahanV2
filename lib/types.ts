@@ -17,6 +17,18 @@ export interface Product {
   description: string;
   variants: ProductVariant[];
   soldCount?: number;
+  averageRating?: number | null;
+  reviewCount?: number;
+}
+
+export interface ProductReview {
+  id: string;
+  orderId: string;
+  productName: string;
+  rating: number;
+  testimonial: string;
+  userName: string;
+  createdAt: string;
 }
 
 export interface ApiResponse<T> {
@@ -71,6 +83,7 @@ export interface Transaction {
   type: string;
   quantity: number;
   paymentMethod: string;
+  review?: ProductReview | null;
 }
 
 export type WebhookEvent =

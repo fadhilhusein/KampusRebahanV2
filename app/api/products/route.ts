@@ -17,10 +17,26 @@ export async function GET() {
       const soldByProduct = new Map(
         soldRows.map((row) => [row.productName, row._sum.quantity ?? 0])
       );
+      const reviewRows = await prisma.productReview.groupBy({
+        by: ["productName"],
+        _avg: { rating: true },
+        _count: { _all: true },
+      });
+      const reviewsByProduct = new Map(
+        reviewRows.map((row) => [
+          row.productName,
+          {
+            averageRating: row._avg.rating,
+            reviewCount: row._count._all,
+          },
+        ])
+      );
       const markup = await getMarkupPercent();
       data.data = data.data.map((product: Product) => ({
         ...product,
         soldCount: soldByProduct.get(product.name) ?? 0,
+        averageRating: reviewsByProduct.get(product.name)?.averageRating ?? null,
+        reviewCount: reviewsByProduct.get(product.name)?.reviewCount ?? 0,
         variants:
           markup > 0
             ? product.variants.map((v) => ({

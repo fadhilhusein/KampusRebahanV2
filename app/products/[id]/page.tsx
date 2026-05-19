@@ -14,7 +14,19 @@ import { ProductDetailSkeleton } from "@/components/ui/Skeleton";
 import Image from "next/image";
 import { getCategoryIcon, getCategoryColor } from "@/lib/categoryIcons";
 import { getProductImage } from "@/lib/productImages";
-import type { Product, ProductVariant } from "@/lib/types";
+import type { Product, ProductReview, ProductVariant } from "@/lib/types";
+
+function formatReviewDate(dateStr: string) {
+  try {
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +35,11 @@ export default function ProductDetailPage() {
   const [selected, setSelected] = useState<ProductVariant | null>(null);
   const [loading, setLoading] = useState(true);
   const [termsOpen, setTermsOpen] = useState(false);
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
+  const [reviewSummary, setReviewSummary] = useState<{
+    averageRating: number | null;
+    reviewCount: number;
+  }>({ averageRating: null, reviewCount: 0 });
 
   useEffect(() => {
     fetch("/api/products")
@@ -35,6 +52,21 @@ export default function ProductDetailPage() {
             document.title = `${found.name} | KampusRebahan`;
             const firstInStock = found.variants.find((v: ProductVariant) => v.stock > 0);
             setSelected(firstInStock ?? found.variants[0] ?? null);
+            fetch(`/api/reviews?productName=${encodeURIComponent(found.name)}`)
+              .then((r) => r.json())
+              .then((reviewData) => {
+                if (reviewData.success) {
+                  setReviews(reviewData.data ?? []);
+                  setReviewSummary({
+                    averageRating: reviewData.summary?.averageRating ?? null,
+                    reviewCount: reviewData.summary?.reviewCount ?? 0,
+                  });
+                }
+              })
+              .catch(() => {
+                setReviews([]);
+                setReviewSummary({ averageRating: null, reviewCount: 0 });
+              });
           }
         }
       })
@@ -73,6 +105,8 @@ export default function ProductDetailPage() {
   const icon = getCategoryIcon(product.category);
   const color = getCategoryColor(product.category);
   const productImage = getProductImage(product.name);
+  const averageRating = reviewSummary.averageRating ?? product.averageRating ?? null;
+  const reviewCount = reviewSummary.reviewCount || product.reviewCount || 0;
 
   return (
     <>
@@ -203,6 +237,62 @@ export default function ProductDetailPage() {
               </GradientBorder>
             </div>
           </div>
+
+          <section className="mt-8">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+              <div>
+                <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-2">
+                  Testimoni Produk
+                </div>
+                <h2 className="text-[22px] font-semibold text-white tracking-tight">
+                  Pengalaman pembeli
+                </h2>
+              </div>
+              <div className="flex items-center gap-3 text-[12px] text-white/40">
+                <span className="text-tertiary tracking-[1px]" aria-hidden="true">★★★★★</span>
+                <span>
+                  {averageRating != null ? `${averageRating.toFixed(1)} dari 5` : "Belum ada rating"}
+                </span>
+                <span className="h-1 w-1 rounded-full bg-white/15" />
+                <span>{reviewCount} ulasan</span>
+              </div>
+            </div>
+
+            {reviews.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {reviews.map((review) => (
+                  <GlassCard key={review.id} className="p-5">
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div>
+                        <div className="text-[13px] font-medium text-white">
+                          {review.userName}
+                        </div>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="text-tertiary text-[12px] tracking-[1px]" aria-hidden="true">
+                            {"★".repeat(review.rating)}
+                            <span className="text-white/15">{"★".repeat(5 - review.rating)}</span>
+                          </span>
+                          <span className="text-[11px] text-white/30">{review.rating}/5</span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] text-white/25">
+                        {formatReviewDate(review.createdAt)}
+                      </span>
+                    </div>
+                    <p className="text-[13px] text-white/50 leading-6">
+                      {review.testimonial}
+                    </p>
+                  </GlassCard>
+                ))}
+              </div>
+            ) : (
+              <GlassCard className="p-6">
+                <p className="text-[13px] text-white/35 leading-6">
+                  Belum ada testimoni untuk produk ini. Testimoni akan muncul setelah pembeli menyelesaikan transaksi dan mengirim review.
+                </p>
+              </GlassCard>
+            )}
+          </section>
         </div>
       </main>
       <Footer />

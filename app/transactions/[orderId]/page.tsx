@@ -11,7 +11,8 @@ import Badge from "@/components/ui/Badge";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { TransactionSkeleton } from "@/components/ui/Skeleton";
 import { getCategoryIcon } from "@/lib/categoryIcons";
-import type { Transaction } from "@/lib/types";
+import { useToast } from "@/components/ui/ToastContext";
+import type { ProductReview, Transaction } from "@/lib/types";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -115,10 +116,8 @@ function parseAccountDetails(raw: unknown): AccountGroup[] {
 
 function CredentialRow({
   item,
-  idx,
 }: {
   item: Credential;
-  idx: number;
 }) {
   const [revealed, setRevealed] = useState(false);
   const isPass = isPasswordField(item.label);
@@ -181,12 +180,158 @@ function AccountDetailsPanel({ rawDetails }: { rawDetails: unknown }) {
           )}
           <div className="space-y-3">
             {group.credentials.map((cred, ci) => (
-              <CredentialRow key={`${gi}-${ci}`} item={cred} idx={gi * 100 + ci} />
+              <CredentialRow key={`${gi}-${ci}`} item={cred} />
             ))}
           </div>
         </GlassCard>
       ))}
     </div>
+  );
+}
+
+function ProductReviewPanel({
+  tx,
+  onReviewCreated,
+}: {
+  tx: Transaction;
+  onReviewCreated: (review: ProductReview) => void;
+}) {
+  const { addToast } = useToast();
+  const [rating, setRating] = useState(5);
+  const [testimonial, setTestimonial] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  if (tx.db_status !== "COMPLETED") return null;
+
+  if (tx.review) {
+    return (
+      <GlassCard className="p-5">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+          <div>
+            <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-2">
+              Rating Kamu
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-tertiary tracking-[2px]" aria-hidden="true">
+                {"★".repeat(tx.review.rating)}
+                <span className="text-white/15">{"★".repeat(5 - tx.review.rating)}</span>
+              </span>
+              <span className="text-[12px] text-white/40">{tx.review.rating}/5</span>
+            </div>
+          </div>
+          <span className="text-[11px] text-white/25">
+            {formatDate(tx.review.createdAt)}
+          </span>
+        </div>
+        <p className="text-[13px] text-white/55 leading-6">{tx.review.testimonial}</p>
+      </GlassCard>
+    );
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: tx.order_id,
+          rating,
+          testimonial,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        onReviewCreated(data.data);
+        setTestimonial("");
+        addToast("Terima kasih, review kamu sudah tersimpan.", "success");
+      } else {
+        const msg = data.message ?? "Gagal menyimpan review.";
+        setError(msg);
+        addToast(msg, "error");
+      }
+    } catch {
+      const msg = "Terjadi kesalahan. Coba lagi.";
+      setError(msg);
+      addToast(msg, "error");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <GradientBorder>
+      <form onSubmit={handleSubmit} className="p-5 space-y-5">
+        <div>
+          <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-2">
+            Beri Rating Produk
+          </div>
+          <p className="text-[12px] text-white/35 leading-5">
+            Bagikan pengalaman kamu setelah pembelian disetujui admin.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-[12px] text-white/45 mb-2">Rating</label>
+          <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating produk">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type="button"
+                role="radio"
+                aria-checked={rating === value}
+                onClick={() => setRating(value)}
+                className={`h-10 w-10 rounded-[2px] border text-[20px] leading-none transition-colors cursor-pointer ${
+                  value <= rating
+                    ? "border-tertiary/60 bg-tertiary/10 text-tertiary"
+                    : "border-white/10 bg-white/[0.03] text-white/20 hover:text-white/50"
+                }`}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="testimonial" className="text-[12px] text-white/45">
+              Testimoni
+            </label>
+            <span className="text-[11px] text-white/20">{testimonial.length}/800</span>
+          </div>
+          <textarea
+            id="testimonial"
+            value={testimonial}
+            onChange={(e) => setTestimonial(e.target.value)}
+            minLength={10}
+            maxLength={800}
+            rows={4}
+            placeholder="Ceritakan pengalaman kamu memakai produk ini..."
+            className="w-full glass rounded-[2px] px-4 py-3 text-[13px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent resize-none"
+          />
+        </div>
+
+        {error && (
+          <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+            {error}
+          </div>
+        )}
+
+        <ButtonPrimary
+          type="submit"
+          disabled={submitting || testimonial.trim().length < 10}
+          className="w-full justify-center py-3 text-[13px] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {submitting ? "Menyimpan..." : "Kirim Review"}
+        </ButtonPrimary>
+      </form>
+    </GradientBorder>
   );
 }
 
@@ -359,6 +504,13 @@ export default function TransactionDetailPage() {
                   </div>
                 </GlassCard>
               ) : null}
+
+              <ProductReviewPanel
+                tx={tx}
+                onReviewCreated={(review) =>
+                  setTx((current) => (current ? { ...current, review } : current))
+                }
+              />
 
               <div className="pt-2">
                 <Link href="/transactions">

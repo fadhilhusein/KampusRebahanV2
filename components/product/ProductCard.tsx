@@ -14,11 +14,6 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-function getStableRating(name: string) {
-  const score = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return (4.7 + (score % 3) / 10).toFixed(1);
-}
-
 interface ProductCardProps {
   product: Product;
 }
@@ -29,7 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const icon = getCategoryIcon(product.category);
   const color = getCategoryColor(product.category);
   const productImage = getProductImage(product.name);
-  const rating = getStableRating(product.name);
+  const rating = product.averageRating != null ? product.averageRating.toFixed(1) : "Baru";
   const soldCount = product.soldCount ?? 0;
 
   return (
@@ -66,6 +61,10 @@ export default function ProductCard({ product }: ProductCardProps) {
               <span className="tracking-[1px]" aria-hidden="true">★★★★★</span>
               <span className="font-medium text-white/60">{rating}</span>
             </div>
+            <span className="h-1 w-1 rounded-full bg-white/15" />
+            <span className="text-white/35">
+              {product.reviewCount ? `${product.reviewCount} ulasan` : "Belum ada ulasan"}
+            </span>
             <span className="h-1 w-1 rounded-full bg-white/15" />
             <span className="text-white/35">{soldCount} terjual</span>
           </div>
