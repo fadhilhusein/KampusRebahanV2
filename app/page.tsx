@@ -1,5 +1,4 @@
-import { warungApi } from "@/lib/api";
-import { getMarkupPercent } from "@/lib/settings";
+import { getProductsWithStats } from "@/lib/products";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/landing/Hero";
@@ -13,17 +12,9 @@ export default async function HomePage() {
   let products: import("@/lib/types").Product[] = [];
 
   try {
-    const [res, markup] = await Promise.all([warungApi.getProducts(), getMarkupPercent()]);
+    const res = await getProductsWithStats();
     if (res.success) {
-      products = markup > 0
-        ? res.data.map((p) => ({
-            ...p,
-            variants: p.variants.map((v) => ({
-              ...v,
-              price: Math.ceil(v.price * (1 + markup / 100)),
-            })),
-          }))
-        : res.data;
+      products = res.data;
     }
   } catch {
     // graceful empty state
