@@ -46,7 +46,9 @@ export default function VariantSelector({
                 <div className="flex items-center gap-3 mt-1">
                   <span className="text-[11px] text-white/40">{v.duration}</span>
                   <span className="text-[11px] text-white/30">•</span>
-                  <span className="text-[11px] text-white/40">{v.type}</span>
+                  <span className="text-[11px] text-white/40">{
+                    v.type.toLowerCase() === "private" ? "🔏 Private" : v.type
+                  }</span>
                   {v.warranty && (
                     <>
                       <span className="text-[11px] text-white/30">•</span>
