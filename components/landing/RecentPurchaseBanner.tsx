@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ShoppingBag } from 'lucide-react';
 import * as motion from "motion/react-client";
 
 interface RecentPurchase {
@@ -87,9 +88,12 @@ export default function RecentPurchaseBanner() {
     >
       <div className="mx-auto flex w-full max-w-[620px] items-center justify-center">
         <div className="glass flex max-w-full items-center gap-3 rounded-full border-white/15 bg-black/70 px-4 py-2.5 shadow-lg shadow-primary/15 backdrop-blur-[12px]">
-          <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
+          {/* <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-400" />
+          </span> */}
+          <span className="relative flex">
+            <ShoppingBag size={13} strokeWidth={2} className="text-green-400" />
           </span>
           <motion.p
             key={item.id}

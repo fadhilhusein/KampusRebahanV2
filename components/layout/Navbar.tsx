@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import { LogOut } from "lucide-react";
 
 const BASE_LINKS = [
   { href: "/", label: "Home" },
@@ -64,14 +65,14 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {status === "authenticated" ? (
               <div className="hidden md:flex items-center gap-3">
-                <span className="text-[12px] text-white/40 max-w-[140px] truncate">
-                  {session.user?.name ?? session.user?.email}
+                <span className="text-[12px] text-white/40 max-w-[140px] truncate border-r border-white/20 pr-3">
+                  Halo, {session.user?.name ?? session.user?.email}
                 </span>
                 <button
                   onClick={handleSignOut}
-                  className="text-[12px] text-white/50 hover:text-white transition-colors cursor-pointer"
+                  className="text-[12px] text-white hover:text-red-400 font-bold transition-colors cursor-pointer flex items-center gap-1"
                 >
-                  Keluar
+                  Keluar <LogOut size={14} className="inline-block" />
                 </button>
               </div>
             ) : (
@@ -135,9 +136,9 @@ export default function Navbar() {
                   </div>
                   <button
                     onClick={() => { setMobileOpen(false); handleSignOut(); }}
-                    className="text-[14px] text-white/50 py-2 text-left cursor-pointer"
+                    className="text-[14px] text-white/50 py-2 text-left cursor-pointer flex items-center gap-1"
                   >
-                    Keluar
+                    Keluar <LogOut size={14} className="inline-block"/>
                   </button>
                 </>
               ) : (

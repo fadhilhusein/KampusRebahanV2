@@ -225,7 +225,7 @@ export default function ProductDetailPage() {
             <div className="hidden md:inline">
               <GradientBorder>
                 <div className="p-5">
-                  <h2 className="text-[14px] font-medium text-white/60 mb-4">
+                  <h2 className="text-[14px] font-medium text-white mb-4">
                     Pilih Varian
                   </h2>
                   <VariantSelector
