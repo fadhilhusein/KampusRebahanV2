@@ -31,18 +31,22 @@ const statusColor: Record<string, "primary" | "secondary" | "tertiary" | "defaul
   PENDING_PAYMENT: "tertiary",
   PAID: "secondary",
   PROCESSING: "tertiary",
+  AWAITING_RETRY: "tertiary",
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  EXPIRED: "primary",
 };
 
 const statusLabel: Record<string, string> = {
   PENDING_PAYMENT: "Menunggu Bayar",
   PAID: "Menunggu Verifikasi",
   PROCESSING: "Diproses",
+  AWAITING_RETRY: "Diproses",
   COMPLETED: "Selesai",
   FAILED: "Gagal",
   REJECTED: "Ditolak",
+  EXPIRED: "Kadaluarsa",
 };
 
 export default function TransactionsPage() {
@@ -115,7 +119,7 @@ export default function TransactionsPage() {
                           {formatPrice(tx.total_amount)}
                         </div>
                         <div className="text-[11px] text-white/30 mt-0.5">
-                          {tx.quantity}x · {tx.paymentMethod === "QRIS" ? "QRIS" : "Transfer"}
+                          {tx.quantity}x · {tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}
                         </div>
                         <div className="text-[11px] text-white/20 mt-1">
                           Lihat detail →

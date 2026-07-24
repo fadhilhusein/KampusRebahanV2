@@ -9,7 +9,10 @@
       "Bash(rm -rf \"D:/laragon-6.0.0/www/_tmp_nextapp\")",
       "Bash(rtk ls *)",
       "mcp__plugin_context-mode_context-mode__ctx_search",
-      "mcp__plugin_context-mode_context-mode__ctx_execute_file"
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(npm -v)"
     ]
   }
 }

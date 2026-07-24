@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -19,19 +19,145 @@ const statusColor: Record<string, "primary" | "secondary" | "tertiary" | "defaul
   PENDING_PAYMENT: "tertiary",
   PAID: "secondary",
   PROCESSING: "tertiary",
+  AWAITING_RETRY: "primary",
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  EXPIRED: "primary",
 };
 
 const statusLabel: Record<string, string> = {
   PENDING_PAYMENT: "Pending",
   PAID: "Paid",
   PROCESSING: "Processing",
+  AWAITING_RETRY: "Perlu Retry",
   COMPLETED: "Completed",
   FAILED: "Failed",
   REJECTED: "Rejected",
+  EXPIRED: "Expired",
 };
+
+const paymentMethodLabel: Record<string, string> = {
+  QRIS_GATEWAY: "⚡ QRIS (Bayar.gg)",
+  QRIS: "📱 QRIS (manual)",
+  BANK_TRANSFER: "🏦 Transfer Bank",
+};
+
+interface OrderCardProps {
+  order: AdminOrder;
+  isLoading: boolean;
+  onConfirm: (id: string) => void;
+  onReject: (id: string) => void;
+  onRecheckGateway: (id: string) => void;
+}
+
+const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onReject, onRecheckGateway }: OrderCardProps) {
+  return (
+    <GlassCard className="p-5">
+      <div className="flex flex-col md:flex-row md:items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <Badge color={statusColor[order.status] ?? "default"}>{statusLabel[order.status] ?? order.status}</Badge>
+            <span className="text-[11px] text-white/30 font-mono truncate">{order.id}</span>
+          </div>
+          <div className="text-[14px] font-medium text-white mb-0.5">
+            {order.productName} — {order.variantName}
+          </div>
+          <div className="text-[12px] text-white/40 mb-2">
+            {order.user.name ?? order.user.email} · {formatDate(order.createdAt)}
+          </div>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-[12px]">
+            <div className="text-white/30">Jumlah: <span className="text-white">{order.quantity}x</span></div>
+            <div className="text-white/30">Harga Jual: <span className="text-white">{formatPrice(order.sellPrice)}</span></div>
+            <div className="text-white/30">Cost: <span className="text-white/60">{formatPrice(order.costPrice)}</span></div>
+            <div className="text-white/30">Profit: <span className="text-secondary">{formatPrice(order.sellPrice - order.costPrice)}</span></div>
+            <div className="text-white/30">Metode: <span className="text-white">{paymentMethodLabel[order.paymentMethod] ?? order.paymentMethod}</span></div>
+            {order.uniqueCode > 0 && (
+              <div className="col-span-2 text-white/30">
+                Nominal Transfer: <span className="text-tertiary font-semibold">{formatPrice(order.sellPrice + order.uniqueCode)}</span>
+                <span className="text-white/20 ml-1">(kode: +{order.uniqueCode})</span>
+              </div>
+            )}
+            {order.paymentRef && (
+              <div className="col-span-2 text-white/30">Ref: <span className="text-white font-mono">{order.paymentRef}</span></div>
+            )}
+            {order.apiOrderId && (
+              <div className="col-span-2 text-white/30">API ID: <span className="text-white/60 font-mono text-[11px]">{order.apiOrderId}</span></div>
+            )}
+            {order.gatewayInvoiceId && (
+              <div className="col-span-2 text-white/30">
+                Invoice Bayar.gg: <span className="text-white/60 font-mono text-[11px]">{order.gatewayInvoiceId}</span>
+                {order.gatewayStatus && <span className="text-white/20 ml-1">({order.gatewayStatus})</span>}
+              </div>
+            )}
+            {order.status === "AWAITING_RETRY" && order.apiResponse != null && (
+              <div className="col-span-2 text-primary/70">
+                Alasan gagal: <span className="font-mono text-[11px]">
+                  {(() => {
+                    if (typeof order.apiResponse !== "object" || order.apiResponse === null) {
+                      return String(order.apiResponse);
+                    }
+                    const obj = order.apiResponse as Record<string, unknown>;
+                    const reason = obj.error ?? obj.message;
+                    return typeof reason === "string" ? reason : JSON.stringify(order.apiResponse);
+                  })()}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {(order.status === "PENDING_PAYMENT" || order.status === "PAID" || order.status === "AWAITING_RETRY") && (
+          <div className="flex gap-2 flex-shrink-0">
+            {order.status === "AWAITING_RETRY" ? (
+              <>
+                <button
+                  onClick={() => onConfirm(order.id)}
+                  disabled={isLoading}
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-secondary hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  {isLoading ? "..." : "🔁 Retry Fulfillment"}
+                </button>
+                <button
+                  onClick={() => onReject(order.id)}
+                  disabled={isLoading}
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  Tolak
+                </button>
+              </>
+            ) : order.paymentMethod === "QRIS_GATEWAY" ? (
+              <button
+                onClick={() => onRecheckGateway(order.id)}
+                disabled={isLoading}
+                className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-tertiary/40 text-tertiary hover:bg-tertiary/10 transition-colors cursor-pointer disabled:opacity-40"
+              >
+                {isLoading ? "..." : "Cek status Bayar.gg"}
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => onConfirm(order.id)}
+                  disabled={isLoading}
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-secondary hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  {isLoading ? "..." : "Konfirmasi"}
+                </button>
+                <button
+                  onClick={() => onReject(order.id)}
+                  disabled={isLoading}
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  Tolak
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </GlassCard>
+  );
+});
 
 interface AdminOrder {
   id: string;
@@ -46,6 +172,9 @@ interface AdminOrder {
   paymentNote: string | null;
   paymentMethod: string;
   apiOrderId: string | null;
+  apiResponse: unknown;
+  gatewayInvoiceId: string | null;
+  gatewayStatus: string | null;
   createdAt: string;
   user: { email: string; name: string | null };
 }
@@ -62,21 +191,18 @@ export default function AdminPage() {
   const [markup, setMarkup] = useState<number | "">("");
   const [markupLoading, setMarkupLoading] = useState(false);
   const [markupMsg, setMarkupMsg] = useState("");
+  const [bankTransferEnabled, setBankTransferEnabledState] = useState(true);
+  const [bankToggleLoading, setBankToggleLoading] = useState(false);
 
-  async function fetchOrders() {
-    setLoading(true);
-    const res = await fetch("/api/admin/orders");
-    if (res.status === 403 || res.status === 401) {
-      router.replace("/");
-      return;
-    }
+  // Refreshes only the one order that changed, keeping every other order's
+  // object reference stable so memoized OrderCard rows skip re-rendering.
+  const refreshOneOrder = useCallback(async (orderId: string) => {
+    const res = await fetch(`/api/order/${orderId}`);
     const data = await res.json();
     if (data.success) {
-      setOrders(data.data);
-      setUserCount(data.userCount ?? 0);
-    } else setError(data.message ?? "Forbidden");
-    setLoading(false);
-  }
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? data.data : o)));
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,7 +225,11 @@ export default function AdminPage() {
     loadInitialOrders();
     fetch("/api/admin/settings")
       .then((r) => r.json())
-      .then((d) => { if (!cancelled && d.success) setMarkup(d.data.markup_percent); });
+      .then((d) => {
+        if (cancelled || !d.success) return;
+        setMarkup(d.data.markup_percent);
+        setBankTransferEnabledState(d.data.bank_transfer_enabled);
+      });
 
     return () => { cancelled = true; };
   }, [router]);
@@ -118,7 +248,30 @@ export default function AdminPage() {
     setMarkupLoading(false);
   }
 
-  async function confirm(orderId: string) {
+  async function toggleBankTransfer() {
+    const next = !bankTransferEnabled;
+    setBankToggleLoading(true);
+    const res = await fetch("/api/admin/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bank_transfer_enabled: next }),
+    });
+    const data = await res.json();
+    if (data.success) setBankTransferEnabledState(next);
+    setBankToggleLoading(false);
+  }
+
+  const recheckGateway = useCallback(async (orderId: string) => {
+    setActionLoading(orderId);
+    setMsg("");
+    const res = await fetch(`/api/order/${orderId}/gateway-status`);
+    const data = await res.json();
+    setMsg(data.success ? `✓ Status Bayar.gg: ${data.data?.status ?? "?"}` : `✗ ${data.message}`);
+    setActionLoading(null);
+    await refreshOneOrder(orderId);
+  }, [refreshOneOrder]);
+
+  const confirm = useCallback(async (orderId: string) => {
     setActionLoading(orderId);
     setMsg("");
     const res = await fetch("/api/admin/confirm", {
@@ -129,10 +282,10 @@ export default function AdminPage() {
     const data = await res.json();
     setMsg(data.success ? `✓ ${data.message}` : `✗ ${data.message}`);
     setActionLoading(null);
-    fetchOrders();
-  }
+    await refreshOneOrder(orderId);
+  }, [refreshOneOrder]);
 
-  async function reject(orderId: string) {
+  const reject = useCallback(async (orderId: string) => {
     const reason = prompt("Alasan penolakan (opsional):");
     setActionLoading(orderId);
     setMsg("");
@@ -144,10 +297,10 @@ export default function AdminPage() {
     const data = await res.json();
     setMsg(data.success ? `✓ ${data.message}` : `✗ ${data.message}`);
     setActionLoading(null);
-    fetchOrders();
-  }
+    await refreshOneOrder(orderId);
+  }, [refreshOneOrder]);
 
-  const filters = ["ALL", "PENDING_PAYMENT", "COMPLETED", "FAILED", "REJECTED"];
+  const filters = ["ALL", "PENDING_PAYMENT", "AWAITING_RETRY", "COMPLETED", "FAILED", "REJECTED"];
   const filtered = filter === "ALL" ? orders : orders.filter((o) => o.status === filter);
 
   const totalRevenue = orders.filter((o) => o.status === "COMPLETED").reduce((s, o) => s + o.sellPrice, 0);
@@ -197,6 +350,22 @@ export default function AdminPage() {
             {markupMsg && (
               <div className="mt-3 text-[12px] text-secondary/80">{markupMsg}</div>
             )}
+
+            <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1">
+                <div className="text-[12px] text-white/40 mb-0.5">Transfer Bank Manual</div>
+                <div className="text-[11px] text-white/25">Nyalakan/matikan opsi transfer bank di checkout. QRIS otomatis (Bayar.gg) selalu aktif.</div>
+              </div>
+              <button
+                onClick={toggleBankTransfer}
+                disabled={bankToggleLoading}
+                className={`glass rounded-[2px] px-4 py-2 text-[12px] font-medium border transition-colors cursor-pointer disabled:opacity-40 flex-shrink-0 ${
+                  bankTransferEnabled ? "border-secondary/40 text-secondary hover:bg-secondary/10" : "border-white/10 text-white/40 hover:bg-white/10"
+                }`}
+              >
+                {bankToggleLoading ? "..." : bankTransferEnabled ? "Aktif" : "Nonaktif"}
+              </button>
+            </div>
           </GlassCard>
 
           {/* Stats */}
@@ -245,60 +414,14 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-3">
               {filtered.map((order) => (
-                <GlassCard key={order.id} className="p-5">
-                  <div className="flex flex-col md:flex-row md:items-start gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <Badge color={statusColor[order.status] ?? "default"}>{statusLabel[order.status] ?? order.status}</Badge>
-                        <span className="text-[11px] text-white/30 font-mono truncate">{order.id}</span>
-                      </div>
-                      <div className="text-[14px] font-medium text-white mb-0.5">
-                        {order.productName} — {order.variantName}
-                      </div>
-                      <div className="text-[12px] text-white/40 mb-2">
-                        {order.user.name ?? order.user.email} · {formatDate(order.createdAt)}
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-[12px]">
-                        <div className="text-white/30">Jumlah: <span className="text-white">{order.quantity}x</span></div>
-                        <div className="text-white/30">Harga Jual: <span className="text-white">{formatPrice(order.sellPrice)}</span></div>
-                        <div className="text-white/30">Cost: <span className="text-white/60">{formatPrice(order.costPrice)}</span></div>
-                        <div className="text-white/30">Profit: <span className="text-secondary">{formatPrice(order.sellPrice - order.costPrice)}</span></div>
-                        <div className="text-white/30">Metode: <span className="text-white">{order.paymentMethod === "QRIS" ? "📱 QRIS" : "🏦 Transfer Bank"}</span></div>
-                        {order.uniqueCode > 0 && (
-                          <div className="col-span-2 text-white/30">
-                            Nominal Transfer: <span className="text-tertiary font-semibold">{formatPrice(order.sellPrice + order.uniqueCode)}</span>
-                            <span className="text-white/20 ml-1">(kode: +{order.uniqueCode})</span>
-                          </div>
-                        )}
-                        {order.paymentRef && (
-                          <div className="col-span-2 text-white/30">Ref: <span className="text-white font-mono">{order.paymentRef}</span></div>
-                        )}
-                        {order.apiOrderId && (
-                          <div className="col-span-2 text-white/30">API ID: <span className="text-white/60 font-mono text-[11px]">{order.apiOrderId}</span></div>
-                        )}
-                      </div>
-                    </div>
-
-                    {(order.status === "PENDING_PAYMENT" || order.status === "PAID") && (
-                      <div className="flex gap-2 flex-shrink-0">
-                        <button
-                          onClick={() => confirm(order.id)}
-                          disabled={actionLoading === order.id}
-                          className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-secondary hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
-                        >
-                          {actionLoading === order.id ? "..." : "Konfirmasi"}
-                        </button>
-                        <button
-                          onClick={() => reject(order.id)}
-                          disabled={actionLoading === order.id}
-                          className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-40"
-                        >
-                          Tolak
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </GlassCard>
+                <OrderCard
+                  key={order.id}
+                  order={order}
+                  isLoading={actionLoading === order.id}
+                  onConfirm={confirm}
+                  onReject={reject}
+                  onRecheckGateway={recheckGateway}
+                />
               ))}
             </div>
           )}

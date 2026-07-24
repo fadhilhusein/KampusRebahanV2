@@ -29,7 +29,8 @@ async function post<T>(
   });
 
   if (!res.ok) {
-    throw new Error(`Warungrebahan API error ${res.status}: ${endpoint}`);
+    const text = await res.text().catch(() => "");
+    throw new Error(`Warungrebahan API error ${res.status}: ${endpoint}${text ? ` — ${text}` : ""}`);
   }
 
   return res.json() as Promise<T>;

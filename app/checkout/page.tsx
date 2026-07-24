@@ -12,6 +12,10 @@ import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
 
+// Keep in sync with lib/bayarGg.ts QRIS_GATEWAY_MAX_AMOUNT (kept separate to avoid
+// bundling the server-only Bayar.gg client, which uses Node's crypto, into client code).
+const QRIS_GATEWAY_MAX_AMOUNT = 500000;
+
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -32,10 +36,17 @@ function CheckoutContent() {
   const [product, setProduct] = useState<Product | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS">("BANK_TRANSFER");
+  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY">("QRIS_GATEWAY");
+  const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
   const [paymentNote, setPaymentNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings/public")
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setBankTransferEnabled(d.data.bankTransferEnabled); });
+  }, []);
 
   useEffect(() => {
     if (!variantId) { setDataLoading(false); return; }
@@ -57,6 +68,16 @@ function CheckoutContent() {
   const stock = variant?.stock ?? 0;
   const stockExceeded = stock > 0 && quantity > stock;
   const outOfStock = stock === 0;
+  const qrisGatewayDisabled = totalSell > QRIS_GATEWAY_MAX_AMOUNT;
+
+  useEffect(() => {
+    if (qrisGatewayDisabled && paymentMethod === "QRIS_GATEWAY" && bankTransferEnabled) {
+      setPaymentMethod("BANK_TRANSFER");
+    }
+    if (!bankTransferEnabled && paymentMethod === "BANK_TRANSFER" && !qrisGatewayDisabled) {
+      setPaymentMethod("QRIS_GATEWAY");
+    }
+  }, [qrisGatewayDisabled, bankTransferEnabled, paymentMethod]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -158,21 +179,38 @@ function CheckoutContent() {
               <div>
                 <div className="text-[11px] text-white/30 uppercase tracking-wider mb-3">Metode Pembayaran</div>
                 <div className="flex gap-3">
-                  {(["BANK_TRANSFER", "QRIS"] as const).map((m) => (
+                  <button
+                    type="button"
+                    disabled={qrisGatewayDisabled}
+                    onClick={() => setPaymentMethod("QRIS_GATEWAY")}
+                    className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                      paymentMethod === "QRIS_GATEWAY"
+                        ? "border-white/50 text-white bg-white/10"
+                        : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                    }`}
+                  >
+                    ⚡ QRIS (Otomatis)
+                  </button>
+                  {bankTransferEnabled && (
                     <button
-                      key={m}
                       type="button"
-                      onClick={() => setPaymentMethod(m)}
+                      onClick={() => setPaymentMethod("BANK_TRANSFER")}
                       className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer ${
-                        paymentMethod === m
+                        paymentMethod === "BANK_TRANSFER"
                           ? "border-white/50 text-white bg-white/10"
                           : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
                       }`}
                     >
-                      {m === "BANK_TRANSFER" ? "🏦 Transfer Bank" : "📱 QRIS"}
+                      🏦 Transfer Bank
                     </button>
-                  ))}
+                  )}
                 </div>
+                {qrisGatewayDisabled && (
+                  <p className="text-[11px] text-white/30 mt-2">
+                    QRIS otomatis maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}
+                    {bankTransferEnabled ? ", gunakan transfer bank untuk nominal ini." : "."}
+                  </p>
+                )}
               </div>
 
               <div className="border-t border-white/8" />
@@ -221,13 +259,23 @@ function CheckoutContent() {
                 />
               </div>
 
+              {qrisGatewayDisabled && !bankTransferEnabled && (
+                <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+                  Tidak ada metode pembayaran yang tersedia untuk nominal ini.
+                </div>
+              )}
+
               {error && (
                 <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
                   {error}
                 </div>
               )}
 
-              <ButtonPrimary type="submit" disabled={loading || stockExceeded || outOfStock} className="w-full py-3 text-[14px]">
+              <ButtonPrimary
+                type="submit"
+                disabled={loading || stockExceeded || outOfStock || (qrisGatewayDisabled && !bankTransferEnabled)}
+                className="w-full py-3 text-[14px]"
+              >
                 {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}
               </ButtonPrimary>
 

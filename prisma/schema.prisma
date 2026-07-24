@@ -39,6 +39,10 @@ model Order {
   paymentNote String?
   apiOrderId  String?
   apiResponse Json?
+  gatewayInvoiceId String?
+  gatewayQrString  String?   @db.Text
+  gatewayStatus    String?
+  gatewayExpiresAt DateTime?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -56,6 +60,8 @@ enum OrderStatus {
   COMPLETED
   FAILED
   REJECTED
+  EXPIRED
+  AWAITING_RETRY
 }
 
 model Setting {

@@ -101,3 +101,67 @@ export interface WebhookPayload {
     [key: string]: unknown;
   };
 }
+
+export interface BayarGgSuccess<T> {
+  success: true;
+  data: T;
+}
+
+export interface BayarGgError {
+  success: false;
+  error: string;
+}
+
+export type BayarGgResponse<T> = BayarGgSuccess<T> | BayarGgError;
+
+export interface BayarGgCreatePaymentPayload {
+  amount: number;
+  payment_url: string;
+  payment_method?: string;
+  description?: string;
+  customer_name?: string;
+  customer_email?: string;
+  customer_phone?: string;
+  callback_url?: string;
+  redirect_url?: string;
+  use_qris_converter?: boolean;
+}
+
+export interface BayarGgCreatePaymentData {
+  invoice_id: string;
+  amount: number;
+  payment_url: string;
+  qris_string?: string;
+  status: string;
+  final_amount: number;
+  payment_method: string;
+  expires_at: string;
+}
+
+export type BayarGgPaymentStatus = "pending" | "paid" | "expired" | "cancelled";
+
+export interface BayarGgCheckPaymentData {
+  invoice_id: string;
+  status: BayarGgPaymentStatus;
+  amount: number;
+  final_amount: number;
+  payment_method: string;
+  paid_at?: string;
+  paid_reff_num?: string;
+  expires_at?: string;
+}
+
+export interface BayarGgWebhookPayload {
+  event: "payment.paid";
+  invoice_id: string;
+  status: BayarGgPaymentStatus;
+  payment_method: string;
+  amount: number;
+  final_amount: number;
+  paid_at?: string;
+  paid_reff_num?: string;
+  paid_via?: string;
+  timestamp: number;
+  signature: string;
+  [key: string]: unknown;
+}

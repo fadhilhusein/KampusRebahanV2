@@ -40,9 +40,11 @@ const statusColor: Record<string, "primary" | "secondary" | "tertiary" | "defaul
   PENDING_PAYMENT: "tertiary",
   PAID: "secondary",
   PROCESSING: "tertiary",
+  AWAITING_RETRY: "tertiary",
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  EXPIRED: "primary",
   completed: "secondary",
   processing: "tertiary",
   failed: "primary",
@@ -52,9 +54,11 @@ const statusLabel: Record<string, string> = {
   PENDING_PAYMENT: "Menunggu Bayar",
   PAID: "Menunggu Verifikasi",
   PROCESSING: "Diproses",
+  AWAITING_RETRY: "Diproses",
   COMPLETED: "Selesai",
   FAILED: "Gagal",
   REJECTED: "Ditolak",
+  EXPIRED: "Kadaluarsa",
 };
 
 const PASSWORD_KEYS = ["password", "pass", "pwd", "sandi", "pin", "secret", "token"];
@@ -402,7 +406,7 @@ export default function TransactionDetailPage() {
                       {statusLabel[tx.db_status] ?? tx.db_status ?? "—"}
                     </Badge>
                     <Badge color="default">{tx.quantity}x</Badge>
-                    <Badge color="default">{tx.paymentMethod === "QRIS" ? "QRIS" : "Transfer"}</Badge>
+                    <Badge color="default">{tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}</Badge>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
@@ -495,7 +499,7 @@ export default function TransactionDetailPage() {
                     </span>
                   </Link>
                 </GlassCard>
-              ) : (tx.db_status === "PROCESSING" || tx.db_status === "PAID" || tx.status === "processing") ? (
+              ) : (tx.db_status === "PROCESSING" || tx.db_status === "AWAITING_RETRY" || tx.db_status === "PAID" || tx.status === "processing") ? (
                 <GlassCard className="p-6 text-center">
                   <div className="text-[32px] mb-3">⚙️</div>
                   <div className="text-[14px] text-white/60 mb-1">Akun sedang diproses</div>

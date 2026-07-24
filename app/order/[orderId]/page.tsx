@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import QRCode from "qrcode";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GlassCard from "@/components/ui/GlassCard";
@@ -22,9 +23,11 @@ const statusInfo: Record<string, { label: string; color: "primary" | "secondary"
   PENDING_PAYMENT: { label: "Menunggu Pembayaran", color: "tertiary", icon: "⏳", desc: "Selesaikan pembayaran sesuai instruksi di bawah. Admin akan verifikasi setelah dana masuk." },
   PAID:            { label: "Pembayaran Diterima", color: "secondary", icon: "✅", desc: "Pembayaran diterima. Sedang diproses." },
   PROCESSING:      { label: "Sedang Diproses", color: "tertiary", icon: "⚙️", desc: "Akun sedang disiapkan." },
+  AWAITING_RETRY:  { label: "Sedang Diproses", color: "tertiary", icon: "⚙️", desc: "Akun sedang disiapkan." },
   COMPLETED:       { label: "Selesai", color: "secondary", icon: "🎉", desc: "Order selesai! Cek detail akun di riwayat transaksi." },
   FAILED:          { label: "Gagal", color: "primary", icon: "❌", desc: "Terjadi masalah saat memproses order. Hubungi admin." },
   REJECTED:        { label: "Ditolak", color: "primary", icon: "🚫", desc: "Order ditolak. Hubungi admin untuk informasi lebih lanjut." },
+  EXPIRED:         { label: "Kadaluarsa", color: "primary", icon: "⌛", desc: "QRIS kadaluarsa sebelum dibayar. Buat order baru untuk mencoba lagi." },
 };
 
 interface Order {
@@ -41,6 +44,8 @@ interface Order {
   paymentRef: string | null;
   paymentNote: string | null;
   apiOrderId: string | null;
+  gatewayQrString: string | null;
+  gatewayExpiresAt: string | null;
   createdAt: string;
 }
 
@@ -62,6 +67,38 @@ function CopyButton({ value, label = "Salin" }: { value: string; label?: string 
   );
 }
 
+function GatewayQr({ value }: { value: string }) {
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    QRCode.toDataURL(value, { width: 288, margin: 1 }).then((url) => {
+      if (!cancelled) setDataUrl(url);
+    });
+    return () => { cancelled = true; };
+  }, [value]);
+
+  if (!dataUrl) {
+    return <div className="w-72 h-72 mx-auto flex items-center justify-center text-white/30 text-[12px]">Membuat QR...</div>;
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={dataUrl} alt="QRIS Bayar.gg" className="w-72 h-72 object-contain" />;
+}
+
+function Countdown({ expiresAt }: { expiresAt: string }) {
+  const [remaining, setRemaining] = useState(() => Math.max(0, new Date(expiresAt).getTime() - Date.now()));
+
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(Math.max(0, new Date(expiresAt).getTime() - Date.now())), 1000);
+    return () => clearInterval(id);
+  }, [expiresAt]);
+
+  if (remaining <= 0) return <span className="text-primary">Kadaluarsa</span>;
+  const mm = Math.floor(remaining / 60000);
+  const ss = Math.floor((remaining % 60000) / 1000);
+  return <span>{mm}:{String(ss).padStart(2, "0")}</span>;
+}
+
 function PaymentInstructions({ order }: { order: Order }) {
   const totalAmount = order.sellPrice + order.uniqueCode;
   const bankName = process.env.NEXT_PUBLIC_BANK_NAME ?? "BCA";
@@ -76,27 +113,48 @@ function PaymentInstructions({ order }: { order: Order }) {
         <div className="border-t border-white/8 pt-4 space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-[13px] text-white/50">
-              {order.paymentMethod === "QRIS" ? "Nominal QRIS" : "Transfer tepat sebesar"}
+              {order.paymentMethod === "QRIS_GATEWAY" ? "Total Pembayaran" : order.paymentMethod === "QRIS" ? "Nominal QRIS" : "Transfer tepat sebesar"}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[24px] font-bold text-white">{formatPrice(totalAmount)}</span>
               <CopyButton value={String(totalAmount)} />
             </div>
           </div>
-          <div className="text-[11px] text-white/30">
-            Harga produk <span className="text-white/50">{formatPrice(order.sellPrice)}</span> + <span className="text-tertiary font-semibold">+{order.uniqueCode} (Kode Unik)</span>
+          {order.uniqueCode > 0 && (
+            <div className="text-[11px] text-white/30">
+              Harga produk <span className="text-white/50">{formatPrice(order.sellPrice)}</span> + <span className="text-tertiary font-semibold">+{order.uniqueCode} (Kode Unik)</span>
+            </div>
+          )}
+        </div>
+
+        {order.paymentMethod !== "QRIS_GATEWAY" && (
+          <div className="bg-tertiary/10 border border-tertiary/20 rounded-[2px] px-3 py-2.5 text-[11px] text-tertiary/80">
+            <ul className="list-disc list-inside space-y-1">
+              <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
+              <li>Admin akan verifikasi otomatis berdasarkan jumlah yang masuk.</li>
+              <li><strong>Kesalahan nominal</strong> bukan tanggung jawab kami dan tidak terdapat pengembalian dana.</li>
+            </ul>
           </div>
-        </div>
+        )}
 
-        <div className="bg-tertiary/10 border border-tertiary/20 rounded-[2px] px-3 py-2.5 text-[11px] text-tertiary/80">
-          <ul className="list-disc list-inside space-y-1">
-            <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
-            <li>Admin akan verifikasi otomatis berdasarkan jumlah yang masuk.</li>
-            <li><strong>Kesalahan nominal</strong> bukan tanggung jawab kami dan tidak terdapat pengembalian dana.</li>
-          </ul>
-        </div>
-
-        {order.paymentMethod === "QRIS" ? (
+        {order.paymentMethod === "QRIS_GATEWAY" ? (
+          <div className="text-center space-y-3">
+            <div className="text-[13px] text-white/50">Scan QR code berikut</div>
+            <div className="inline-block bg-white p-3 rounded-[4px]">
+              {order.gatewayQrString ? (
+                <GatewayQr value={order.gatewayQrString} />
+              ) : (
+                <div className="w-72 h-72 flex items-center justify-center text-black/40 text-[12px]">QR tidak tersedia</div>
+              )}
+            </div>
+            {order.gatewayExpiresAt && (
+              <div className="text-[12px] text-white/40">
+                Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={order.gatewayExpiresAt} /></span>
+              </div>
+            )}
+            <div className="text-[11px] text-white/30">Status pembayaran akan otomatis terupdate begitu QRIS ini dibayar.</div>
+          </div>
+        ) : order.paymentMethod === "QRIS" ? (
           <div className="text-center space-y-3">
             <div className="text-[13px] text-white/50">Scan QR code berikut</div>
             <div className="inline-block bg-white p-3 rounded-[4px]">
@@ -158,6 +216,26 @@ export default function OrderDetailPage() {
       .finally(() => setLoading(false));
   }, [orderId]);
 
+  useEffect(() => {
+    if (!order || order.paymentMethod !== "QRIS_GATEWAY" || order.status !== "PENDING_PAYMENT") return;
+
+    const id = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/order/${orderId}/gateway-status`);
+        const data = await res.json();
+        if (data.success && data.data?.status && data.data.status !== "pending") {
+          const orderRes = await fetch(`/api/order/${orderId}`);
+          const orderData = await orderRes.json();
+          if (orderData.success) setOrder(orderData.data);
+        }
+      } catch {
+        // ignore transient polling errors, retry on next tick
+      }
+    }, 5000);
+
+    return () => clearInterval(id);
+  }, [order, orderId]);
+
   async function handleConfirmPayment() {
     if (!orderId || confirming) return;
     setConfirming(true);
@@ -215,7 +293,7 @@ export default function OrderDetailPage() {
                   ["Produk", order.productName],
                   ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
                   ["Jumlah", String(order.quantity)],
-                  ["Metode", order.paymentMethod === "QRIS" ? "QRIS" : "Transfer Bank"],
+                  ["Metode", order.paymentMethod === "QRIS_GATEWAY" ? "QRIS Otomatis (Bayar.gg)" : order.paymentMethod === "QRIS" ? "QRIS" : "Transfer Bank"],
                   ["Tanggal", formatDate(order.createdAt)],
                 ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between gap-4">
@@ -240,7 +318,11 @@ export default function OrderDetailPage() {
               {order.status === "PENDING_PAYMENT" && (
                 <>
                   <PaymentInstructions order={order} />
-                  {confirmMsg ? (
+                  {order.paymentMethod === "QRIS_GATEWAY" ? (
+                    <div className="text-center text-[12px] text-white/30">
+                      Menunggu pembayaran... status akan terupdate otomatis.
+                    </div>
+                  ) : confirmMsg ? (
                     <div className="bg-secondary/10 border border-secondary/30 rounded-[2px] px-4 py-3 text-[13px] text-secondary text-center">
                       {confirmMsg}
                     </div>
@@ -259,7 +341,7 @@ export default function OrderDetailPage() {
 
               {order.status === "COMPLETED" && order.apiOrderId && (
                 <div className="text-center">
-                  <Link href={`/transactions/${order.apiOrderId}`}>
+                  <Link href={`/transactions/${order.id}`}>
                     <ButtonPrimary>Lihat Detail Akun →</ButtonPrimary>
                   </Link>
                 </div>
