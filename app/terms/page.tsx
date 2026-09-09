@@ -40,22 +40,34 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">4. Pengiriman Produk</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">4. Saldo Akun</h2>
+              <ul className="list-disc list-inside space-y-2">
+                <li>Saldo dapat diisi (top up) melalui QRIS dengan nominal antara Rp10.000 – Rp500.000 per transaksi.</li>
+                <li>Saldo hanya dapat digunakan untuk membayar produk di platform KampusRebahan, dan <strong>tidak dapat dicairkan atau ditarik dalam bentuk uang tunai</strong> dalam kondisi apa pun.</li>
+                <li>Top up yang sudah masuk bersifat final. Tidak ada refund untuk saldo yang belum digunakan, kecuali melalui pembelian yang gagal diproses sesuai kebijakan Garansi & Refund pada bagian 6.</li>
+                <li>Refund atas order yang gagal atau ditolak dapat dikembalikan dalam bentuk saldo (bukan uang tunai) atas keputusan admin.</li>
+                <li>Saldo tidak memiliki masa kedaluwarsa.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-[16px] font-semibold text-white mb-3">5. Pengiriman Produk</h2>
               <p>Detail akun akan dikirimkan melalui halaman riwayat transaksi setelah order diverifikasi dan diproses. Waktu pemrosesan umumnya 1–24 jam pada hari kerja.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">5. Garansi & Refund</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">6. Garansi & Refund</h2>
               <ul className="list-disc list-inside space-y-2">
                 <li>Garansi berlaku sesuai yang tertera pada masing-masing produk.</li>
                 <li>Refund hanya dapat diproses jika produk tidak dapat dikirimkan setelah pembayaran terverifikasi.</li>
+                <li>Refund diproses sebagai saldo akun, bukan pengembalian uang tunai.</li>
                 <li>Tidak ada refund untuk kesalahan penggunaan akun oleh pembeli.</li>
                 <li>Hubungi admin untuk klaim garansi dengan menyertakan bukti order.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">6. Larangan Penggunaan</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">7. Larangan Penggunaan</h2>
               <p>Pengguna dilarang untuk:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>Membagikan atau menjual kembali akun yang dibeli tanpa izin.</li>
@@ -66,17 +78,17 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">7. Pembatasan Tanggung Jawab</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">8. Pembatasan Tanggung Jawab</h2>
               <p>KampusRebahan tidak bertanggung jawab atas kerugian tidak langsung akibat penggunaan layanan, termasuk kerusakan data atau kehilangan akses yang disebabkan oleh tindakan pengguna sendiri.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">8. Perubahan Syarat</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">9. Perubahan Syarat</h2>
               <p>Kami berhak mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diumumkan melalui halaman ini. Penggunaan layanan setelah perubahan berarti Anda menyetujui syarat yang diperbarui.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-white mb-3">9. Kontak</h2>
+              <h2 className="text-[16px] font-semibold text-white mb-3">10. Kontak</h2>
               <p>Untuk pertanyaan terkait syarat dan ketentuan, hubungi kami melalui email atau media sosial yang tersedia.</p>
             </section>
 

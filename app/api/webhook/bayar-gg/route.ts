@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyBayarGgWebhookSignature } from "@/lib/bayarGg";
 import { fulfillOrder } from "@/lib/fulfillOrder";
+import { creditTopUp } from "@/lib/creditTopUp";
 import type { BayarGgWebhookPayload } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -34,12 +35,18 @@ export async function POST(req: NextRequest) {
   }
 
   const order = await prisma.order.findFirst({ where: { gatewayInvoiceId: payload.invoice_id } });
-  if (!order) {
-    return NextResponse.json({ status: "order not found" }, { status: 404 });
+  if (order) {
+    await prisma.order.update({ where: { id: order.id }, data: { gatewayStatus: payload.status } });
+    const result = await fulfillOrder(order.id);
+    return NextResponse.json({ status: result.success ? "ok" : "error", message: result.message });
   }
 
-  await prisma.order.update({ where: { id: order.id }, data: { gatewayStatus: payload.status } });
+  const topup = await prisma.balanceTopUp.findFirst({ where: { gatewayInvoiceId: payload.invoice_id } });
+  if (topup) {
+    await prisma.balanceTopUp.update({ where: { id: topup.id }, data: { gatewayStatus: payload.status } });
+    const result = await creditTopUp(topup.id);
+    return NextResponse.json({ status: result.success ? "ok" : "error", message: result.message });
+  }
 
-  const result = await fulfillOrder(order.id);
-  return NextResponse.json({ status: result.success ? "ok" : "error", message: result.message });
+  return NextResponse.json({ status: "invoice not found" }, { status: 404 });
 }

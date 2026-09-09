@@ -13,6 +13,11 @@ export async function GET() {
 
   if (!userId) return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
 
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { balance: true } });
-  return NextResponse.json({ success: true, data: { balance: user?.balance ?? 0 } });
+  const transactions = await prisma.balanceTransaction.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+
+  return NextResponse.json({ success: true, data: transactions });
 }

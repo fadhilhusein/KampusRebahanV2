@@ -36,8 +36,9 @@ function CheckoutContent() {
   const [product, setProduct] = useState<Product | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY">("QRIS_GATEWAY");
+  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "BALANCE">("QRIS_GATEWAY");
   const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
+  const [balance, setBalance] = useState(0);
   const [paymentNote, setPaymentNote] = useState("");
   const [emailInvite, setEmailInvite] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,10 @@ function CheckoutContent() {
     fetch("/api/settings/public")
       .then((r) => r.json())
       .then((d) => { if (d.success) setBankTransferEnabled(d.data.bankTransferEnabled); });
+    fetch("/api/balance")
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setBalance(d.data.balance); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -70,6 +75,7 @@ function CheckoutContent() {
   const stockExceeded = stock > 0 && quantity > stock;
   const outOfStock = stock === 0;
   const qrisGatewayDisabled = totalSell > QRIS_GATEWAY_MAX_AMOUNT;
+  const balanceInsufficient = totalSell > balance;
   const isInvite = variant?.type === "Invite";
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
@@ -208,11 +214,28 @@ function CheckoutContent() {
                       🏦 Transfer Bank
                     </button>
                   )}
+                  <button
+                    type="button"
+                    disabled={balanceInsufficient}
+                    onClick={() => setPaymentMethod("BALANCE")}
+                    className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                      paymentMethod === "BALANCE"
+                        ? "border-white/50 text-white bg-white/10"
+                        : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                    }`}
+                  >
+                    💰 Saldo ({formatPrice(balance)})
+                  </button>
                 </div>
                 {qrisGatewayDisabled && (
                   <p className="text-[11px] text-white/30 mt-2">
                     QRIS otomatis maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}
                     {bankTransferEnabled ? ", gunakan transfer bank untuk nominal ini." : "."}
+                  </p>
+                )}
+                {paymentMethod === "BALANCE" && balanceInsufficient && (
+                  <p className="text-[11px] text-primary mt-2">
+                    Saldo tidak cukup. <Link href="/balance" className="underline underline-offset-2">Top up saldo</Link>
                   </p>
                 )}
               </div>
@@ -301,7 +324,7 @@ function CheckoutContent() {
 
               <ButtonPrimary
                 type="submit"
-                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (qrisGatewayDisabled && !bankTransferEnabled)}
+                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (qrisGatewayDisabled && !bankTransferEnabled)}
                 className="w-full py-3 text-[14px]"
               >
                 {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}

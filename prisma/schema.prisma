@@ -19,6 +19,9 @@ model User {
   reviews    ProductReview[]
   userOrders UserOrder[]
   resetTokens PasswordResetToken[]
+  balance     Int                  @default(0)
+  topUps      BalanceTopUp[]
+  balanceTxns BalanceTransaction[]
 }
 
 model Order {
@@ -46,6 +49,7 @@ model Order {
   gatewayInvoiceId String?
   gatewayQrString  String?
   gatewayStatus    String?
+  refundedAt       DateTime?
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   review           ProductReview?
 
@@ -109,4 +113,54 @@ enum OrderStatus {
   REJECTED
   EXPIRED
   AWAITING_RETRY
+}
+
+model BalanceTopUp {
+  id               String      @id @default(cuid())
+  userId           String
+  amount           Int
+  status           TopUpStatus @default(PENDING)
+  gatewayInvoiceId String?     @unique
+  gatewayQrString  String?
+  gatewayStatus    String?
+  gatewayExpiresAt DateTime?
+  creditedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum TopUpStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELLED
+}
+
+model BalanceTransaction {
+  id           String         @id @default(cuid())
+  userId       String
+  type         BalanceTxnType
+  amount       Int
+  balanceAfter Int
+  topUpId      String?
+  orderId      String?
+  note         String?
+  createdAt    DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+enum BalanceTxnType {
+  TOPUP
+  PURCHASE
+  REFUND
+  ADJUSTMENT
 }

@@ -11,6 +11,9 @@ const BASE = "https://www.bayar.gg/api";
 // QRIS Admin (the free, no-subscription method) is capped at Rp 500.000 per transaction.
 export const QRIS_GATEWAY_MAX_AMOUNT = 500000;
 
+// Balance top-up bounds — max mirrors the QRIS gateway cap above since top-ups go through the same gateway.
+export const TOPUP_MIN_AMOUNT = 10000;
+
 async function call<T>(
   method: "GET" | "POST",
   endpoint: string,

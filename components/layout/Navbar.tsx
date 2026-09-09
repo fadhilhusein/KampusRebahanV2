@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { LogOut } from "lucide-react";
@@ -13,16 +13,47 @@ const BASE_LINKS = [
   { href: "/transactions", label: "Transaksi" },
 ];
 
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
+}
+
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: session, status } = useSession();
   const adminUser = (session?.user as { isAdmin?: boolean })?.isAdmin === true;
   const links = adminUser
     ? [...BASE_LINKS, { href: "/admin", label: "Admin" }]
     : BASE_LINKS;
+
+  async function fetchBalance() {
+    try {
+      const res = await fetch("/api/balance");
+      const data = await res.json();
+      if (data.success) setBalance(data.data.balance);
+    } catch {
+      // ignore, keep last known balance
+    }
+  }
+
+  useEffect(() => {
+    if (status === "authenticated") fetchBalance();
+  }, [status]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   async function handleSignOut() {
     await signOut({ redirect: false });
@@ -65,9 +96,29 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             {status === "authenticated" ? (
               <div className="hidden md:flex items-center gap-3">
-                <span className="text-[12px] text-white/40 max-w-[140px] truncate border-r border-white/20 pr-3">
-                  Halo, {session.user?.name ?? session.user?.email}
-                </span>
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => { setDropdownOpen((v) => !v); if (!dropdownOpen) fetchBalance(); }}
+                    className="text-[12px] text-white/40 max-w-[140px] truncate border-r border-white/20 pr-3 hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  >
+                    Halo, {session.user?.name ?? session.user?.email}
+                    <span className="text-white/30">▾</span>
+                  </button>
+
+                  {dropdownOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-[#0a0a0a] border border-white/10 rounded-[2px] p-4 shadow-xl">
+                      <div className="text-[11px] text-white/30 uppercase tracking-wider mb-1">Saldo</div>
+                      <div className="text-[18px] font-semibold text-white mb-3">{formatPrice(balance)}</div>
+                      <Link
+                        href="/balance"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block text-center text-[12px] text-white bg-white/10 hover:bg-white/15 rounded-[2px] px-3 py-2 transition-colors"
+                      >
+                        Top Up Saldo
+                      </Link>
+                    </div>
+                  )}
+                </div>
                 <button
                   onClick={handleSignOut}
                   className="text-[12px] text-white hover:text-red-400 font-bold transition-colors cursor-pointer flex items-center gap-1"
@@ -134,6 +185,17 @@ export default function Navbar() {
                   <div className="text-[12px] text-white/30 py-1">
                     {session.user?.name ?? session.user?.email}
                   </div>
+                  <div className="flex items-center justify-between py-1">
+                    <span className="text-[12px] text-white/30">Saldo</span>
+                    <span className="text-[13px] font-semibold text-white">{formatPrice(balance)}</span>
+                  </div>
+                  <Link
+                    href="/balance"
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-center text-[13px] text-white bg-white/10 hover:bg-white/15 rounded-[2px] px-3 py-2 transition-colors"
+                  >
+                    Top Up Saldo
+                  </Link>
                   <button
                     onClick={() => { setMobileOpen(false); handleSignOut(); }}
                     className="text-[14px] text-white/50 py-2 text-left cursor-pointer flex items-center gap-1"

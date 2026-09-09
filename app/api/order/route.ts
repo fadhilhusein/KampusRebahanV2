@@ -4,6 +4,7 @@ import { bayarGg, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { getMarkupPercent, isBankTransferEnabled } from "@/lib/settings";
+import { fulfillOrder } from "@/lib/fulfillOrder";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER", emailInvite } = body;
 
-    if (!["BANK_TRANSFER", "QRIS_GATEWAY"].includes(paymentMethod)) {
+    if (!["BANK_TRANSFER", "QRIS_GATEWAY", "BALANCE"].includes(paymentMethod)) {
       return NextResponse.json({ success: false, message: "Metode pembayaran tidak valid." }, { status: 400 });
     }
 
@@ -97,6 +98,19 @@ export async function POST(req: NextRequest) {
     // Generate unique payment code 1-999 so admin can identify manual bank transfers by exact amount
     const uniqueCode = paymentMethod === "BANK_TRANSFER" ? Math.floor(Math.random() * 999) + 1 : 0;
 
+    if (paymentMethod === "BALANCE") {
+      // Atomic check-and-debit: only succeeds if balance is still sufficient at
+      // the moment of the update, preventing a race from overspending.
+      const debited = await prisma.user.updateMany({
+        where: { id: userId, balance: { gte: totalSellPrice } },
+        data: { balance: { decrement: totalSellPrice } },
+      });
+
+      if (debited.count === 0) {
+        return NextResponse.json({ success: false, message: "Saldo tidak mencukupi." }, { status: 400 });
+      }
+    }
+
     const order = await prisma.order.create({
       data: {
         userId,
@@ -113,9 +127,25 @@ export async function POST(req: NextRequest) {
         paymentNote: paymentNote?.trim() || null,
         emailInvite: emailInvite?.trim() || null,
         paymentMethod,
-        status: "PENDING_PAYMENT",
+        status: paymentMethod === "BALANCE" ? "PAID" : "PENDING_PAYMENT",
       },
     });
+
+    if (paymentMethod === "BALANCE") {
+      const updatedUser = await prisma.user.findUnique({ where: { id: userId }, select: { balance: true } });
+      await prisma.balanceTransaction.create({
+        data: {
+          userId,
+          type: "PURCHASE",
+          amount: -totalSellPrice,
+          balanceAfter: updatedUser?.balance ?? 0,
+          orderId: order.id,
+        },
+      });
+
+      await fulfillOrder(order.id);
+      return NextResponse.json({ success: true, data: { order_id: order.id, unique_code: order.uniqueCode } });
+    }
 
     if (paymentMethod === "QRIS_GATEWAY") {
       const appUrl = process.env.APP_URL || new URL(req.url).origin;

@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import QRCode from "qrcode";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GlassCard from "@/components/ui/GlassCard";
 import GradientBorder from "@/components/ui/GradientBorder";
 import Badge from "@/components/ui/Badge";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import GatewayQr from "@/components/payment/GatewayQr";
+import Countdown from "@/components/payment/Countdown";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -65,38 +66,6 @@ function CopyButton({ value, label = "Salin" }: { value: string; label?: string 
       {copied ? "✓" : label}
     </button>
   );
-}
-
-function GatewayQr({ value }: { value: string }) {
-  const [dataUrl, setDataUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    QRCode.toDataURL(value, { width: 288, margin: 1 }).then((url) => {
-      if (!cancelled) setDataUrl(url);
-    });
-    return () => { cancelled = true; };
-  }, [value]);
-
-  if (!dataUrl) {
-    return <div className="w-72 h-72 mx-auto flex items-center justify-center text-white/30 text-[12px]">Membuat QR...</div>;
-  }
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={dataUrl} alt="QRIS Bayar.gg" className="w-72 h-72 object-contain" />;
-}
-
-function Countdown({ expiresAt }: { expiresAt: string }) {
-  const [remaining, setRemaining] = useState(() => Math.max(0, new Date(expiresAt).getTime() - Date.now()));
-
-  useEffect(() => {
-    const id = setInterval(() => setRemaining(Math.max(0, new Date(expiresAt).getTime() - Date.now())), 1000);
-    return () => clearInterval(id);
-  }, [expiresAt]);
-
-  if (remaining <= 0) return <span className="text-primary">Kadaluarsa</span>;
-  const mm = Math.floor(remaining / 60000);
-  const ss = Math.floor((remaining % 60000) / 1000);
-  return <span>{mm}:{String(ss).padStart(2, "0")}</span>;
 }
 
 function PaymentInstructions({ order }: { order: Order }) {

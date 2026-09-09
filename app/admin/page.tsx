@@ -47,9 +47,11 @@ interface OrderCardProps {
   order: AdminOrder;
   isLoading: boolean;
   onConfirm: (id: string) => void;
-  onReject: (id: string) => void;
+  onReject: (id: string, refundEligible: boolean) => void;
   onRecheckGateway: (id: string) => void;
 }
+
+const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"];
 
 const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onReject, onRecheckGateway }: OrderCardProps) {
   return (
@@ -119,7 +121,7 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
                   {isLoading ? "..." : "🔁 Retry Fulfillment"}
                 </button>
                 <button
-                  onClick={() => onReject(order.id)}
+                  onClick={() => onReject(order.id, REFUND_ELIGIBLE_STATUSES.includes(order.status))}
                   disabled={isLoading}
                   className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-40"
                 >
@@ -144,7 +146,7 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
                   {isLoading ? "..." : "Konfirmasi"}
                 </button>
                 <button
-                  onClick={() => onReject(order.id)}
+                  onClick={() => onReject(order.id, REFUND_ELIGIBLE_STATUSES.includes(order.status))}
                   disabled={isLoading}
                   className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors cursor-pointer disabled:opacity-40"
                 >
@@ -285,14 +287,15 @@ export default function AdminPage() {
     await refreshOneOrder(orderId);
   }, [refreshOneOrder]);
 
-  const reject = useCallback(async (orderId: string) => {
+  const reject = useCallback(async (orderId: string, refundEligible: boolean) => {
     const reason = prompt("Alasan penolakan (opsional):");
+    const refund = refundEligible ? confirm("Kembalikan dana ke saldo user?") : false;
     setActionLoading(orderId);
     setMsg("");
     const res = await fetch("/api/admin/reject", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, reason }),
+      body: JSON.stringify({ orderId, reason, refund }),
     });
     const data = await res.json();
     setMsg(data.success ? `✓ ${data.message}` : `✗ ${data.message}`);
