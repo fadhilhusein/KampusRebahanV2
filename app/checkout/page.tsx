@@ -39,6 +39,7 @@ function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY">("QRIS_GATEWAY");
   const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
   const [paymentNote, setPaymentNote] = useState("");
+  const [emailInvite, setEmailInvite] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -69,6 +70,9 @@ function CheckoutContent() {
   const stockExceeded = stock > 0 && quantity > stock;
   const outOfStock = stock === 0;
   const qrisGatewayDisabled = totalSell > QRIS_GATEWAY_MAX_AMOUNT;
+  const isInvite = variant?.type === "Invite";
+  const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
+  const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
 
   useEffect(() => {
     if (qrisGatewayDisabled && paymentMethod === "QRIS_GATEWAY" && bankTransferEnabled) {
@@ -89,7 +93,7 @@ function CheckoutContent() {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ variantId, productId, quantity, paymentMethod, paymentNote }),
+        body: JSON.stringify({ variantId, productId, quantity, paymentMethod, paymentNote, emailInvite }),
       });
 
       const data = await res.json();
@@ -259,6 +263,30 @@ function CheckoutContent() {
                 />
               </div>
 
+              {/* Email Invite (required for Invite-type products) */}
+              {isInvite && (
+                <div>
+                  <label className="block text-[12px] text-white/50 mb-2">
+                    Email Invite <span className="text-primary">(wajib)</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={emailInvite}
+                    onChange={(e) => setEmailInvite(e.target.value)}
+                    placeholder="email@contoh.com"
+                    className={`w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border focus:outline-none transition-colors bg-transparent ${
+                      emailInviteMissing && emailInvite ? "border-primary/60 focus:border-primary" : "border-white/10 focus:border-white/30"
+                    }`}
+                  />
+                  <p className="text-[11px] text-white/30 mt-2">
+                    Produk ini bertipe Invite. Akun akan dikirim ke email ini.
+                  </p>
+                  {emailInviteMissing && emailInvite && (
+                    <p className="text-[12px] text-primary mt-2">Format email tidak valid.</p>
+                  )}
+                </div>
+              )}
+
               {qrisGatewayDisabled && !bankTransferEnabled && (
                 <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
                   Tidak ada metode pembayaran yang tersedia untuk nominal ini.
@@ -273,7 +301,7 @@ function CheckoutContent() {
 
               <ButtonPrimary
                 type="submit"
-                disabled={loading || stockExceeded || outOfStock || (qrisGatewayDisabled && !bankTransferEnabled)}
+                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (qrisGatewayDisabled && !bankTransferEnabled)}
                 className="w-full py-3 text-[14px]"
               >
                 {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}

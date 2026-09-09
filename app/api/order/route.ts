@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER" } = body;
+    const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER", emailInvite } = body;
 
     if (!["BANK_TRANSFER", "QRIS_GATEWAY"].includes(paymentMethod)) {
       return NextResponse.json({ success: false, message: "Metode pembayaran tidak valid." }, { status: 400 });
@@ -76,6 +76,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: `Stok tidak mencukupi. Tersedia: ${foundVariant.stock}.` }, { status: 400 });
     }
 
+    if (foundVariant.type === "Invite") {
+      if (!emailInvite || typeof emailInvite !== "string" || !/^\S+@\S+\.\S+$/.test(emailInvite)) {
+        return NextResponse.json({ success: false, message: "Email invite wajib diisi dengan format valid untuk produk tipe Invite." }, { status: 400 });
+      }
+    }
+
     const costPrice = foundVariant.price;
     const markupPct = await getMarkupPercent();
     const sellPrice = Math.ceil(costPrice * (1 + markupPct / 100));
@@ -105,6 +111,7 @@ export async function POST(req: NextRequest) {
         uniqueCode,
         paymentRef: paymentRef?.trim() || null,
         paymentNote: paymentNote?.trim() || null,
+        emailInvite: emailInvite?.trim() || null,
         paymentMethod,
         status: "PENDING_PAYMENT",
       },

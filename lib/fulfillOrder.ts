@@ -31,6 +31,7 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
     const payload: OrderPayload = {
       variant_id: order.variantId,
       quantity: order.quantity,
+      ...(order.type === "Invite" && order.emailInvite ? { email_invite: order.emailInvite } : {}),
     };
 
     const apiResult = await warungApi.createOrder(payload);
