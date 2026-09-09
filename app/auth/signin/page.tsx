@@ -73,7 +73,12 @@ function SignInContent() {
               </div>
 
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">Password</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[12px] text-white/50">Password</label>
+                  <Link href="/auth/forgot-password" className="text-[12px] text-white/40 hover:text-white transition-colors underline underline-offset-2">
+                    Lupa password?
+                  </Link>
+                </div>
                 <input
                   type="password"
                   required
