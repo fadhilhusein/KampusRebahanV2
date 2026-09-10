@@ -60,36 +60,36 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-2">
             <Badge color={statusColor[order.status] ?? "default"}>{statusLabel[order.status] ?? order.status}</Badge>
-            <span className="text-[11px] text-white/30 font-mono truncate">{order.id}</span>
+            <span className="text-[11px] text-foreground/30 font-mono truncate">{order.id}</span>
           </div>
-          <div className="text-[14px] font-medium text-white mb-0.5">
+          <div className="text-[14px] font-medium text-foreground mb-0.5">
             {order.productName} — {order.variantName}
           </div>
-          <div className="text-[12px] text-white/40 mb-2">
+          <div className="text-[12px] text-foreground/40 mb-2">
             {order.user.name ?? order.user.email} · {formatDate(order.createdAt)}
           </div>
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-[12px]">
-            <div className="text-white/30">Jumlah: <span className="text-white">{order.quantity}x</span></div>
-            <div className="text-white/30">Harga Jual: <span className="text-white">{formatPrice(order.sellPrice)}</span></div>
-            <div className="text-white/30">Cost: <span className="text-white/60">{formatPrice(order.costPrice)}</span></div>
-            <div className="text-white/30">Profit: <span className="text-secondary">{formatPrice(order.sellPrice - order.costPrice)}</span></div>
-            <div className="text-white/30">Metode: <span className="text-white">{paymentMethodLabel[order.paymentMethod] ?? order.paymentMethod}</span></div>
+            <div className="text-foreground/30">Jumlah: <span className="text-foreground">{order.quantity}x</span></div>
+            <div className="text-foreground/30">Harga Jual: <span className="text-foreground">{formatPrice(order.sellPrice)}</span></div>
+            <div className="text-foreground/30">Cost: <span className="text-foreground/60">{formatPrice(order.costPrice)}</span></div>
+            <div className="text-foreground/30">Profit: <span className="text-secondary">{formatPrice(order.sellPrice - order.costPrice)}</span></div>
+            <div className="text-foreground/30">Metode: <span className="text-foreground">{paymentMethodLabel[order.paymentMethod] ?? order.paymentMethod}</span></div>
             {order.uniqueCode > 0 && (
-              <div className="col-span-2 text-white/30">
+              <div className="col-span-2 text-foreground/30">
                 Nominal Transfer: <span className="text-tertiary font-semibold">{formatPrice(order.sellPrice + order.uniqueCode)}</span>
-                <span className="text-white/20 ml-1">(kode: +{order.uniqueCode})</span>
+                <span className="text-foreground/20 ml-1">(kode: +{order.uniqueCode})</span>
               </div>
             )}
             {order.paymentRef && (
-              <div className="col-span-2 text-white/30">Ref: <span className="text-white font-mono">{order.paymentRef}</span></div>
+              <div className="col-span-2 text-foreground/30">Ref: <span className="text-foreground font-mono">{order.paymentRef}</span></div>
             )}
             {order.apiOrderId && (
-              <div className="col-span-2 text-white/30">API ID: <span className="text-white/60 font-mono text-[11px]">{order.apiOrderId}</span></div>
+              <div className="col-span-2 text-foreground/30">API ID: <span className="text-foreground/60 font-mono text-[11px]">{order.apiOrderId}</span></div>
             )}
             {order.gatewayInvoiceId && (
-              <div className="col-span-2 text-white/30">
-                Invoice Bayar.gg: <span className="text-white/60 font-mono text-[11px]">{order.gatewayInvoiceId}</span>
-                {order.gatewayStatus && <span className="text-white/20 ml-1">({order.gatewayStatus})</span>}
+              <div className="col-span-2 text-foreground/30">
+                Invoice Bayar.gg: <span className="text-foreground/60 font-mono text-[11px]">{order.gatewayInvoiceId}</span>
+                {order.gatewayStatus && <span className="text-foreground/20 ml-1">({order.gatewayStatus})</span>}
               </div>
             )}
             {order.status === "AWAITING_RETRY" && order.apiResponse != null && (
@@ -316,19 +316,19 @@ export default function AdminPage() {
       <main className="flex-1 pt-24 pb-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-[32px] font-semibold text-white tracking-tight mb-1">Admin Dashboard</h1>
-            <p className="text-[13px] text-white/30">Kelola order masuk dan konfirmasi pembayaran.</p>
+            <h1 className="text-[32px] font-semibold text-foreground tracking-tight mb-1">Admin Dashboard</h1>
+            <p className="text-[13px] text-foreground/30">Kelola order masuk dan konfirmasi pembayaran.</p>
           </div>
 
           {/* Markup Setting */}
           <GlassCard className="p-5 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1">
-                <div className="text-[12px] text-white/40 mb-0.5">Markup Harga</div>
-                <div className="text-[11px] text-white/25">Persentase markup yang diterapkan ke semua harga produk.</div>
+                <div className="text-[12px] text-foreground/40 mb-0.5">Markup Harga</div>
+                <div className="text-[11px] text-foreground/25">Persentase markup yang diterapkan ke semua harga produk.</div>
               </div>
               <form onSubmit={saveMarkup} className="flex items-center gap-2 flex-shrink-0">
-                <div className="flex items-center gap-1 glass border border-white/10 rounded-[2px] px-3 py-2">
+                <div className="flex items-center gap-1 glass border border-foreground/10 rounded-[2px] px-3 py-2">
                   <input
                     type="number"
                     min={0}
@@ -336,15 +336,15 @@ export default function AdminPage() {
                     step={0.1}
                     value={markup}
                     onChange={(e) => setMarkup(e.target.value === "" ? "" : Number(e.target.value))}
-                    className="bg-transparent text-[14px] text-white w-16 focus:outline-none"
+                    className="bg-transparent text-[14px] text-foreground w-16 focus:outline-none"
                     placeholder="0"
                   />
-                  <span className="text-[13px] text-white/40">%</span>
+                  <span className="text-[13px] text-foreground/40">%</span>
                 </div>
                 <button
                   type="submit"
                   disabled={markupLoading}
-                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-white hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
+                  className="glass rounded-[2px] px-4 py-2 text-[12px] font-medium border border-secondary/40 text-foreground hover:bg-secondary/10 transition-colors cursor-pointer disabled:opacity-40"
                 >
                   {markupLoading ? "..." : "Simpan"}
                 </button>
@@ -354,16 +354,16 @@ export default function AdminPage() {
               <div className="mt-3 text-[12px] text-secondary/80">{markupMsg}</div>
             )}
 
-            <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="mt-4 pt-4 border-t border-foreground/10 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1">
-                <div className="text-[12px] text-white/40 mb-0.5">Transfer Bank Manual</div>
-                <div className="text-[11px] text-white/25">Nyalakan/matikan opsi transfer bank di checkout. QRIS otomatis (Bayar.gg) selalu aktif.</div>
+                <div className="text-[12px] text-foreground/40 mb-0.5">Transfer Bank Manual</div>
+                <div className="text-[11px] text-foreground/25">Nyalakan/matikan opsi transfer bank di checkout. QRIS otomatis (Bayar.gg) selalu aktif.</div>
               </div>
               <button
                 onClick={toggleBankTransfer}
                 disabled={bankToggleLoading}
                 className={`glass rounded-[2px] px-4 py-2 text-[12px] font-medium border transition-colors cursor-pointer disabled:opacity-40 flex-shrink-0 ${
-                  bankTransferEnabled ? "border-secondary/40 text-secondary hover:bg-secondary/10" : "border-white/10 text-white/40 hover:bg-white/10"
+                  bankTransferEnabled ? "border-secondary/40 text-secondary hover:bg-secondary/10" : "border-foreground/10 text-foreground/40 hover:bg-foreground/10"
                 }`}
               >
                 {bankToggleLoading ? "..." : bankTransferEnabled ? "Aktif" : "Nonaktif"}
@@ -381,8 +381,8 @@ export default function AdminPage() {
               { label: "Profit", value: formatPrice(totalProfit) },
             ].map((s) => (
               <GlassCard key={s.label} className="p-4">
-                <div className="text-[11px] text-white/30 mb-1">{s.label}</div>
-                <div className={`text-[18px] font-semibold ${s.highlight ? "text-tertiary" : "text-white"}`}>{s.value}</div>
+                <div className="text-[11px] text-foreground/30 mb-1">{s.label}</div>
+                <div className={`text-[18px] font-semibold ${s.highlight ? "text-tertiary" : "text-foreground"}`}>{s.value}</div>
               </GlassCard>
             ))}
           </div>
@@ -400,7 +400,7 @@ export default function AdminPage() {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`text-[11px] px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
-                  filter === f ? "border-white/40 text-white bg-white/10" : "border-white/10 text-white/40 hover:text-white"
+                  filter === f ? "border-foreground/40 text-foreground bg-foreground/10" : "border-foreground/10 text-foreground/40 hover:text-foreground"
                 }`}
               >
                 {f === "ALL" ? `Semua (${orders.length})` : `${statusLabel[f]} (${orders.filter((o) => o.status === f).length})`}
@@ -409,11 +409,11 @@ export default function AdminPage() {
           </div>
 
           {loading ? (
-            <div className="text-white/30 text-[14px]">Memuat...</div>
+            <div className="text-foreground/30 text-[14px]">Memuat...</div>
           ) : error ? (
             <div className="glass rounded-[2px] px-6 py-4 border border-primary/30 text-primary text-[14px]">{error}</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 text-white/30 text-[14px]">Tidak ada order.</div>
+            <div className="text-center py-16 text-foreground/30 text-[14px]">Tidak ada order.</div>
           ) : (
             <div className="space-y-3">
               {filtered.map((order) => (

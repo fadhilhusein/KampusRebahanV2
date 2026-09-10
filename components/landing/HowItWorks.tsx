@@ -36,10 +36,10 @@ export default function HowItWorks() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: "easeOut" }}
         >
-          <h2 className="text-[40px] font-semibold text-white leading-none tracking-tight mb-4">
+          <h2 className="text-[40px] font-semibold text-foreground leading-none tracking-tight mb-4">
             Cara Kerja
           </h2>
-          <p className="text-[16px] text-white/40">
+          <p className="text-[16px] text-foreground/40">
             3 langkah mudah untuk dapatkan akun digitalmu
           </p>
         </motion.div>
@@ -60,7 +60,7 @@ export default function HowItWorks() {
                   <div
                     className="text-[48px] font-semibold leading-none mb-6"
                     style={{
-                      background: "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0.1))",
+                      background: "linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 60%, transparent), color-mix(in srgb, var(--color-foreground) 10%, transparent))",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
@@ -68,10 +68,10 @@ export default function HowItWorks() {
                   >
                     {step.num}
                   </div>
-                  <h3 className="text-[18px] font-semibold text-white mb-3">
+                  <h3 className="text-[18px] font-semibold text-foreground mb-3">
                     {step.title}
                   </h3>
-                  <p className="text-[14px] text-white/40 leading-6">{step.desc}</p>
+                  <p className="text-[14px] text-foreground/40 leading-6">{step.desc}</p>
                 </div>
               </GradientBorder>
             </motion.div>

@@ -19,7 +19,7 @@ export default function CategoryGrid({ products }: CategoryGridProps) {
 
   return (
     <motion.section
-      className="py-16 px-8 border-t border-white/6"
+      className="py-16 px-8 border-t border-foreground/6"
       initial={{ opacity: 0, y: 42 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
@@ -33,10 +33,10 @@ export default function CategoryGrid({ products }: CategoryGridProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <h2 className="text-[32px] font-semibold text-white tracking-tight mb-2">
+          <h2 className="text-[32px] font-semibold text-foreground tracking-tight mb-2">
             Kategori
           </h2>
-          <p className="text-[14px] text-white/40">
+          <p className="text-[14px] text-foreground/40">
             Temukan produk berdasarkan kategori
           </p>
         </motion.div>
@@ -58,10 +58,10 @@ export default function CategoryGrid({ products }: CategoryGridProps) {
                   hover
                   className="px-5 py-3 flex items-center gap-3"
                 >
-                  <span className="text-[14px] font-medium text-white">
+                  <span className="text-[14px] font-medium text-foreground">
                     {category}
                   </span>
-                  <span className="text-[11px] text-white/30 bg-white/8 rounded-full px-2 py-0.5">
+                  <span className="text-[11px] text-foreground/30 bg-foreground/8 rounded-full px-2 py-0.5">
                     {count}
                   </span>
                 </GlassCard>

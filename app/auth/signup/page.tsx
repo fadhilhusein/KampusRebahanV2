@@ -44,12 +44,12 @@ export default function SignUpPage() {
       <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
-            <h1 className="text-[32px] font-semibold text-white leading-none tracking-tight mb-2">
+            <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-2">
               Daftar
             </h1>
-            <p className="text-[13px] text-white/40">
+            <p className="text-[13px] text-foreground/40">
               Sudah punya akun?{" "}
-              <Link href="/auth/signin" className="text-white/70 hover:text-white transition-colors underline underline-offset-2">
+              <Link href="/auth/signin" className="text-foreground/70 hover:text-foreground transition-colors underline underline-offset-2">
                 Masuk
               </Link>
             </p>
@@ -58,32 +58,32 @@ export default function SignUpPage() {
           <GradientBorder>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">
-                  Nama <span className="text-white/20">(opsional)</span>
+                <label className="block text-[12px] text-foreground/50 mb-2">
+                  Nama <span className="text-foreground/20">(opsional)</span>
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Nama kamu"
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">Email</label>
+                <label className="block text-[12px] text-foreground/50 mb-2">Email</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@contoh.com"
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">Password</label>
+                <label className="block text-[12px] text-foreground/50 mb-2">Password</label>
                 <input
                   type="password"
                   required
@@ -91,7 +91,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 8 karakter"
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                 />
               </div>
 

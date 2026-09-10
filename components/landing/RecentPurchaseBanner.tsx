@@ -87,7 +87,7 @@ export default function RecentPurchaseBanner() {
       aria-live="polite"
     >
       <div className="mx-auto flex w-full max-w-[620px] items-center justify-center">
-        <div className="glass flex items-baseline max-w-full items-center gap-3 rounded-full border-white/15 bg-black/70 px-4 py-2.5 shadow-lg shadow-primary/15 backdrop-blur-[12px]">
+        <div className="glass flex items-baseline max-w-full items-center gap-3 rounded-full border-foreground/15 bg-background/70 px-4 py-2.5 shadow-lg shadow-primary/15 backdrop-blur-[12px]">
           {/* <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-400" />
@@ -97,15 +97,15 @@ export default function RecentPurchaseBanner() {
           </span>
           <motion.p
             key={item.id}
-            className="truncate text-[12px] font-medium text-white/70"
+            className="truncate text-[12px] font-medium text-foreground/70"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            <span className="text-white">{item.name}</span>
+            <span className="text-foreground">{item.name}</span>
             <span> baru saja membeli </span>
-            <span className="text-white">{item.product}</span>
-            <span className="text-white/35"> {relativeTime}</span>
+            <span className="text-foreground">{item.product}</span>
+            <span className="text-foreground/35"> {relativeTime}</span>
           </motion.p>
         </div>
       </div>

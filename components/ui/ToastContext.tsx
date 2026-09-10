@@ -55,8 +55,8 @@ export function useToast() {
 
 const typeStyles: Record<ToastType, string> = {
   success: "border-green-500/40 bg-green-500/10 text-green-300",
-  error: "border-primary/40 bg-primary/10 text-red-300",
-  info: "border-white/20 bg-white/8 text-white",
+  error: "border-primary/40 bg-primary/10 text-primary",
+  info: "border-foreground/20 bg-foreground/8 text-foreground",
 };
 
 const typeIcons: Record<ToastType, string> = {
@@ -79,7 +79,7 @@ function ToastContainer({
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`flex items-start gap-3 rounded-[2px] border px-4 py-3 glass backdrop-blur-[12px] shadow-lg transition-all duration-300 ${typeStyles[toast.type]}`}
+          className={`flex items-start gap-3 rounded-2xl border px-4 py-3 glass backdrop-blur-[12px] shadow-lg transition-all duration-300 ${typeStyles[toast.type]}`}
         >
           <span className="text-[12px] font-mono mt-0.5 w-4 text-center flex-shrink-0">
             {typeIcons[toast.type]}

@@ -10,6 +10,7 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import GatewayQr from "@/components/payment/GatewayQr";
 import Countdown from "@/components/payment/Countdown";
 import { useToast } from "@/components/ui/ToastContext";
+import { Zap, CheckCircle2, TimerOff } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -71,28 +72,31 @@ export default function TopUpPaymentPage() {
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-xl mx-auto">
-          <div className="flex items-center gap-2 text-[12px] text-white/30 mb-8">
-            <Link href="/balance" className="hover:text-white transition-colors">Saldo</Link>
+          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
+            <Link href="/balance" className="hover:text-foreground transition-colors">Saldo</Link>
             <span>/</span>
-            <span className="text-white/60">Top Up</span>
+            <span className="text-foreground/60">Top Up</span>
           </div>
 
           {loading ? (
-            <div className="text-white/30 text-[14px]">Memuat...</div>
+            <div className="text-foreground/30 text-[14px]">Memuat...</div>
           ) : error ? (
-            <div className="glass rounded-[2px] px-6 py-4 border border-primary/30 text-primary text-[14px]">{error}</div>
+            <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px]">{error}</div>
           ) : topup ? (
             <div className="space-y-5">
               <div className="text-center py-4">
-                <div className="text-[13px] text-white/40 mb-1">Top Up Saldo</div>
-                <div className="text-[32px] font-bold text-white">{formatPrice(topup.amount)}</div>
+                <div className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-foreground/60 mb-1">
+                  <Zap size={13} className="text-primary" />
+                  Top Up Saldo
+                </div>
+                <div className="text-[32px] font-bold text-foreground">{formatPrice(topup.amount)}</div>
               </div>
 
               {topup.status === "PENDING" ? (
-                <GradientBorder>
+                <GradientBorder radius="rounded-2xl">
                   <div className="p-5 space-y-4 text-center">
-                    <div className="text-[13px] text-white/50">Scan QR code berikut</div>
-                    <div className="inline-block bg-white p-3 rounded-[4px]">
+                    <div className="text-[13px] font-medium text-foreground/60">Scan QR code berikut</div>
+                    <div className="inline-block bg-white p-3 rounded-xl">
                       {topup.gatewayQrString ? (
                         <GatewayQr value={topup.gatewayQrString} />
                       ) : (
@@ -100,22 +104,26 @@ export default function TopUpPaymentPage() {
                       )}
                     </div>
                     {topup.gatewayExpiresAt && (
-                      <div className="text-[12px] text-white/40">
+                      <div className="text-[12px] text-foreground/40">
                         Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={topup.gatewayExpiresAt} /></span>
                       </div>
                     )}
-                    <div className="text-[11px] text-white/30">Saldo akan otomatis bertambah begitu QRIS ini dibayar.</div>
+                    <div className="text-[11px] text-foreground/30">Saldo akan otomatis bertambah begitu QRIS ini dibayar.</div>
                   </div>
                 </GradientBorder>
               ) : topup.status === "PAID" ? (
                 <div className="text-center py-8">
-                  <div className="text-[48px] mb-3">✅</div>
-                  <p className="text-[14px] text-white/60">Saldo berhasil ditambahkan.</p>
+                  <div className="w-16 h-16 rounded-full bg-secondary/15 text-secondary flex items-center justify-center mx-auto mb-3">
+                    <CheckCircle2 size={30} />
+                  </div>
+                  <p className="text-[14px] font-medium text-foreground/70">Saldo berhasil ditambahkan.</p>
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <div className="text-[48px] mb-3">⌛</div>
-                  <p className="text-[14px] text-white/60">Top up kadaluarsa atau dibatalkan. Buat top up baru untuk mencoba lagi.</p>
+                  <div className="w-16 h-16 rounded-full bg-primary/15 text-primary flex items-center justify-center mx-auto mb-3">
+                    <TimerOff size={30} />
+                  </div>
+                  <p className="text-[14px] font-medium text-foreground/70">Top up kadaluarsa atau dibatalkan. Buat top up baru untuk mencoba lagi.</p>
                 </div>
               )}
 

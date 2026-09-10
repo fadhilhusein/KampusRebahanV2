@@ -8,7 +8,7 @@ const colors = {
   primary: "bg-primary/20 text-primary border-primary/30",
   secondary: "bg-secondary/20 text-secondary border-secondary/30",
   tertiary: "bg-tertiary/20 text-tertiary border-tertiary/30",
-  default: "bg-white/10 text-white/70 border-white/20",
+  default: "bg-foreground/10 text-foreground/70 border-foreground/20",
 };
 
 export default function Badge({ children, color = "default", className = "" }: BadgeProps) {

@@ -6,8 +6,11 @@
   --color-primary: #E11D48;
   --color-secondary: #4338CA;
   --color-tertiary: #F97316;
-  --color-nebula-bg: #000000;
-  --color-surface: #FFFFFF;
+  --color-surface: #0A0A0A;
+  --color-background: #000000;
+  --color-foreground: #FFFFFF;
+  --color-btn-fill: #FFFFFF;
+  --color-btn-text: #000000;
 
   --radius-card: 2px;
   --radius-btn: 9999px;
@@ -15,34 +18,38 @@
   --blur-glass: 12px;
 }
 
-:root {
-  --background: #000000;
-  --foreground: #FFFFFF;
+[data-theme="light"] {
+  --color-primary: #BE185D;
+  --color-secondary: #2563EB;
+  --color-tertiary: #7C3AED;
+  --color-surface: #FFFFFF;
+  --color-background: #F7F7FB;
+  --color-foreground: #1E1B4B;
+  --color-btn-fill: #1E1B4B;
+  --color-btn-text: #FFFFFF;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--color-foreground) 4%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: rgba(0,0,0,0) 0 0 0 0, rgba(255,255,255,0.15) 0 0 50px 0;
+  border: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  box-shadow: rgba(0,0,0,0) 0 0 0 0, color-mix(in srgb, var(--color-foreground) 15%, transparent) 0 0 50px 0;
 }
 
 .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: rgba(0,0,0,0) 0 0 0 0, rgba(255,255,255,0.2) 0 0 20px 0;
+  background: color-mix(in srgb, var(--color-foreground) 7%, transparent);
+  border-color: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+  box-shadow: rgba(0,0,0,0) 0 0 0 0, color-mix(in srgb, var(--color-foreground) 20%, transparent) 0 0 20px 0;
 }
 
 .gradient-border {
   position: relative;
-  background: linear-gradient(rgba(255,255,255,0.03) 1px, rgba(0,0,0,0) 1px);
+  background: linear-gradient(color-mix(in srgb, var(--color-foreground) 3%, transparent) 1px, rgba(0,0,0,0) 1px);
 }
 
 .orb {
@@ -50,4 +57,37 @@ body {
   border-radius: 9999px;
   filter: blur(80px);
   pointer-events: none;
+}
+
+/* Navbar sits over the homepage Hero, which stays permanently dark by design.
+   In light theme, low-opacity glass would put dark navy text against that
+   dark Hero with poor contrast — force an opaque surface behind the navbar
+   in light mode only. Dark theme keeps the original transparent .glass look. */
+[data-theme="light"] .navbar-surface {
+  background: var(--color-surface);
+  border-color: color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Hero band background — logo-derived colors per theme. Dark keeps the
+   original maroon/black gradient; light gets a soft lavender-to-pink wash. */
+.hero-gradient {
+  background: linear-gradient(to bottom, #030407 0%, #090205 35%, #4c0618 78%, #72081f 100%);
+}
+
+[data-theme="light"] .hero-gradient {
+  background: linear-gradient(to bottom, #FAFAFF 0%, #F3ECFF 35%, #F3E0F5 78%, #FBD9EC 100%);
+}
+
+.hero-overlay {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.12), rgba(0,0,0,0) 34%),
+    linear-gradient(to bottom, rgba(0,0,0,0.04), rgba(0,0,0,0.58));
+}
+
+[data-theme="light"] .hero-overlay {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.5), rgba(255,255,255,0) 34%),
+    linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0.75));
 }

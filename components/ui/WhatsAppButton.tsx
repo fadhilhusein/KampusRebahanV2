@@ -10,7 +10,7 @@ export default function WhatsAppButton() {
       aria-label="Kontak Admin via WhatsApp"
     >
       {/* Tooltip */}
-      <span className="absolute right-full mr-3 px-2.5 py-1.5 rounded-[2px] bg-white text-black text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-lg">
+      <span className="absolute right-full mr-3 px-2.5 py-1.5 rounded-[2px] bg-btn-fill text-btn-text text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-lg">
         Kontak Admin
       </span>
 

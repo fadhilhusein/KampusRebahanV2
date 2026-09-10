@@ -8,6 +8,7 @@ import GlassCard from "@/components/ui/GlassCard";
 import GradientBorder from "@/components/ui/GradientBorder";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { useToast } from "@/components/ui/ToastContext";
+import { Wallet, Zap, History, ArrowUpCircle, ShoppingBag, Undo2, Settings2 } from "lucide-react";
 
 const TOPUP_MIN_AMOUNT = 10000;
 const TOPUP_MAX_AMOUNT = 500000;
@@ -27,11 +28,11 @@ const txnLabel: Record<string, string> = {
   ADJUSTMENT: "Penyesuaian",
 };
 
-const txnIcon: Record<string, string> = {
-  TOPUP: "⬆️",
-  PURCHASE: "🛒",
-  REFUND: "↩️",
-  ADJUSTMENT: "⚙️",
+const txnIcon: Record<string, typeof ArrowUpCircle> = {
+  TOPUP: ArrowUpCircle,
+  PURCHASE: ShoppingBag,
+  REFUND: Undo2,
+  ADJUSTMENT: Settings2,
 };
 
 interface BalanceTransaction {
@@ -105,25 +106,31 @@ export default function BalancePage() {
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-lg mx-auto">
-          <h1 className="text-[32px] font-semibold text-white leading-none tracking-tight mb-8">
+          <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-8">
             Saldo Akun
           </h1>
 
-          <GradientBorder>
+          <GradientBorder radius="rounded-2xl">
             <div className="p-6 text-center">
-              <div className="text-[11px] text-white/30 uppercase tracking-wider mb-2">Saldo Saat Ini</div>
-              <div className="text-[36px] font-bold text-white">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Wallet size={14} className="text-primary" />
+                <div className="text-[11px] font-semibold text-foreground/60 uppercase tracking-wider">Saldo Saat Ini</div>
+              </div>
+              <div className="text-[36px] font-bold text-foreground">
                 {loading ? "…" : formatPrice(balance)}
               </div>
             </div>
           </GradientBorder>
 
-          <GlassCard className="p-6 mt-6">
-            <div className="text-[11px] text-white/30 uppercase tracking-wider mb-4">Top Up Saldo</div>
+          <GlassCard radius="rounded-2xl" className="p-6 mt-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Zap size={14} className="text-primary" />
+              <div className="text-[11px] font-semibold text-foreground/60 uppercase tracking-wider">Top Up Saldo</div>
+            </div>
             <form onSubmit={handleTopup} className="space-y-4">
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">
-                  Nominal <span className="text-white/20">(Rp{TOPUP_MIN_AMOUNT.toLocaleString("id-ID")} – Rp{TOPUP_MAX_AMOUNT.toLocaleString("id-ID")})</span>
+                <label className="block text-[13px] font-semibold text-foreground/80 mb-2">
+                  Nominal <span className="text-foreground/40 font-normal">(Rp{TOPUP_MIN_AMOUNT.toLocaleString("id-ID")} – Rp{TOPUP_MAX_AMOUNT.toLocaleString("id-ID")})</span>
                 </label>
                 <input
                   type="number"
@@ -132,46 +139,59 @@ export default function BalancePage() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value === "" ? "" : Number(e.target.value))}
                   placeholder="50000"
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                  className="w-full glass rounded-xl px-4 py-3 text-[14px] font-medium text-foreground placeholder-foreground/20 border border-foreground/10 focus:border-primary/40 focus:outline-none transition-colors bg-transparent"
                 />
               </div>
 
               {error && (
-                <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+                <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
                   {error}
                 </div>
               )}
 
-              <ButtonPrimary type="submit" disabled={topupLoading} className="w-full py-3 text-[14px]">
+              <ButtonPrimary type="submit" disabled={topupLoading} className="w-full py-3 text-[14px] flex items-center justify-center gap-2">
+                <Zap size={16} />
                 {topupLoading ? "Memproses..." : "Top Up via QRIS"}
               </ButtonPrimary>
             </form>
           </GlassCard>
 
           <div className="mt-8">
-            <div className="text-[11px] text-white/30 uppercase tracking-wider mb-4">Riwayat Transaksi</div>
+            <div className="flex items-center gap-2 mb-4">
+              <History size={14} className="text-primary" />
+              <div className="text-[11px] font-semibold text-foreground/60 uppercase tracking-wider">Riwayat Transaksi</div>
+            </div>
             {loading ? (
-              <div className="text-white/30 text-[14px]">Memuat...</div>
+              <div className="text-foreground/30 text-[14px]">Memuat...</div>
             ) : transactions.length === 0 ? (
-              <div className="text-center py-12 text-white/30 text-[14px]">Belum ada transaksi.</div>
+              <div className="text-center py-12 text-foreground/30 text-[14px]">Belum ada transaksi.</div>
             ) : (
-              <div className="space-y-2">
-                {transactions.map((txn) => (
-                  <GlassCard key={txn.id} className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-[13px] text-white font-medium">
-                          {txnIcon[txn.type] ?? "•"} {txnLabel[txn.type] ?? txn.type}
+              <div className="space-y-2.5">
+                {transactions.map((txn) => {
+                  const Icon = txnIcon[txn.type] ?? Settings2;
+                  const isCredit = txn.amount >= 0;
+                  return (
+                    <GlassCard key={txn.id} radius="rounded-2xl" className="p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isCredit ? "bg-secondary/15 text-secondary" : "bg-primary/15 text-primary"}`}>
+                            <Icon size={18} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[14px] font-semibold text-foreground">
+                              {txnLabel[txn.type] ?? txn.type}
+                            </div>
+                            <div className="text-[11px] text-foreground/40 mt-0.5">{formatDate(txn.createdAt)}</div>
+                            {txn.note && <div className="text-[11px] text-foreground/50 font-medium mt-0.5 truncate">{txn.note}</div>}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-white/30 mt-0.5">{formatDate(txn.createdAt)}</div>
-                        {txn.note && <div className="text-[11px] text-white/40 mt-0.5">{txn.note}</div>}
+                        <div className={`text-[14px] font-bold flex-shrink-0 ${isCredit ? "text-secondary" : "text-primary"}`}>
+                          {isCredit ? "+" : ""}{formatPrice(txn.amount)}
+                        </div>
                       </div>
-                      <div className={`text-[14px] font-semibold ${txn.amount >= 0 ? "text-secondary" : "text-primary"}`}>
-                        {txn.amount >= 0 ? "+" : ""}{formatPrice(txn.amount)}
-                      </div>
-                    </div>
-                  </GlassCard>
-                ))}
+                    </GlassCard>
+                  );
+                })}
               </div>
             )}
           </div>

@@ -23,14 +23,14 @@ export default function SearchFilter({
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           placeholder="Cari produk..."
-          className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/30 border border-white/10 focus:border-white/30 focus:outline-none transition-colors duration-150 bg-transparent"
+          className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/30 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors duration-150 bg-transparent"
         />
       </div>
 
       <select
         value={category}
         onChange={(e) => onCategory(e.target.value)}
-        className="glass rounded-[2px] px-4 py-3 text-[14px] text-white border border-white/10 focus:border-white/30 focus:outline-none transition-colors duration-150 bg-black cursor-pointer"
+        className="glass rounded-[2px] px-4 py-3 text-[14px] text-foreground border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors duration-150 bg-background cursor-pointer"
       >
         <option value="">Semua Kategori</option>
         {categories.map((cat) => (

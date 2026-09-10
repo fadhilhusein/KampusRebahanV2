@@ -3,18 +3,18 @@ import { ReactNode } from "react";
 interface GradientBorderProps {
   children: ReactNode;
   className?: string;
+  radius?: string;
 }
 
-export default function GradientBorder({ children, className = "" }: GradientBorderProps) {
+export default function GradientBorder({ children, className = "", radius = "rounded-[2px]" }: GradientBorderProps) {
   return (
     <div
-      className={`relative p-px rounded-[2px] ${className}`}
+      className={`relative p-px ${radius} ${className}`}
       style={{
-        // background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.08) 100%)",
-        background: "linear-gradient(152deg,rgba(224, 9, 9, 0.40) 0%, rgba(255, 255, 255, 0) 46%, rgba(255, 255, 255, 0.25) 100%)",
+        background: "linear-gradient(152deg, color-mix(in srgb, var(--color-primary) 40%, transparent) 0%, transparent 46%, color-mix(in srgb, var(--color-foreground) 25%, transparent) 100%)",
       }}
     >
-      <div className="relative rounded-[2px] bg-black/80 h-full w-full">
+      <div className={`relative ${radius} bg-background/80 h-full w-full`}>
         {children}
       </div>
     </div>

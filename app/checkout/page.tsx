@@ -11,6 +11,7 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
+import { ClipboardList, CreditCard, Zap, Landmark, Wallet, ShoppingCart } from "lucide-react";
 
 // Keep in sync with lib/bayarGg.ts QRIS_GATEWAY_MAX_AMOUNT (kept separate to avoid
 // bundling the server-only Bayar.gg client, which uses Node's crypto, into client code).
@@ -136,7 +137,7 @@ function CheckoutContent() {
         <Navbar />
         <main className="flex-1 pt-24 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-white/40 mb-4">Varian tidak ditemukan.</p>
+            <p className="text-foreground/40 mb-4">Varian tidak ditemukan.</p>
             <Link href="/products"><ButtonPrimary>Pilih Produk</ButtonPrimary></Link>
           </div>
         </main>
@@ -150,85 +151,91 @@ function CheckoutContent() {
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-lg mx-auto">
-          <div className="flex items-center gap-2 text-[12px] text-white/30 mb-8">
-            <Link href={`/products/${productId}`} className="hover:text-white transition-colors">
+          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
+            <Link href={`/products/${productId}`} className="hover:text-foreground transition-colors">
               {product?.name ?? "Produk"}
             </Link>
             <span>/</span>
-            <span className="text-white/60">Checkout</span>
+            <span className="text-foreground/60">Checkout</span>
           </div>
 
-          <h1 className="text-[32px] font-semibold text-white leading-none tracking-tight mb-8">
+          <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-8">
             Checkout
           </h1>
 
-          <GradientBorder>
+          <GradientBorder radius="rounded-2xl">
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
               {/* Order summary */}
               {variant && (
                 <div>
-                  <div className="text-[11px] text-white/30 uppercase tracking-wider mb-3">Ringkasan Order</div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-3">
+                    <ClipboardList size={12} />
+                    Ringkasan Order
+                  </div>
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <div className="text-[15px] font-medium text-white">{product?.name}</div>
-                      <div className="text-[12px] text-white/40 mt-0.5">
+                      <div className="text-[15px] font-medium text-foreground">{product?.name}</div>
+                      <div className="text-[12px] text-foreground/40 mt-0.5">
                         {variant.name} · {variant.duration} · {variant.type}
                       </div>
                     </div>
-                    <div className="text-[14px] font-semibold text-white ml-4 flex-shrink-0">
+                    <div className="text-[14px] font-semibold text-foreground ml-4 flex-shrink-0">
                       {formatPrice(sellPrice)}
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="border-t border-white/8" />
+              <div className="border-t border-foreground/8" />
 
               {/* Payment method */}
               <div>
-                <div className="text-[11px] text-white/30 uppercase tracking-wider mb-3">Metode Pembayaran</div>
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-3">
+                  <CreditCard size={12} />
+                  Metode Pembayaran
+                </div>
                 <div className="flex gap-3">
                   <button
                     type="button"
                     disabled={qrisGatewayDisabled}
                     onClick={() => setPaymentMethod("QRIS_GATEWAY")}
-                    className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                       paymentMethod === "QRIS_GATEWAY"
-                        ? "border-white/50 text-white bg-white/10"
-                        : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                        ? "border-foreground/50 text-foreground bg-foreground/10"
+                        : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
-                    ⚡ QRIS (Otomatis)
+                    <Zap size={14} /> QRIS (Otomatis)
                   </button>
                   {bankTransferEnabled && (
                     <button
                       type="button"
                       onClick={() => setPaymentMethod("BANK_TRANSFER")}
-                      className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer ${
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer ${
                         paymentMethod === "BANK_TRANSFER"
-                          ? "border-white/50 text-white bg-white/10"
-                          : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                          ? "border-foreground/50 text-foreground bg-foreground/10"
+                          : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                       }`}
                     >
-                      🏦 Transfer Bank
+                      <Landmark size={14} /> Transfer Bank
                     </button>
                   )}
                   <button
                     type="button"
                     disabled={balanceInsufficient}
                     onClick={() => setPaymentMethod("BALANCE")}
-                    className={`flex-1 py-2.5 rounded-[2px] border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                       paymentMethod === "BALANCE"
-                        ? "border-white/50 text-white bg-white/10"
-                        : "border-white/10 text-white/40 hover:text-white hover:border-white/20"
+                        ? "border-foreground/50 text-foreground bg-foreground/10"
+                        : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
-                    💰 Saldo ({formatPrice(balance)})
+                    <Wallet size={14} /> Saldo ({formatPrice(balance)})
                   </button>
                 </div>
                 {qrisGatewayDisabled && (
-                  <p className="text-[11px] text-white/30 mt-2">
+                  <p className="text-[11px] text-foreground/30 mt-2">
                     QRIS otomatis maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}
                     {bankTransferEnabled ? ", gunakan transfer bank untuk nominal ini." : "."}
                   </p>
@@ -240,13 +247,13 @@ function CheckoutContent() {
                 )}
               </div>
 
-              <div className="border-t border-white/8" />
+              <div className="border-t border-foreground/8" />
 
               {/* Quantity */}
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">
-                  Jumlah <span className="text-white/20">(unit)</span>
-                  {stock > 0 && <span className="text-white/20 ml-1">· Stok: {stock}</span>}
+                <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                  Jumlah <span className="text-foreground/40 font-normal">(unit)</span>
+                  {stock > 0 && <span className="text-foreground/40 font-normal ml-1">· Stok: {stock}</span>}
                 </label>
                 <input
                   type="number"
@@ -254,8 +261,8 @@ function CheckoutContent() {
                   max={stock || 100}
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-                  className={`w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white border focus:outline-none transition-colors bg-transparent ${
-                    stockExceeded ? "border-primary/60 focus:border-primary" : "border-white/10 focus:border-white/30"
+                  className={`w-full glass rounded-xl px-4 py-3 text-[14px] text-foreground border focus:outline-none transition-colors bg-transparent ${
+                    stockExceeded ? "border-primary/60 focus:border-primary" : "border-foreground/10 focus:border-foreground/30"
                   }`}
                 />
                 {outOfStock && (
@@ -267,41 +274,41 @@ function CheckoutContent() {
               </div>
 
               {/* Total */}
-              <div className="flex items-center justify-between bg-white/5 rounded-[2px] px-4 py-3">
-                <span className="text-[13px] text-white/50">Total ({quantity}x)</span>
-                <span className="text-[20px] font-semibold text-white">{formatPrice(totalSell)}</span>
+              <div className="flex items-center justify-between bg-foreground/5 rounded-xl px-4 py-3">
+                <span className="text-[13px] font-medium text-foreground/60">Total ({quantity}x)</span>
+                <span className="text-[20px] font-semibold text-foreground">{formatPrice(totalSell)}</span>
               </div>
 
               {/* Note */}
               <div>
-                <label className="block text-[12px] text-white/50 mb-2">
-                  Catatan <span className="text-white/20">(opsional)</span>
+                <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                  Catatan <span className="text-foreground/40 font-normal">(opsional)</span>
                 </label>
                 <textarea
                   value={paymentNote}
                   onChange={(e) => setPaymentNote(e.target.value)}
                   placeholder="Informasi tambahan jika ada..."
                   rows={2}
-                  className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent resize-none"
+                  className="w-full glass rounded-xl px-4 py-3 text-[14px] text-foreground placeholder-foreground/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent resize-none"
                 />
               </div>
 
               {/* Email Invite (required for Invite-type products) */}
               {isInvite && (
                 <div>
-                  <label className="block text-[12px] text-white/50 mb-2">
-                    Email Invite <span className="text-primary">(wajib)</span>
+                  <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                    Email Invite <span className="text-primary font-normal">(wajib)</span>
                   </label>
                   <input
                     type="email"
                     value={emailInvite}
                     onChange={(e) => setEmailInvite(e.target.value)}
                     placeholder="email@contoh.com"
-                    className={`w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border focus:outline-none transition-colors bg-transparent ${
-                      emailInviteMissing && emailInvite ? "border-primary/60 focus:border-primary" : "border-white/10 focus:border-white/30"
+                    className={`w-full glass rounded-xl px-4 py-3 text-[14px] text-foreground placeholder-foreground/20 border focus:outline-none transition-colors bg-transparent ${
+                      emailInviteMissing && emailInvite ? "border-primary/60 focus:border-primary" : "border-foreground/10 focus:border-foreground/30"
                     }`}
                   />
-                  <p className="text-[11px] text-white/30 mt-2">
+                  <p className="text-[11px] text-foreground/30 mt-2">
                     Produk ini bertipe Invite. Akun akan dikirim ke email ini.
                   </p>
                   {emailInviteMissing && emailInvite && (
@@ -311,13 +318,13 @@ function CheckoutContent() {
               )}
 
               {qrisGatewayDisabled && !bankTransferEnabled && (
-                <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+                <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
                   Tidak ada metode pembayaran yang tersedia untuk nominal ini.
                 </div>
               )}
 
               {error && (
-                <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+                <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
                   {error}
                 </div>
               )}
@@ -325,12 +332,13 @@ function CheckoutContent() {
               <ButtonPrimary
                 type="submit"
                 disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (qrisGatewayDisabled && !bankTransferEnabled)}
-                className="w-full py-3 text-[14px]"
+                className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
               >
+                {!outOfStock && !loading && <ShoppingCart size={16} />}
                 {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}
               </ButtonPrimary>
 
-              <p className="text-[11px] text-white/20 text-center">
+              <p className="text-[11px] text-foreground/20 text-center">
                 Instruksi pembayaran akan ditampilkan setelah order dibuat.
               </p>
             </form>
@@ -344,7 +352,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
       <CheckoutContent />
     </Suspense>
   );

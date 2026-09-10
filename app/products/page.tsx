@@ -43,10 +43,10 @@ function ProductsContent() {
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
-            <h1 className="text-[40px] font-semibold text-white leading-none tracking-tight mb-2">
+            <h1 className="text-[40px] font-semibold text-foreground leading-none tracking-tight mb-2">
               Semua Produk
             </h1>
-            <p className="text-[14px] text-white/40">
+            <p className="text-[14px] text-foreground/40">
               {loading ? "Memuat..." : `${filtered.length} produk tersedia`}
             </p>
           </div>
@@ -70,7 +70,7 @@ function ProductsContent() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-24">
-              <p className="text-white/30 text-[16px]">Produk tidak ditemukan.</p>
+              <p className="text-foreground/30 text-[16px]">Produk tidak ditemukan.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -88,7 +88,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
       <ProductsContent />
     </Suspense>
   );

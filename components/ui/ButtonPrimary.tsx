@@ -14,7 +14,7 @@ export default function ButtonPrimary({
   if (variant === "ghost") {
     return (
       <button
-        className={`text-white text-[12px] font-medium leading-4 hover:opacity-70 transition-opacity duration-150 cursor-pointer ${className}`}
+        className={`text-foreground text-[12px] font-medium leading-4 hover:opacity-70 transition-opacity duration-150 cursor-pointer ${className}`}
         {...props}
       >
         {children}
@@ -24,7 +24,7 @@ export default function ButtonPrimary({
 
   return (
     <button
-      className={`bg-white text-black text-[12px] font-medium leading-4 rounded-full px-[20px] py-[10px] hover:bg-white/90 active:scale-95 transition-all duration-150 cursor-pointer ${className}`}
+      className={`bg-btn-fill text-btn-text text-[12px] font-medium leading-4 rounded-full px-[20px] py-[10px] hover:bg-btn-fill/90 active:scale-95 transition-all duration-150 cursor-pointer ${className}`}
       {...props}
     >
       {children}

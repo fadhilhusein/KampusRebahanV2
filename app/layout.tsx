@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 import { ToastProvider } from "@/components/ui/ToastContext";
 import NextAuthSessionProvider from "@/components/ui/SessionProvider";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
@@ -41,12 +42,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-black text-white">
-        <NextAuthSessionProvider>
-          <ToastProvider>{children}</ToastProvider>
-          <WhatsAppButton />
-        </NextAuthSessionProvider>
+    <html lang="id" className="h-full antialiased" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false} storageKey="kr-theme">
+          <NextAuthSessionProvider>
+            <ToastProvider>{children}</ToastProvider>
+            <WhatsAppButton />
+          </NextAuthSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

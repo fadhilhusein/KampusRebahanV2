@@ -121,12 +121,12 @@ export default function ForgotPasswordPage() {
       <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
-            <h1 className="text-[32px] font-semibold text-white leading-none tracking-tight mb-2">
+            <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-2">
               Lupa Password
             </h1>
-            <p className="text-[13px] text-white/40">
+            <p className="text-[13px] text-foreground/40">
               Ingat password?{" "}
-              <Link href="/auth/signin" className="text-white/70 hover:text-white transition-colors underline underline-offset-2">
+              <Link href="/auth/signin" className="text-foreground/70 hover:text-foreground transition-colors underline underline-offset-2">
                 Masuk
               </Link>
             </p>
@@ -136,14 +136,14 @@ export default function ForgotPasswordPage() {
             {step === "email" ? (
               <form onSubmit={handleSendCode} className="p-6 space-y-4">
                 <div>
-                  <label className="block text-[12px] text-white/50 mb-2">Email</label>
+                  <label className="block text-[12px] text-foreground/50 mb-2">Email</label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="email@contoh.com"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                   />
                 </div>
 
@@ -160,13 +160,13 @@ export default function ForgotPasswordPage() {
             ) : (
               <form onSubmit={handleResetPassword} className="p-6 space-y-4">
                 {info && (
-                  <div className="bg-white/5 border border-white/10 rounded-[2px] px-4 py-3 text-[13px] text-white/60">
+                  <div className="bg-foreground/5 border border-foreground/10 rounded-[2px] px-4 py-3 text-[13px] text-foreground/60">
                     {info}
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-[12px] text-white/50 mb-2">Kode Reset</label>
+                  <label className="block text-[12px] text-foreground/50 mb-2">Kode Reset</label>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -175,31 +175,31 @@ export default function ForgotPasswordPage() {
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="123456"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent tracking-[4px]"
+                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent tracking-[4px]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] text-white/50 mb-2">Password Baru</label>
+                  <label className="block text-[12px] text-foreground/50 mb-2">Password Baru</label>
                   <input
                     type="password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[12px] text-white/50 mb-2">Konfirmasi Password</label>
+                  <label className="block text-[12px] text-foreground/50 mb-2">Konfirmasi Password</label>
                   <input
                     type="password"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent"
+                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
                   />
                 </div>
 
@@ -217,7 +217,7 @@ export default function ForgotPasswordPage() {
                   type="button"
                   onClick={handleResend}
                   disabled={cooldown > 0}
-                  className="w-full text-center text-[12px] text-white/40 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full text-center text-[12px] text-foreground/40 hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {cooldown > 0 ? `Kirim ulang kode (${cooldown}s)` : "Kirim ulang kode"}
                 </button>

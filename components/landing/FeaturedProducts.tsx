@@ -28,10 +28,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           transition={{ duration: 0.55, ease: "easeOut" }}
         >
           <div>
-            <h2 className="text-[40px] font-semibold text-white leading-none tracking-tight mb-3">
+            <h2 className="text-[40px] font-semibold text-foreground leading-none tracking-tight mb-3">
               Produk Populer
             </h2>
-            <p className="text-[14px] text-white/40">
+            <p className="text-[14px] text-foreground/40">
               Pilihan terlaris dari pelanggan kami
             </p>
           </div>

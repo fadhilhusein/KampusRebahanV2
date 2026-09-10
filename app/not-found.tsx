@@ -15,7 +15,7 @@ export default function NotFound() {
               <div
                 className="text-[80px] font-semibold leading-none mb-4 tracking-tight"
                 style={{
-                  background: "linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.08))",
+                  background: "linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 40%, transparent), color-mix(in srgb, var(--color-foreground) 8%, transparent))",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -23,10 +23,10 @@ export default function NotFound() {
               >
                 404
               </div>
-              <h1 className="text-[22px] font-semibold text-white mb-3">
+              <h1 className="text-[22px] font-semibold text-foreground mb-3">
                 Halaman tidak ditemukan
               </h1>
-              <p className="text-[14px] text-white/40 mb-8">
+              <p className="text-[14px] text-foreground/40 mb-8">
                 Halaman yang kamu cari tidak ada atau sudah dipindahkan.
               </p>
               <div className="flex flex-col gap-3">

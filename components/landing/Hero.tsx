@@ -1,7 +1,7 @@
 import Link from "next/link";
 import * as motion from "motion/react-client";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
-import { DitheringShader } from "@/components/ui/dithering-shader";
+import HeroShader from "@/components/landing/HeroShader";
 import RecentPurchaseBanner from "@/components/landing/RecentPurchaseBanner";
 
 export default function Hero() {
@@ -12,27 +12,16 @@ export default function Hero() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#030407_0%,#090205_35%,#4c0618_78%,#72081f_100%)]" />
-      <DitheringShader
-        width={1920}
-        height={1080}
-        shape="wave"
-        type="8x8"
-        colorBack="#11030a"
-        colorFront="#ff1f5b"
-        pxSize={3}
-        speed={0.22}
-        className="pointer-events-none absolute inset-0 h-full w-full opacity-90"
-        style={{ position: "absolute", width: "100%", height: "100%" }}
-      />
-      <div className="absolute inset-0 bg-black/25" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(0,0,0,0)_34%),linear-gradient(to_bottom,rgba(0,0,0,0.04),rgba(0,0,0,0.58))]" />
+      <div className="absolute inset-0 hero-gradient" />
+      <HeroShader />
+      <div className="absolute inset-0 bg-background/25" />
+      <div className="absolute inset-0 hero-overlay" />
 
       <motion.div
         className="absolute inset-0 opacity-[0.05]"
         style={{
           backgroundImage:
-            "linear-gradient(rgb(255 255 255) 1px, #ffffff00 1px), linear-gradient(90deg, rgb(255 255 255) 1px, #ffffff00 1px)",
+            "linear-gradient(var(--color-foreground) 1px, transparent 1px), linear-gradient(90deg, var(--color-foreground) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         initial={{ opacity: 0 }}
@@ -42,19 +31,19 @@ export default function Hero() {
 
       <div className="relative z-10 text-center max-w-6xl w-full mx-auto">
         <motion.div
-          className="inline-flex items-center gap-2 glass backdrop-blur-[12px] bg-black/70 rounded-full px-4 py-1.5 mb-8"
+          className="inline-flex items-center gap-2 glass backdrop-blur-[12px] bg-background/70 rounded-full px-4 py-1.5 mb-8"
           initial={{ opacity: 0, y: 18, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" }}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-          <span className="text-[11px] text-white/60 font-medium">
+          <span className="text-[11px] text-foreground/60 font-medium">
             Tersedia 50+ Produk Digital
           </span>
         </motion.div>
 
         <motion.h1
-          className="font-semibold text-white leading-none tracking-[-0.025em] mb-6 max-w-6xl mx-auto"
+          className="font-semibold text-foreground leading-none tracking-[-0.025em] mb-6 max-w-6xl mx-auto"
           style={{ fontSize: "clamp(42px, 6vw, 82px)", lineHeight: "1" }}
           initial={{ opacity: 0, y: 26, filter: "blur(12px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -65,7 +54,7 @@ export default function Hero() {
           <span
             style={{
               background:
-                "linear-gradient(to bottom, #f0f0f0, #707070)",
+                "linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 94%, var(--color-background)), color-mix(in srgb, var(--color-foreground) 44%, var(--color-background)))",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -76,7 +65,7 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          className="text-[16px] text-white/50 leading-6 max-w-xl mx-auto mb-10"
+          className="text-[16px] text-foreground/50 leading-6 max-w-xl mx-auto mb-10"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.34, ease: "easeOut" }}
@@ -125,10 +114,10 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.68 + index * 0.08, ease: "easeOut" }}
             >
-              <div className="text-[28px] font-semibold text-white leading-none">
+              <div className="text-[28px] font-semibold text-foreground leading-none">
                 {stat.value}
               </div>
-              <div className="text-[11px] text-white/30 mt-1">{stat.label}</div>
+              <div className="text-[11px] text-foreground/30 mt-1">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

@@ -13,6 +13,7 @@ import { TransactionSkeleton } from "@/components/ui/Skeleton";
 import { getCategoryIcon } from "@/lib/categoryIcons";
 import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
+import { Hash, Package, KeyRound, Star, Copy, Clock, CheckCircle2, Loader2 } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -128,12 +129,12 @@ function CredentialRow({
 
   return (
     <div className="flex items-start justify-between gap-4">
-      <span className="text-[12px] text-white/40 capitalize flex-shrink-0 w-28">
+      <span className="text-[12px] text-foreground/40 capitalize flex-shrink-0 w-28">
         {item.label}
       </span>
       <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
         <span
-          className={`text-[13px] font-mono text-white break-all text-right transition-all duration-200 ${
+          className={`text-[13px] font-mono text-foreground break-all text-right transition-all duration-200 ${
             isPass && !revealed ? "blur-sm select-none" : ""
           }`}
         >
@@ -142,17 +143,17 @@ function CredentialRow({
         {isPass && (
           <button
             onClick={() => setRevealed((r) => !r)}
-            className="text-[11px] text-white/30 hover:text-white transition-colors flex-shrink-0 cursor-pointer whitespace-nowrap"
+            className="text-[11px] text-foreground/30 hover:text-foreground transition-colors flex-shrink-0 cursor-pointer whitespace-nowrap"
           >
             {revealed ? "Sembunyikan" : "Lihat"}
           </button>
         )}
         <button
           onClick={() => navigator.clipboard.writeText(item.value)}
-          className="text-[11px] text-white/20 hover:text-white/60 transition-colors flex-shrink-0 cursor-pointer"
+          className="text-foreground/30 hover:text-foreground/70 transition-colors flex-shrink-0 cursor-pointer"
           title="Salin"
         >
-          ⎘
+          <Copy size={13} />
         </button>
       </div>
     </div>
@@ -164,9 +165,9 @@ function AccountDetailsPanel({ rawDetails }: { rawDetails: unknown }) {
 
   if (groups.length === 0) {
     return (
-      <GlassCard className="p-5">
-        <div className="text-[11px] text-white/30 mb-2">Raw Data</div>
-        <pre className="text-[11px] text-white/60 font-mono whitespace-pre-wrap break-all">
+      <GlassCard radius="rounded-2xl" className="p-5">
+        <div className="text-[11px] font-semibold text-foreground/60 mb-2">Raw Data</div>
+        <pre className="text-[11px] text-foreground/60 font-mono whitespace-pre-wrap break-all">
           {JSON.stringify(rawDetails, null, 2)}
         </pre>
       </GlassCard>
@@ -176,9 +177,9 @@ function AccountDetailsPanel({ rawDetails }: { rawDetails: unknown }) {
   return (
     <div className="space-y-3">
       {groups.map((group, gi) => (
-        <GlassCard key={gi} className="p-5">
+        <GlassCard key={gi} radius="rounded-2xl" className="p-5">
           {group.title && (
-            <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-3">
+            <div className="text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-3">
               {group.title}
             </div>
           )}
@@ -210,25 +211,25 @@ function ProductReviewPanel({
 
   if (tx.review) {
     return (
-      <GlassCard className="p-5">
+      <GlassCard radius="rounded-2xl" className="p-5">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
           <div>
-            <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-2">
+              <Star size={12} />
               Rating Kamu
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-tertiary tracking-[2px]" aria-hidden="true">
-                {"★".repeat(tx.review.rating)}
-                <span className="text-white/15">{"★".repeat(5 - tx.review.rating)}</span>
-              </span>
-              <span className="text-[12px] text-white/40">{tx.review.rating}/5</span>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <Star key={n} size={16} className={n <= tx.review!.rating ? "text-tertiary fill-tertiary" : "text-foreground/15"} />
+              ))}
+              <span className="text-[12px] text-foreground/40 ml-1">{tx.review.rating}/5</span>
             </div>
           </div>
-          <span className="text-[11px] text-white/25">
+          <span className="text-[11px] text-foreground/25">
             {formatDate(tx.review.createdAt)}
           </span>
         </div>
-        <p className="text-[13px] text-white/55 leading-6">{tx.review.testimonial}</p>
+        <p className="text-[13px] text-foreground/55 leading-6">{tx.review.testimonial}</p>
       </GlassCard>
     );
   }
@@ -269,19 +270,20 @@ function ProductReviewPanel({
   }
 
   return (
-    <GradientBorder>
+    <GradientBorder radius="rounded-2xl">
       <form onSubmit={handleSubmit} className="p-5 space-y-5">
         <div>
-          <div className="text-[11px] font-medium text-white/50 uppercase tracking-wider mb-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-2">
+            <Star size={12} />
             Beri Rating Produk
           </div>
-          <p className="text-[12px] text-white/35 leading-5">
+          <p className="text-[12px] text-foreground/35 leading-5">
             Bagikan pengalaman kamu setelah pembelian disetujui admin.
           </p>
         </div>
 
         <div>
-          <label className="block text-[12px] text-white/45 mb-2">Rating</label>
+          <label className="block text-[13px] font-semibold text-foreground/70 mb-2">Rating</label>
           <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating produk">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
@@ -290,13 +292,13 @@ function ProductReviewPanel({
                 role="radio"
                 aria-checked={rating === value}
                 onClick={() => setRating(value)}
-                className={`h-10 w-10 rounded-[2px] border text-[20px] leading-none transition-colors cursor-pointer ${
+                className={`h-10 w-10 flex items-center justify-center rounded-xl border transition-colors cursor-pointer ${
                   value <= rating
                     ? "border-tertiary/60 bg-tertiary/10 text-tertiary"
-                    : "border-white/10 bg-white/[0.03] text-white/20 hover:text-white/50"
+                    : "border-foreground/10 bg-foreground/[0.03] text-foreground/20 hover:text-foreground/50"
                 }`}
               >
-                ★
+                <Star size={18} className={value <= rating ? "fill-tertiary" : ""} />
               </button>
             ))}
           </div>
@@ -304,10 +306,10 @@ function ProductReviewPanel({
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="testimonial" className="text-[12px] text-white/45">
+            <label htmlFor="testimonial" className="text-[13px] font-semibold text-foreground/70">
               Testimoni
             </label>
-            <span className="text-[11px] text-white/20">{testimonial.length}/800</span>
+            <span className="text-[11px] text-foreground/20">{testimonial.length}/800</span>
           </div>
           <textarea
             id="testimonial"
@@ -317,12 +319,12 @@ function ProductReviewPanel({
             maxLength={800}
             rows={4}
             placeholder="Ceritakan pengalaman kamu memakai produk ini..."
-            className="w-full glass rounded-[2px] px-4 py-3 text-[13px] text-white placeholder-white/20 border border-white/10 focus:border-white/30 focus:outline-none transition-colors bg-transparent resize-none"
+            className="w-full glass rounded-xl px-4 py-3 text-[13px] text-foreground placeholder-foreground/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent resize-none"
           />
         </div>
 
         {error && (
-          <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
+          <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
             {error}
           </div>
         )}
@@ -376,18 +378,18 @@ export default function TransactionDetailPage() {
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 text-[12px] text-white/30 mb-8">
-            <Link href="/transactions" className="hover:text-white transition-colors">
+          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
+            <Link href="/transactions" className="hover:text-foreground transition-colors">
               Transaksi
             </Link>
             <span>/</span>
-            <span className="text-white/60 font-mono truncate max-w-[200px]">{orderId}</span>
+            <span className="text-foreground/60 font-mono truncate max-w-[200px]">{orderId}</span>
           </div>
 
           {loading ? (
             <TransactionSkeleton />
           ) : error ? (
-            <div className="glass rounded-[2px] px-6 py-4 border border-primary/30 text-primary text-[14px] mb-6">
+            <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px] mb-6">
               {error}
             </div>
           ) : tx ? (
@@ -395,10 +397,10 @@ export default function TransactionDetailPage() {
               {/* Header */}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
-                  <h1 className="text-[22px] font-semibold text-white leading-tight tracking-tight mb-1">
+                  <h1 className="text-[22px] font-semibold text-foreground leading-tight tracking-tight mb-1">
                     {tx.productName ?? "Detail Transaksi"}
                   </h1>
-                  <div className="text-[13px] text-white/40 mb-2">
+                  <div className="text-[13px] text-foreground/40 mb-2">
                     {tx.variantName} · {tx.duration} · {tx.type}
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -410,27 +412,30 @@ export default function TransactionDetailPage() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-[28px] font-semibold text-white">
+                  <div className="text-[28px] font-semibold text-foreground">
                     {formatPrice(tx.total_amount ?? 0)}
                   </div>
-                  <div className="text-[12px] text-white/30 mt-1">
+                  <div className="text-[12px] text-foreground/30 mt-1">
                     {tx.created_at ? formatDate(tx.created_at) : "—"}
                   </div>
                 </div>
               </div>
 
               {/* Order ID */}
-              <GlassCard className="p-5">
-                <div className="text-[11px] text-white/30 mb-1">Order ID</div>
+              <GlassCard radius="rounded-2xl" className="p-5">
+                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-1">
+                  <Hash size={12} />
+                  Order ID
+                </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-[14px] font-mono text-white break-all flex-1">
+                  <span className="text-[14px] font-mono text-foreground break-all flex-1">
                     {tx.order_id}
                   </span>
                   <button
                     onClick={() => navigator.clipboard.writeText(tx.order_id)}
-                    className="text-[12px] text-white/30 hover:text-white transition-colors flex-shrink-0 cursor-pointer"
+                    className="text-foreground/30 hover:text-foreground/70 transition-colors flex-shrink-0 cursor-pointer"
                   >
-                    Salin
+                    <Copy size={14} />
                   </button>
                 </div>
               </GlassCard>
@@ -445,20 +450,21 @@ export default function TransactionDetailPage() {
                 });
                 return (
                   <div>
-                    <h2 className="text-[11px] font-medium text-white/50 mb-3 uppercase tracking-wider">
+                    <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
+                      <Package size={12} />
                       Produk
                     </h2>
                     <div className="space-y-2">
                       {tx.products.map((p, i) => {
                         const name = p?.name || adNames[i] || adNames[0] || "—";
                         return (
-                          <GradientBorder key={p?.id ?? name ?? i}>
+                          <GradientBorder key={p?.id ?? name ?? i} radius="rounded-2xl">
                             <div className="p-4 flex items-center gap-4">
-                              <div className="w-10 h-10 glass rounded-[2px] flex items-center justify-center text-[20px] flex-shrink-0">
+                              <div className="w-10 h-10 glass rounded-xl flex items-center justify-center text-[20px] flex-shrink-0">
                                 {getCategoryIcon(p?.category)}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="text-[14px] font-medium text-white">
+                                <div className="text-[14px] font-medium text-foreground">
                                   {name}
                                 </div>
                               </div>
@@ -474,36 +480,41 @@ export default function TransactionDetailPage() {
               {/* Account details */}
               {hasAccountDetails ? (
                 <div>
-                  <h2 className="text-[11px] font-medium text-white/50 mb-3 uppercase tracking-wider">
+                  <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
+                    <KeyRound size={12} />
                     Detail Akun
                   </h2>
                   <AccountDetailsPanel rawDetails={tx.account_details as unknown} />
-                  <p className="text-[11px] text-white/20 mt-3">
+                  <p className="text-[11px] text-foreground/20 mt-3">
                     Jaga kerahasiaan data akun. Jangan bagikan ke siapapun.
                   </p>
                 </div>
               ) : (tx.db_status === "PENDING_PAYMENT" || tx.db_status === "PAID") ? (
-                <GlassCard className="p-6 text-center">
-                  <div className="text-[32px] mb-3">{tx.db_status === "PAID" ? "🔍" : "⏳"}</div>
-                  <div className="text-[14px] text-white/60 mb-1">
+                <GlassCard radius="rounded-2xl" className="p-6 text-center">
+                  <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
+                    {tx.db_status === "PAID" ? <CheckCircle2 size={26} /> : <Clock size={26} />}
+                  </div>
+                  <div className="text-[14px] font-semibold text-foreground/70 mb-1">
                     {tx.db_status === "PAID" ? "Menunggu verifikasi admin" : "Menunggu pembayaran"}
                   </div>
-                  <div className="text-[12px] text-white/30 mb-4">
+                  <div className="text-[12px] text-foreground/30 mb-4">
                     {tx.db_status === "PAID"
                       ? "Pembayaran kamu sedang dicek oleh admin. Biasanya selesai dalam 1–24 jam."
                       : "Selesaikan pembayaran untuk melanjutkan proses order."}
                   </div>
                   <Link href={`/order/${tx.db_order_id}`}>
-                    <span className="text-[12px] text-white/50 hover:text-white transition-colors border border-white/20 rounded-[2px] px-4 py-2">
+                    <span className="text-[12px] font-medium text-foreground/60 hover:text-foreground transition-colors border border-foreground/20 rounded-xl px-4 py-2">
                       {tx.db_status === "PAID" ? "Lihat detail order →" : "Lihat instruksi bayar →"}
                     </span>
                   </Link>
                 </GlassCard>
               ) : (tx.db_status === "PROCESSING" || tx.db_status === "AWAITING_RETRY" || tx.db_status === "PAID" || tx.status === "processing") ? (
-                <GlassCard className="p-6 text-center">
-                  <div className="text-[32px] mb-3">⚙️</div>
-                  <div className="text-[14px] text-white/60 mb-1">Akun sedang diproses</div>
-                  <div className="text-[12px] text-white/30">
+                <GlassCard radius="rounded-2xl" className="p-6 text-center">
+                  <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
+                    <Loader2 size={26} className="animate-spin" />
+                  </div>
+                  <div className="text-[14px] font-semibold text-foreground/70 mb-1">Akun sedang diproses</div>
+                  <div className="text-[12px] text-foreground/30">
                     Detail akun akan muncul setelah order selesai diproses.
                   </div>
                 </GlassCard>
