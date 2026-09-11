@@ -6,17 +6,11 @@ interface GradientBorderProps {
   radius?: string;
 }
 
+// Name kept for backward compat across the codebase; border is now solid, not a gradient.
 export default function GradientBorder({ children, className = "", radius = "rounded-[2px]" }: GradientBorderProps) {
   return (
-    <div
-      className={`relative p-px ${radius} ${className}`}
-      style={{
-        background: "linear-gradient(152deg, color-mix(in srgb, var(--color-primary) 40%, transparent) 0%, transparent 46%, color-mix(in srgb, var(--color-foreground) 25%, transparent) 100%)",
-      }}
-    >
-      <div className={`relative ${radius} bg-background/80 h-full w-full`}>
-        {children}
-      </div>
+    <div className={`relative border border-foreground/20 bg-background/80 ${radius} ${className}`}>
+      {children}
     </div>
   );
 }

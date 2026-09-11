@@ -11,7 +11,7 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
-import { ClipboardList, CreditCard, Zap, Landmark, Wallet, ShoppingCart } from "lucide-react";
+import { ClipboardList, CreditCard, QrCode, Landmark, Wallet, ShoppingCart } from "lucide-react";
 
 // Keep in sync with lib/bayarGg.ts QRIS_GATEWAY_MAX_AMOUNT (kept separate to avoid
 // bundling the server-only Bayar.gg client, which uses Node's crypto, into client code).
@@ -206,7 +206,7 @@ function CheckoutContent() {
                         : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
-                    <Zap size={14} /> QRIS (Otomatis)
+                    <QrCode size={14} /> QRIS
                   </button>
                   {bankTransferEnabled && (
                     <button

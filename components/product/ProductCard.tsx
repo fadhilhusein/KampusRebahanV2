@@ -59,10 +59,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {icon}
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-green-400" : "bg-foreground/20"}`} />
-              <span className="text-[10px] text-foreground/30">{inStock ? "Stok ada" : "Habis"}</span>
-            </div>
+            <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+              inStock ? "bg-green-400/15 text-green-500" : "bg-foreground/10 text-foreground/40"
+            }`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${inStock ? "bg-green-400" : "bg-foreground/30"}`} />
+              {inStock ? "Stok ada" : "Habis"}
+            </span>
           </div>
 
           <Badge color={color} className="mb-2 self-start">
