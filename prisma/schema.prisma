@@ -22,6 +22,7 @@ model User {
   balance     Int                  @default(0)
   topUps      BalanceTopUp[]
   balanceTxns BalanceTransaction[]
+  coupons     Coupon[]
 }
 
 model Order {
@@ -163,4 +164,25 @@ enum BalanceTxnType {
   PURCHASE
   REFUND
   ADJUSTMENT
+}
+
+model Coupon {
+  id         String       @id @default(cuid())
+  userId     String
+  reward     String       @default("GEMINI_PRO")
+  code       String       @unique
+  status     CouponStatus @default(ACTIVE)
+  orderId    String?      @unique
+  redeemedAt DateTime?
+  createdAt  DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One coupon per user per reward, enforced at the DB level.
+  @@unique([userId, reward])
+}
+
+enum CouponStatus {
+  ACTIVE
+  REDEEMED
 }

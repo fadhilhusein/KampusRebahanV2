@@ -403,7 +403,7 @@ export default function TransactionDetailPage() {
                   {statusLabel[tx.db_status] ?? tx.db_status ?? "—"}
                 </Badge>
                 <Badge color="default">{tx.quantity}x</Badge>
-                <Badge color="default">{tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}</Badge>
+                <Badge color="default">{{ QRIS_GATEWAY: "QRIS", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon" }[tx.paymentMethod] ?? "Transfer"}</Badge>
               </div>
             </div>
             <div className="text-right flex-shrink-0">

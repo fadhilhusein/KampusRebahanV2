@@ -280,7 +280,7 @@ export default function OrderDetailPage() {
                   ["Produk", order.productName],
                   ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
                   ["Jumlah", String(order.quantity)],
-                  ["Metode", order.paymentMethod === "QRIS_GATEWAY" ? "QRIS Otomatis (Bayar.gg)" : order.paymentMethod === "QRIS" ? "QRIS" : "Transfer Bank"],
+                  ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
                   ["Tanggal", formatDate(order.createdAt)],
                 ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between gap-4">

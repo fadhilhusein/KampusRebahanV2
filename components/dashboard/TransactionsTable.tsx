@@ -39,6 +39,7 @@ const paymentLabels: Record<string, string> = {
   QRIS: "QRIS",
   BANK_TRANSFER: "Transfer Bank",
   BALANCE: "Saldo",
+  COUPON: "Kupon",
 };
 
 const searchFilter: FilterFn<Transaction> = (row, _columnId, value: string) => {

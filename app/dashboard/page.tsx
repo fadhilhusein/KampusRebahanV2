@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { CheckCircle2, Clock, History, Inbox, Receipt, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import LoyaltyCard from "@/components/dashboard/LoyaltyCard";
 import Badge from "@/components/ui/Badge";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { statusColor, statusLabel } from "@/lib/orderStatus";
@@ -126,6 +127,9 @@ export default function DashboardHomePage() {
           tone="bg-green-400/15 text-green-500"
           loading={loading}
         />
+        <div className="col-span-full">
+          <LoyaltyCard />
+        </div>
       </div>
 
       <div className="mb-3 flex items-center justify-between">

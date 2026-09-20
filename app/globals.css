@@ -18,6 +18,24 @@
   --blur-glass: 12px;
 }
 
+/* Magic UI shine-border. `inline` keeps var(--duration) resolving on the element itself
+   (the component sets it inline); a plain @theme would resolve it at :root, where it is undefined. */
+@theme inline {
+  --animate-shine: shine var(--duration) infinite linear;
+
+  @keyframes shine {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    to {
+      background-position: 0% 0%;
+    }
+  }
+}
+
 [data-theme="light"] {
   --color-primary: #BE185D;
   --color-secondary: #2563EB;

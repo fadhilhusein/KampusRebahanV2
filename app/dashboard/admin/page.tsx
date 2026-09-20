@@ -7,6 +7,7 @@ import {
   Banknote,
   CheckCircle2,
   Clock,
+  Gift,
   Landmark,
   QrCode,
   Receipt,
@@ -14,6 +15,7 @@ import {
   SlidersHorizontal,
   TrendingUp,
   Users,
+  Wallet,
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -56,6 +58,8 @@ const paymentMethodInfo: Record<string, { label: string; icon: LucideIcon }> = {
   QRIS_GATEWAY: { label: "QRIS (Bayar.gg)", icon: Zap },
   QRIS: { label: "QRIS (manual)", icon: QrCode },
   BANK_TRANSFER: { label: "Transfer Bank", icon: Landmark },
+  BALANCE: { label: "Saldo", icon: Wallet },
+  COUPON: { label: "Kupon Loyalitas", icon: Gift },
 };
 
 interface AdminOrder {
