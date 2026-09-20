@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Hash, KeyRound, Mail, RotateCw, Send, ShieldCheck } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import GradientBorder from "@/components/ui/GradientBorder";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import {
+  AuthCard,
+  AuthField,
+  AuthNotice,
+  AuthPasswordField,
+  AuthShell,
+  AuthSubmit,
+} from "@/components/ui/auth-kit";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
@@ -23,18 +29,11 @@ export default function ForgotPasswordPage() {
   const [info, setInfo] = useState("");
   const [cooldown, setCooldown] = useState(0);
 
-  function startCooldown() {
-    setCooldown(RESEND_COOLDOWN_SECONDS);
-    const interval = setInterval(() => {
-      setCooldown((c) => {
-        if (c <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return c - 1;
-      });
-    }, 1000);
-  }
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timeout = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timeout);
+  }, [cooldown]);
 
   async function handleSendCode(e: React.FormEvent) {
     e.preventDefault();
@@ -53,7 +52,7 @@ export default function ForgotPasswordPage() {
       if (data.success) {
         setInfo(data.message);
         setStep("reset");
-        startCooldown();
+        setCooldown(RESEND_COOLDOWN_SECONDS);
       } else {
         setError(data.message ?? "Gagal mengirim kode.");
       }
@@ -77,7 +76,7 @@ export default function ForgotPasswordPage() {
       });
       const data = await res.json();
       setInfo(data.message ?? "Kode baru telah dikirim.");
-      startCooldown();
+      setCooldown(RESEND_COOLDOWN_SECONDS);
     } catch {
       setError("Terjadi kesalahan. Coba lagi.");
     }
@@ -118,115 +117,106 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-md">
-          <div className="mb-8 text-center">
-            <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-2">
-              Lupa Password
-            </h1>
-            <p className="text-[13px] text-foreground/40">
-              Ingat password?{" "}
-              <Link href="/auth/signin" className="text-foreground/70 hover:text-foreground transition-colors underline underline-offset-2">
-                Masuk
-              </Link>
-            </p>
-          </div>
+      <AuthShell>
+        <AuthCard
+          icon={KeyRound}
+          title={step === "email" ? "Lupa Password" : "Reset Password"}
+          subtitle={
+            step === "email"
+              ? "Masukkan email akun kamu, kami kirim kode reset."
+              : "Masukkan kode dari email dan buat password baru."
+          }
+        >
+          {step === "email" ? (
+            <form onSubmit={handleSendCode} className="space-y-4">
+              <AuthField
+                id="forgot-email"
+                label="Email"
+                icon={Mail}
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email@contoh.com"
+              />
 
-          <GradientBorder>
-            {step === "email" ? (
-              <form onSubmit={handleSendCode} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-[12px] text-foreground/50 mb-2">Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="email@contoh.com"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
-                  />
-                </div>
+              {error && <AuthNotice tone="error">{error}</AuthNotice>}
 
-                {error && (
-                  <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
-                    {error}
-                  </div>
-                )}
+              <AuthSubmit loading={loading} loadingText="Mengirim..." icon={Send}>
+                Kirim Kode Reset
+              </AuthSubmit>
+            </form>
+          ) : (
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              {info && <AuthNotice tone="info">{info}</AuthNotice>}
 
-                <ButtonPrimary type="submit" disabled={loading} className="w-full py-3 text-[14px]">
-                  {loading ? "Mengirim..." : "Kirim Kode Reset"}
-                </ButtonPrimary>
-              </form>
-            ) : (
-              <form onSubmit={handleResetPassword} className="p-6 space-y-4">
-                {info && (
-                  <div className="bg-foreground/5 border border-foreground/10 rounded-[2px] px-4 py-3 text-[13px] text-foreground/60">
-                    {info}
-                  </div>
-                )}
+              <AuthField
+                id="forgot-code"
+                label="Kode Reset"
+                icon={Hash}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+                placeholder="123456"
+                className="tracking-[4px]"
+              />
 
-                <div>
-                  <label className="block text-[12px] text-foreground/50 mb-2">Kode Reset</label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={6}
-                    required
-                    value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                    placeholder="123456"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent tracking-[4px]"
-                  />
-                </div>
+              <AuthPasswordField
+                id="forgot-new-password"
+                label="Password Baru"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Minimal 8 karakter"
+              />
 
-                <div>
-                  <label className="block text-[12px] text-foreground/50 mb-2">Password Baru</label>
-                  <input
-                    type="password"
-                    required
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
-                  />
-                </div>
+              <AuthPasswordField
+                id="forgot-confirm-password"
+                label="Konfirmasi Password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Ulangi password baru"
+              />
 
-                <div>
-                  <label className="block text-[12px] text-foreground/50 mb-2">Konfirmasi Password</label>
-                  <input
-                    type="password"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full glass rounded-[2px] px-4 py-3 text-[14px] text-foreground placeholder-white/20 border border-foreground/10 focus:border-foreground/30 focus:outline-none transition-colors bg-transparent"
-                  />
-                </div>
+              {error && <AuthNotice tone="error">{error}</AuthNotice>}
 
-                {error && (
-                  <div className="bg-primary/10 border border-primary/30 rounded-[2px] px-4 py-3 text-[13px] text-primary">
-                    {error}
-                  </div>
-                )}
+              <AuthSubmit loading={loading} loadingText="Memproses..." icon={ShieldCheck}>
+                Reset Password
+              </AuthSubmit>
 
-                <ButtonPrimary type="submit" disabled={loading} className="w-full py-3 text-[14px]">
-                  {loading ? "Memproses..." : "Reset Password"}
-                </ButtonPrimary>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={cooldown > 0}
+                className="flex w-full cursor-pointer items-center justify-center gap-1.5 text-[12px] font-medium text-foreground/50 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <RotateCw size={13} />
+                {cooldown > 0 ? `Kirim ulang kode (${cooldown}s)` : "Kirim ulang kode"}
+              </button>
+            </form>
+          )}
 
-                <button
-                  type="button"
-                  onClick={handleResend}
-                  disabled={cooldown > 0}
-                  className="w-full text-center text-[12px] text-foreground/40 hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  {cooldown > 0 ? `Kirim ulang kode (${cooldown}s)` : "Kirim ulang kode"}
-                </button>
-              </form>
-            )}
-          </GradientBorder>
-        </div>
-      </main>
-      <Footer />
+          <p className="mt-5 text-center text-[13px] text-foreground/50">
+            Ingat password?{" "}
+            <Link
+              href="/auth/signin"
+              className="font-semibold text-foreground underline underline-offset-2 transition-colors hover:text-primary"
+            >
+              Masuk
+            </Link>
+          </p>
+        </AuthCard>
+      </AuthShell>
     </>
   );
 }

@@ -8,10 +8,11 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { LogOut } from "lucide-react";
 
-const BASE_LINKS = [
+// Transaksi and Admin live inside the dashboard now.
+const LINKS = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Produk" },
-  { href: "/transactions", label: "Transaksi" },
+  { href: "/dashboard", label: "Dashboard" },
 ];
 
 function formatPrice(price: number) {
@@ -27,10 +28,6 @@ export default function Navbar() {
   const [balance, setBalance] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: session, status } = useSession();
-  const adminUser = (session?.user as { isAdmin?: boolean })?.isAdmin === true;
-  const links = adminUser
-    ? [...BASE_LINKS, { href: "/admin", label: "Admin" }]
-    : BASE_LINKS;
 
   async function fetchBalance() {
     try {
@@ -79,7 +76,7 @@ export default function Navbar() {
             className="hidden md:flex absolute items-center gap-6"
             style={{ left: "50%", transform: "translateX(-50%)" }}
           >
-            {links.map((link) => (
+            {LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -170,7 +167,7 @@ export default function Navbar() {
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="md:hidden border-t border-foreground/8 px-6 py-4 flex flex-col gap-1">
-            {links.map((link) => (
+            {LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

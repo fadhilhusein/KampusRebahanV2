@@ -247,7 +247,7 @@ export default function OrderDetailPage() {
       <main className="flex-1 pt-24 pb-16 px-8">
         <div className="max-w-xl mx-auto">
           <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
-            <Link href="/transactions" className="hover:text-foreground transition-colors">Transaksi</Link>
+            <Link href="/dashboard/transactions" className="hover:text-foreground transition-colors">Transaksi</Link>
             <span>/</span>
             <span className="text-foreground/60 font-mono truncate max-w-[160px]">{orderId}</span>
           </div>
@@ -329,14 +329,14 @@ export default function OrderDetailPage() {
 
               {order.status === "COMPLETED" && order.apiOrderId && (
                 <div className="text-center">
-                  <Link href={`/transactions/${order.id}`}>
+                  <Link href={`/dashboard/transactions/${order.id}`}>
                     <ButtonPrimary>Lihat Detail Akun →</ButtonPrimary>
                   </Link>
                 </div>
               )}
 
               <div className="pt-2">
-                <Link href="/transactions">
+                <Link href="/dashboard/transactions">
                   <ButtonPrimary variant="ghost" className="text-[13px]">← Kembali ke Riwayat</ButtonPrimary>
                 </Link>
               </div>

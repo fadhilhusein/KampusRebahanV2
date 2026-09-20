@@ -1,0 +1,113 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import GradientBorder from "@/components/ui/GradientBorder";
+import Badge from "@/components/ui/Badge";
+import { TransactionSkeleton } from "@/components/ui/Skeleton";
+import { statusColor, statusLabel } from "@/lib/orderStatus";
+import type { Transaction } from "@/lib/types";
+import { History, Inbox } from "lucide-react";
+
+function formatPrice(price: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(price);
+}
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export default function TransactionsPage() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/transactions")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setTransactions(data.data ?? []);
+        else setError(data.message ?? "Gagal memuat transaksi.");
+      })
+      .catch(() => setError("Terjadi kesalahan."))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="flex items-center gap-2.5 text-[28px] font-bold text-foreground leading-tight tracking-tight mb-1">
+          <History size={26} className="text-primary" />
+          Riwayat Transaksi
+        </h1>
+        <p className="text-[14px] text-foreground/50">
+          {loading ? "Memuat..." : `${transactions.length} transaksi`}
+        </p>
+      </div>
+
+      {loading ? (
+        <TransactionSkeleton />
+      ) : error ? (
+        <div className="glass rounded-xl px-6 py-4 border border-primary/30 text-primary text-[14px]">
+          {error}
+        </div>
+      ) : transactions.length === 0 ? (
+        <div className="text-center py-24">
+          <Inbox size={40} className="mx-auto text-foreground/20 mb-3" />
+          <p className="text-foreground/30 text-[16px]">Belum ada transaksi.</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {transactions.map((tx) => (
+            <Link key={tx.order_id} href={`/dashboard/transactions/${tx.order_id}`}>
+              <GradientBorder radius="rounded-2xl" className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+                <div className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 glass-hover transition-all duration-200 rounded-2xl">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <Badge color={statusColor[tx.db_status] ?? "default"}>
+                        {statusLabel[tx.db_status] ?? tx.db_status}
+                      </Badge>
+                      {tx.account_details?.length > 0 && (
+                        <Badge color="default">{tx.account_details.length} akun</Badge>
+                      )}
+                    </div>
+                    <div className="text-[14px] font-medium text-foreground truncate">
+                      {tx.productName}
+                    </div>
+                    <div className="text-[12px] text-foreground/40 mt-0.5">
+                      {tx.variantName} · {tx.duration} · {tx.type}
+                    </div>
+                    <div className="text-[11px] text-foreground/25 mt-1">
+                      {tx.created_at ? formatDate(tx.created_at) : "—"}
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <div className="text-[18px] font-semibold text-foreground">
+                      {formatPrice(tx.total_amount)}
+                    </div>
+                    <div className="text-[11px] text-foreground/30 mt-0.5">
+                      {tx.quantity}x · {tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}
+                    </div>
+                    <div className="text-[11px] text-foreground/20 mt-1">
+                      Lihat detail →
+                    </div>
+                  </div>
+                </div>
+              </GradientBorder>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

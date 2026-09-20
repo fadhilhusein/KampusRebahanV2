@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import GradientBorder from "@/components/ui/GradientBorder";
 import GlassCard from "@/components/ui/GlassCard";
 import Badge from "@/components/ui/Badge";
@@ -374,171 +372,165 @@ export default function TransactionDetailPage() {
       : false);
 
   return (
-    <>
-      <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
-            <Link href="/transactions" className="hover:text-foreground transition-colors">
-              Transaksi
-            </Link>
-            <span>/</span>
-            <span className="text-foreground/60 font-mono truncate max-w-[200px]">{orderId}</span>
+    <div className="max-w-3xl mx-auto">
+      <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
+        <Link href="/dashboard/transactions" className="hover:text-foreground transition-colors">
+          Transaksi
+        </Link>
+        <span>/</span>
+        <span className="text-foreground/60 font-mono truncate max-w-[200px]">{orderId}</span>
+      </div>
+
+      {loading ? (
+        <TransactionSkeleton />
+      ) : error ? (
+        <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px] mb-6">
+          {error}
+        </div>
+      ) : tx ? (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="text-[22px] font-semibold text-foreground leading-tight tracking-tight mb-1">
+                {tx.productName ?? "Detail Transaksi"}
+              </h1>
+              <div className="text-[13px] text-foreground/40 mb-2">
+                {tx.variantName} · {tx.duration} · {tx.type}
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge color={statusColor[tx.db_status] ?? "default"}>
+                  {statusLabel[tx.db_status] ?? tx.db_status ?? "—"}
+                </Badge>
+                <Badge color="default">{tx.quantity}x</Badge>
+                <Badge color="default">{tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}</Badge>
+              </div>
+            </div>
+            <div className="text-right flex-shrink-0">
+              <div className="text-[28px] font-semibold text-foreground">
+                {formatPrice(tx.total_amount ?? 0)}
+              </div>
+              <div className="text-[12px] text-foreground/30 mt-1">
+                {tx.created_at ? formatDate(tx.created_at) : "—"}
+              </div>
+            </div>
           </div>
 
-          {loading ? (
-            <TransactionSkeleton />
-          ) : error ? (
-            <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px] mb-6">
-              {error}
+          {/* Order ID */}
+          <GlassCard radius="rounded-2xl" className="p-5">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-1">
+              <Hash size={12} />
+              Order ID
             </div>
-          ) : tx ? (
-            <div className="space-y-6">
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div>
-                  <h1 className="text-[22px] font-semibold text-foreground leading-tight tracking-tight mb-1">
-                    {tx.productName ?? "Detail Transaksi"}
-                  </h1>
-                  <div className="text-[13px] text-foreground/40 mb-2">
-                    {tx.variantName} · {tx.duration} · {tx.type}
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge color={statusColor[tx.db_status] ?? "default"}>
-                      {statusLabel[tx.db_status] ?? tx.db_status ?? "—"}
-                    </Badge>
-                    <Badge color="default">{tx.quantity}x</Badge>
-                    <Badge color="default">{tx.paymentMethod.startsWith("QRIS") ? "QRIS" : "Transfer"}</Badge>
-                  </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="text-[28px] font-semibold text-foreground">
-                    {formatPrice(tx.total_amount ?? 0)}
-                  </div>
-                  <div className="text-[12px] text-foreground/30 mt-1">
-                    {tx.created_at ? formatDate(tx.created_at) : "—"}
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[14px] font-mono text-foreground break-all flex-1">
+                {tx.order_id}
+              </span>
+              <button
+                onClick={() => navigator.clipboard.writeText(tx.order_id)}
+                className="text-foreground/30 hover:text-foreground/70 transition-colors flex-shrink-0 cursor-pointer"
+              >
+                <Copy size={14} />
+              </button>
+            </div>
+          </GlassCard>
 
-              {/* Order ID */}
-              <GlassCard radius="rounded-2xl" className="p-5">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-1">
-                  <Hash size={12} />
-                  Order ID
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-[14px] font-mono text-foreground break-all flex-1">
-                    {tx.order_id}
-                  </span>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(tx.order_id)}
-                    className="text-foreground/30 hover:text-foreground/70 transition-colors flex-shrink-0 cursor-pointer"
-                  >
-                    <Copy size={14} />
-                  </button>
-                </div>
-              </GlassCard>
-
-              {/* Products */}
-              {Array.isArray(tx.products) && tx.products.length > 0 && (() => {
-                // account_details may carry product name when products[] lacks it
-                const adArr = Array.isArray(tx.account_details) ? tx.account_details : [];
-                const adNames: string[] = adArr.map((ad) => {
-                  const o = ad as Record<string, unknown>;
-                  return typeof o?.product === "string" ? o.product : "";
-                });
-                return (
-                  <div>
-                    <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
-                      <Package size={12} />
-                      Produk
-                    </h2>
-                    <div className="space-y-2">
-                      {tx.products.map((p, i) => {
-                        const name = p?.name || adNames[i] || adNames[0] || "—";
-                        return (
-                          <GradientBorder key={p?.id ?? name ?? i} radius="rounded-2xl">
-                            <div className="p-4 flex items-center gap-4">
-                              <div className="w-10 h-10 glass rounded-xl flex items-center justify-center text-[20px] flex-shrink-0">
-                                {getCategoryIcon(p?.category)}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-[14px] font-medium text-foreground">
-                                  {name}
-                                </div>
-                              </div>
+          {/* Products */}
+          {Array.isArray(tx.products) && tx.products.length > 0 && (() => {
+            // account_details may carry product name when products[] lacks it
+            const adArr = Array.isArray(tx.account_details) ? tx.account_details : [];
+            const adNames: string[] = adArr.map((ad) => {
+              const o = ad as Record<string, unknown>;
+              return typeof o?.product === "string" ? o.product : "";
+            });
+            return (
+              <div>
+                <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
+                  <Package size={12} />
+                  Produk
+                </h2>
+                <div className="space-y-2">
+                  {tx.products.map((p, i) => {
+                    const name = p?.name || adNames[i] || adNames[0] || "—";
+                    return (
+                      <GradientBorder key={p?.id ?? name ?? i} radius="rounded-2xl">
+                        <div className="p-4 flex items-center gap-4">
+                          <div className="w-10 h-10 glass rounded-xl flex items-center justify-center text-[20px] flex-shrink-0">
+                            {getCategoryIcon(p?.category)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[14px] font-medium text-foreground">
+                              {name}
                             </div>
-                          </GradientBorder>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Account details */}
-              {hasAccountDetails ? (
-                <div>
-                  <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
-                    <KeyRound size={12} />
-                    Detail Akun
-                  </h2>
-                  <AccountDetailsPanel rawDetails={tx.account_details as unknown} />
-                  <p className="text-[11px] text-foreground/20 mt-3">
-                    Jaga kerahasiaan data akun. Jangan bagikan ke siapapun.
-                  </p>
+                          </div>
+                        </div>
+                      </GradientBorder>
+                    );
+                  })}
                 </div>
-              ) : (tx.db_status === "PENDING_PAYMENT" || tx.db_status === "PAID") ? (
-                <GlassCard radius="rounded-2xl" className="p-6 text-center">
-                  <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
-                    {tx.db_status === "PAID" ? <CheckCircle2 size={26} /> : <Clock size={26} />}
-                  </div>
-                  <div className="text-[14px] font-semibold text-foreground/70 mb-1">
-                    {tx.db_status === "PAID" ? "Menunggu verifikasi admin" : "Menunggu pembayaran"}
-                  </div>
-                  <div className="text-[12px] text-foreground/30 mb-4">
-                    {tx.db_status === "PAID"
-                      ? "Pembayaran kamu sedang dicek oleh admin. Biasanya selesai dalam 1–24 jam."
-                      : "Selesaikan pembayaran untuk melanjutkan proses order."}
-                  </div>
-                  <Link href={`/order/${tx.db_order_id}`}>
-                    <span className="text-[12px] font-medium text-foreground/60 hover:text-foreground transition-colors border border-foreground/20 rounded-xl px-4 py-2">
-                      {tx.db_status === "PAID" ? "Lihat detail order →" : "Lihat instruksi bayar →"}
-                    </span>
-                  </Link>
-                </GlassCard>
-              ) : (tx.db_status === "PROCESSING" || tx.db_status === "AWAITING_RETRY" || tx.db_status === "PAID" || tx.status === "processing") ? (
-                <GlassCard radius="rounded-2xl" className="p-6 text-center">
-                  <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
-                    <Loader2 size={26} className="animate-spin" />
-                  </div>
-                  <div className="text-[14px] font-semibold text-foreground/70 mb-1">Akun sedang diproses</div>
-                  <div className="text-[12px] text-foreground/30">
-                    Detail akun akan muncul setelah order selesai diproses.
-                  </div>
-                </GlassCard>
-              ) : null}
-
-              <ProductReviewPanel
-                tx={tx}
-                onReviewCreated={(review) =>
-                  setTx((current) => (current ? { ...current, review } : current))
-                }
-              />
-
-              <div className="pt-2">
-                <Link href="/transactions">
-                  <ButtonPrimary variant="ghost" className="text-[13px]">
-                    ← Kembali ke Riwayat
-                  </ButtonPrimary>
-                </Link>
               </div>
+            );
+          })()}
+
+          {/* Account details */}
+          {hasAccountDetails ? (
+            <div>
+              <h2 className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 mb-3 uppercase tracking-wider">
+                <KeyRound size={12} />
+                Detail Akun
+              </h2>
+              <AccountDetailsPanel rawDetails={tx.account_details as unknown} />
+              <p className="text-[11px] text-foreground/20 mt-3">
+                Jaga kerahasiaan data akun. Jangan bagikan ke siapapun.
+              </p>
             </div>
+          ) : (tx.db_status === "PENDING_PAYMENT" || tx.db_status === "PAID") ? (
+            <GlassCard radius="rounded-2xl" className="p-6 text-center">
+              <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
+                {tx.db_status === "PAID" ? <CheckCircle2 size={26} /> : <Clock size={26} />}
+              </div>
+              <div className="text-[14px] font-semibold text-foreground/70 mb-1">
+                {tx.db_status === "PAID" ? "Menunggu verifikasi admin" : "Menunggu pembayaran"}
+              </div>
+              <div className="text-[12px] text-foreground/30 mb-4">
+                {tx.db_status === "PAID"
+                  ? "Pembayaran kamu sedang dicek oleh admin. Biasanya selesai dalam 1–24 jam."
+                  : "Selesaikan pembayaran untuk melanjutkan proses order."}
+              </div>
+              <Link href={`/order/${tx.db_order_id}`}>
+                <span className="text-[12px] font-medium text-foreground/60 hover:text-foreground transition-colors border border-foreground/20 rounded-xl px-4 py-2">
+                  {tx.db_status === "PAID" ? "Lihat detail order →" : "Lihat instruksi bayar →"}
+                </span>
+              </Link>
+            </GlassCard>
+          ) : (tx.db_status === "PROCESSING" || tx.db_status === "AWAITING_RETRY" || tx.db_status === "PAID" || tx.status === "processing") ? (
+            <GlassCard radius="rounded-2xl" className="p-6 text-center">
+              <div className="w-14 h-14 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center mx-auto mb-3">
+                <Loader2 size={26} className="animate-spin" />
+              </div>
+              <div className="text-[14px] font-semibold text-foreground/70 mb-1">Akun sedang diproses</div>
+              <div className="text-[12px] text-foreground/30">
+                Detail akun akan muncul setelah order selesai diproses.
+              </div>
+            </GlassCard>
           ) : null}
+
+          <ProductReviewPanel
+            tx={tx}
+            onReviewCreated={(review) =>
+              setTx((current) => (current ? { ...current, review } : current))
+            }
+          />
+
+          <div className="pt-2">
+            <Link href="/dashboard/transactions">
+              <ButtonPrimary variant="ghost" className="text-[13px]">
+                ← Kembali ke Riwayat
+              </ButtonPrimary>
+            </Link>
+          </div>
         </div>
-      </main>
-      <Footer />
-    </>
+      ) : null}
+    </div>
   );
 }
