@@ -102,7 +102,7 @@ export default function DashboardHomePage() {
           icon={Wallet}
           tone="bg-secondary/15 text-secondary"
           loading={loading}
-          href="/balance"
+          href="/dashboard/balance"
           hint="Top up saldo"
         />
         <StatCard

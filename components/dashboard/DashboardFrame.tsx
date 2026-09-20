@@ -17,7 +17,7 @@ export default function DashboardFrame({ user, children }: { user: SidebarUser; 
         heading: "Akun",
         items: [
           { id: "transactions", title: "Transaksi", icon: History, href: "/dashboard/transactions" },
-          { id: "balance", title: "Saldo", icon: Wallet, href: "/balance" },
+          { id: "balance", title: "Saldo", icon: Wallet, href: "/dashboard/balance" },
           { id: "products", title: "Produk", icon: Store, href: "/products" },
         ],
       },

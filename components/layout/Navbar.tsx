@@ -108,7 +108,7 @@ export default function Navbar() {
                       <div className="text-[11px] text-foreground/30 uppercase tracking-wider mb-1">Saldo</div>
                       <div className="text-[18px] font-semibold text-foreground mb-3">{formatPrice(balance)}</div>
                       <Link
-                        href="/balance"
+                        href="/dashboard/balance"
                         onClick={() => setDropdownOpen(false)}
                         className="block text-center text-[12px] text-foreground bg-foreground/10 hover:bg-foreground/15 rounded-[2px] px-3 py-2 transition-colors"
                       >
@@ -190,7 +190,7 @@ export default function Navbar() {
                     <span className="text-[13px] font-semibold text-foreground">{formatPrice(balance)}</span>
                   </div>
                   <Link
-                    href="/balance"
+                    href="/dashboard/balance"
                     onClick={() => setMobileOpen(false)}
                     className="block text-center text-[13px] text-foreground bg-foreground/10 hover:bg-foreground/15 rounded-[2px] px-3 py-2 transition-colors"
                   >

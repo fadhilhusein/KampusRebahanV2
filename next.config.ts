@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       { source: "/transactions", destination: "/dashboard/transactions", permanent: false },
       { source: "/transactions/:orderId", destination: "/dashboard/transactions/:orderId", permanent: false },
       { source: "/admin", destination: "/dashboard/admin", permanent: false },
+      { source: "/balance", destination: "/dashboard/balance", permanent: false },
+      { source: "/balance/topup/:topupId", destination: "/dashboard/balance/topup/:topupId", permanent: false },
     ];
   },
 };

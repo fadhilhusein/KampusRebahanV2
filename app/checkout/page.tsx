@@ -242,7 +242,7 @@ function CheckoutContent() {
                 )}
                 {paymentMethod === "BALANCE" && balanceInsufficient && (
                   <p className="text-[11px] text-primary mt-2">
-                    Saldo tidak cukup. <Link href="/balance" className="underline underline-offset-2">Top up saldo</Link>
+                    Saldo tidak cukup. <Link href="/dashboard/balance" className="underline underline-offset-2">Top up saldo</Link>
                   </p>
                 )}
               </div>
