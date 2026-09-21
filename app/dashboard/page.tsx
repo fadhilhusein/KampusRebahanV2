@@ -43,10 +43,10 @@ function StatCard({ label, value, icon: Icon, tone, loading, href, hint }: StatC
       ) : (
         <div className="text-[24px] font-bold leading-none text-foreground">{value}</div>
       )}
-      {hint && <div className="mt-2 text-[11px] font-medium text-foreground/40">{hint}</div>}
+      {hint && (href && <Link href={href} className="flex items-center justify-center gap-2 mt-6 p-2 w-full rounded-xl cursor-pointer text-[11px] bg-primary font-medium text-white hover:bg-primary/15 hover:text-primary"><Wallet size={13} /> {hint}</Link>)}
     </div>
   );
-  return href ? <Link href={href}>{body}</Link> : body;
+  return body;
 }
 
 // The whole row links to the transaction detail through a stretched link on the product name;
@@ -81,7 +81,7 @@ function RecentTransactionRow({ tx }: { tx: Transaction }) {
         <Link
           href={cta.href}
           aria-label={cta.aria}
-          className="relative z-10 inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3.5 py-1.5 text-[12px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+          className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-white transition-colors hover:bg-primary/15 hover:text-primary"
         >
           <CtaIcon size={13} />
           {cta.label}

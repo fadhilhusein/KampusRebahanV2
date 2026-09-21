@@ -1,21 +1,25 @@
 import * as motion from "motion/react-client";
 import GradientBorder from "@/components/ui/GradientBorder";
+import { CreditCard, Lock, ShoppingCart } from "lucide-react";
 
 const steps = [
   {
     num: "01",
     title: "Pilih Produk",
     desc: "Browse ratusan produk digital. Pilih layanan yang kamu butuhkan dan varian yang sesuai budget.",
+    icon: <CreditCard size={150} strokeWidth={1} className="absolute -top-5 -right-10 opacity-25"/>
   },
   {
     num: "02",
     title: "Checkout",
     desc: "Pilih varian, masukkan quantity, dan opsional kode voucher. Proses checkout kilat tanpa ribet.",
+    icon: <ShoppingCart size={150} strokeWidth={1} className="absolute -top-5 -right-10 opacity-25"/>
   },
   {
     num: "03",
     title: "Terima Akun",
     desc: "Akun langsung dikirim otomatis. Nikmati layanan premium tanpa antri.",
+    icon: <Lock size={150} strokeWidth={1} className="absolute -top-5 -right-10 opacity-25"/>
   },
 ];
 
@@ -55,8 +59,8 @@ export default function HowItWorks() {
               transition={{ duration: 0.55, delay: index * 0.1, ease: "easeOut" }}
               whileHover={{ y: -6, scale: 1.015 }}
             >
-              <GradientBorder className="h-full">
-                <div className="p-8 h-full flex flex-col">
+              <GradientBorder className="h-full rounded-xl overflow-hidden">
+                <div className="p-8 h-full flex flex-col relative">
                   <div
                     className="text-[48px] font-semibold leading-none mb-6"
                     style={{
@@ -72,6 +76,7 @@ export default function HowItWorks() {
                     {step.title}
                   </h3>
                   <p className="text-[14px] text-foreground/40 leading-6">{step.desc}</p>
+                  {step.icon}
                 </div>
               </GradientBorder>
             </motion.div>

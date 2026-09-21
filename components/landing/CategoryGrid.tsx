@@ -56,7 +56,7 @@ export default function CategoryGrid({ products }: CategoryGridProps) {
               >
                 <GlassCard
                   hover
-                  className="px-5 py-3 flex items-center gap-3"
+                  className="px-5 py-3 flex items-center gap-3 rounded-xl"
                 >
                   <span className="text-[14px] font-medium text-foreground">
                     {category}
