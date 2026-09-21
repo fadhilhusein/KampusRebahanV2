@@ -40,7 +40,7 @@ function ProductsContent() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8">
+      <main className="flex-1 pt-24 pb-16 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
             <h1 className="text-[40px] font-semibold text-foreground leading-none tracking-tight mb-2">
@@ -60,11 +60,11 @@ function ProductsContent() {
           />
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-48 glass rounded-[2px] animate-pulse"
+                  className="aspect-[3/4] glass rounded-2xl sm:rounded-[28px] animate-pulse"
                 />
               ))}
             </div>
@@ -73,7 +73,7 @@ function ProductsContent() {
               <p className="text-foreground/30 text-[16px]">Produk tidak ditemukan.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
