@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { CheckCircle2, Clock, History, Inbox, Receipt, Wallet } from "lucide-react";
+import { CheckCircle2, Clock, CreditCard, History, Inbox, Receipt, ShoppingCart, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import LoyaltyCard from "@/components/dashboard/LoyaltyCard";
 import Badge from "@/components/ui/Badge";
@@ -47,6 +47,48 @@ function StatCard({ label, value, icon: Icon, tone, loading, href, hint }: StatC
     </div>
   );
   return href ? <Link href={href}>{body}</Link> : body;
+}
+
+// The whole row links to the transaction detail through a stretched link on the product name;
+// the CTA sits above it (relative z-10) so the two never nest as anchors.
+function RecentTransactionRow({ tx }: { tx: Transaction }) {
+  // An unpaid order continues to its payment page instead of starting a duplicate purchase.
+  const awaitingPayment = tx.db_status === "PENDING_PAYMENT";
+  const CtaIcon = awaitingPayment ? CreditCard : ShoppingCart;
+  const cta = awaitingPayment
+    ? { href: `/order/${tx.order_id}`, label: "Lanjut Bayar", aria: `Lanjut bayar ${tx.productName}` }
+    : { href: `/checkout?variant_id=${encodeURIComponent(tx.variantId)}`, label: "Beli Lagi", aria: `Beli lagi ${tx.productName}` };
+
+  return (
+    <div className="relative flex items-center gap-4 rounded-2xl border border-foreground/20 bg-surface p-4 transition-colors hover:border-foreground/40">
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 flex flex-wrap items-center gap-2">
+          <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge>
+          <span className="text-[11px] text-foreground/40">{tx.created_at ? formatDate(tx.created_at) : "—"}</span>
+        </div>
+        <Link
+          href={`/dashboard/transactions/${tx.order_id}`}
+          className="block truncate text-[14px] font-semibold text-foreground after:absolute after:inset-0 after:rounded-2xl"
+        >
+          {tx.productName}
+        </Link>
+        <div className="truncate text-[12px] text-foreground/50">
+          {tx.variantName} · {tx.duration}
+        </div>
+      </div>
+      <div className="flex shrink-0 flex-col items-end gap-2">
+        <div className="text-[15px] font-bold text-foreground">{formatPrice(tx.total_amount)}</div>
+        <Link
+          href={cta.href}
+          aria-label={cta.aria}
+          className="relative z-10 inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3.5 py-1.5 text-[12px] font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+        >
+          <CtaIcon size={13} />
+          {cta.label}
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 export default function DashboardHomePage() {
@@ -167,21 +209,7 @@ export default function DashboardHomePage() {
       ) : (
         <div className="space-y-3">
           {recent.map((tx) => (
-            <Link key={tx.order_id} href={`/dashboard/transactions/${tx.order_id}`} className="block">
-              <div className="flex items-center gap-4 rounded-2xl border border-foreground/20 bg-surface p-4 transition-colors hover:border-foreground/40">
-                <div className="min-w-0 flex-1">
-                  <div className="mb-1 flex flex-wrap items-center gap-2">
-                    <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge>
-                    <span className="text-[11px] text-foreground/40">{tx.created_at ? formatDate(tx.created_at) : "—"}</span>
-                  </div>
-                  <div className="truncate text-[14px] font-semibold text-foreground">{tx.productName}</div>
-                  <div className="truncate text-[12px] text-foreground/50">
-                    {tx.variantName} · {tx.duration}
-                  </div>
-                </div>
-                <div className="shrink-0 text-right text-[15px] font-bold text-foreground">{formatPrice(tx.total_amount)}</div>
-              </div>
-            </Link>
+            <RecentTransactionRow key={tx.order_id} tx={tx} />
           ))}
         </div>
       )}

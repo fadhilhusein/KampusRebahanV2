@@ -68,6 +68,7 @@ export async function GET() {
         products: (apiTx?.products as unknown[]) ?? [],
         account_details: (apiTx?.account_details as unknown[]) ?? [],
         created_at: order.createdAt.toISOString(),
+        variantId: order.variantId,
         productName: order.productName,
         variantName: order.variantName,
         duration: order.duration,

@@ -77,6 +77,7 @@ export interface Transaction {
   products: Product[];
   account_details: AccountDetail[];
   created_at: string;
+  variantId: string;
   productName: string;
   variantName: string;
   duration: string;
