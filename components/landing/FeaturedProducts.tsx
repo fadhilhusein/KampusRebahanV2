@@ -19,7 +19,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
       viewport={{ once: true, margin: "-120px" }}
       transition={{ duration: 0.55, ease: "easeOut" }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           className="flex items-end justify-between mb-12"
           initial={{ opacity: 0, y: 24 }}
@@ -40,7 +40,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {featured.map((product, index) => (
             <motion.div
               key={product.id}
