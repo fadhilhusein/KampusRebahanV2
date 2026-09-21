@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/product/ProductCard";
 import SearchFilter from "@/components/product/SearchFilter";
 import type { Product } from "@/lib/types";
+import { Store } from "lucide-react";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -43,8 +44,8 @@ function ProductsContent() {
       <main className="flex-1 pt-24 pb-16 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-10">
-            <h1 className="text-[40px] font-semibold text-foreground leading-none tracking-tight mb-2">
-              Semua Produk
+            <h1 className="text-[40px] flex gap-2 items-center font-semibold text-foreground leading-none tracking-tight mb-2">
+              <Store size={35} /> Semua Produk
             </h1>
             <p className="text-[14px] text-foreground/40">
               {loading ? "Memuat..." : `${filtered.length} produk tersedia`}
@@ -60,8 +61,8 @@ function ProductsContent() {
           />
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+              {Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={i}
                   className="aspect-[3/4] glass rounded-2xl sm:rounded-[28px] animate-pulse"

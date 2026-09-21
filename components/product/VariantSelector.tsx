@@ -34,7 +34,7 @@ export default function VariantSelector({
             key={v.id}
             onClick={() => !outOfStock && onSelect(v)}
             disabled={outOfStock}
-            className={`w-full ${radius} p-4 text-left border transition-all duration-150 cursor-pointer
+            className={`w-full ${radius} p-4 text-left border transition-all duration-150 cursor-pointer rounded-xl
               ${isSelected
                 ? "border-foreground/60 bg-foreground/8"
                 : "border-foreground/10 hover:border-foreground/25 bg-transparent"
