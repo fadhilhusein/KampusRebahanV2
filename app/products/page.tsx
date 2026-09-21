@@ -73,7 +73,7 @@ function ProductsContent() {
               <p className="text-foreground/30 text-[16px]">Produk tidak ditemukan.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
