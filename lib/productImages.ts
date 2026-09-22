@@ -24,7 +24,6 @@ const productImageMap: Record<string, string> = {
   "capcut": "/products/canva-head-1770484784.png",
   "devin": "/products/devin-ai-windsurf-1777302799.png",
   "windsurf": "/products/devin-ai-windsurf-1777302799.png",
-  "api testing": "/products/test-api-1772991062.png",
   "gemini ai": "/products/gemini_ai.png",
   "loklok": "/products/loklok.png",
   "claude": "/products/claude_ai.png"
