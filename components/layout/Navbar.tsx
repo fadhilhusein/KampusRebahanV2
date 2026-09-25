@@ -122,10 +122,10 @@ export default function Navbar() {
                   </button>
 
                   <motion.div
-                    initial={{opacity: 0, y: -10}}
+                    initial={{ opacity: 0, y: -10 }}
                     animate={{
                       opacity: dropdownOpen ? 1 : 0,
-                      y: dropdownOpen ? 0 : -10
+                      y: dropdownOpen ? 0 : -10,
                     }}
                     className="absolute right-0 top-full mt-2 w-56 bg-surface border border-foreground/10 rounded-xl p-4 shadow-xl"
                   >
@@ -193,7 +193,25 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-foreground/8 px-6 py-4 flex flex-col gap-1">
+          <motion.div
+            initial={{
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              height: mobileOpen ? "auto" : 0,
+              opacity: mobileOpen ? 1 : 0,
+            }}
+            transition={{
+              height: {
+                duration: 0.3,
+              },
+              opacity: {
+                duration: 0.2,
+              },
+            }}
+            className="md:hidden border-t border-foreground/8 px-6 py-4 flex flex-col gap-1 overflow-hidden"
+          >
             {LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -212,9 +230,9 @@ export default function Navbar() {
               {status === "authenticated" ? (
                 <>
                   <div className="text-[12px] text-foreground/30 py-1">
-                    {session.user?.name ?? session.user?.email}
+                    Selamat datang, {session.user?.name ?? session.user?.email}
                   </div>
-                  <div className="flex items-center justify-between py-1">
+                  {/* <div className="flex items-center justify-between py-1">
                     <span className="text-[12px] text-foreground/30">
                       Saldo
                     </span>
@@ -237,7 +255,7 @@ export default function Navbar() {
                     className="text-[14px] text-foreground/50 py-2 text-left cursor-pointer flex items-center gap-1"
                   >
                     Keluar <LogOut size={14} className="inline-block" />
-                  </button>
+                  </button> */}
                 </>
               ) : (
                 <>
@@ -261,7 +279,7 @@ export default function Navbar() {
                 <ThemeToggle />
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </header>
