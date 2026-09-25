@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { LogOut } from "lucide-react";
+import { motion } from "motion/react";
 
 // Transaksi and Admin live inside the dashboard now.
 const LINKS = [
@@ -16,9 +17,12 @@ const LINKS = [
 ];
 
 function formatPrice(price: number) {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(price);
 }
-
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -45,7 +49,10 @@ export default function Navbar() {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -64,11 +71,19 @@ export default function Navbar() {
       <div className="navbar-surface glass border-b border-foreground/8 backdrop-blur-[12px]">
         <div className="relative max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            onClick={() => setMobileOpen(false)}
+          >
             {/* <span className="text-foreground font-semibold text-[14px] tracking-tight">
               Kampus<span className="text-primary">Rebahan</span>
             </span> */}
-            <img src="/logo_website.png" alt="Kampus Rebahan" className="h-12 w-auto" />
+            <img
+              src="/logo_website.png"
+              alt="Kampus Rebahan"
+              className="h-12 w-auto"
+            />
           </Link>
 
           {/* Desktop nav */}
@@ -96,26 +111,38 @@ export default function Navbar() {
               <div className="hidden md:flex items-center gap-3">
                 <div className="relative" ref={dropdownRef}>
                   <button
-                    onClick={() => { setDropdownOpen((v) => !v); if (!dropdownOpen) fetchBalance(); }}
+                    onClick={() => {
+                      setDropdownOpen((v) => !v);
+                      if (!dropdownOpen) fetchBalance();
+                    }}
                     className="text-[12px] text-foreground/40 max-w-[140px] truncate border-r border-foreground/20 pr-3 hover:text-foreground transition-colors cursor-pointer flex items-center gap-1"
                   >
                     Halo, {session.user?.name ?? session.user?.email}
                     <span className="text-foreground/30">▾</span>
                   </button>
 
-                  {dropdownOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-surface border border-foreground/10 rounded-[2px] p-4 shadow-xl">
-                      <div className="text-[11px] text-foreground/30 uppercase tracking-wider mb-1">Saldo</div>
-                      <div className="text-[18px] font-semibold text-foreground mb-3">{formatPrice(balance)}</div>
-                      <Link
-                        href="/dashboard/balance"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block text-center text-[12px] text-foreground bg-foreground/10 hover:bg-foreground/15 rounded-[2px] px-3 py-2 transition-colors"
-                      >
-                        Top Up Saldo
-                      </Link>
+                  <motion.div
+                    initial={{opacity: 0, y: -10}}
+                    animate={{
+                      opacity: dropdownOpen ? 1 : 0,
+                      y: dropdownOpen ? 0 : -10
+                    }}
+                    className="absolute right-0 top-full mt-2 w-56 bg-surface border border-foreground/10 rounded-xl p-4 shadow-xl"
+                  >
+                    <div className="text-[11px] text-foreground/30 uppercase tracking-wider mb-1">
+                      Saldo
                     </div>
-                  )}
+                    <div className="text-[18px] font-semibold text-foreground mb-3">
+                      {formatPrice(balance)}
+                    </div>
+                    <Link
+                      href="/dashboard/balance"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block text-center text-[12px] text-foreground bg-foreground/10 hover:bg-foreground/15 rounded-[2px] px-3 py-2 transition-colors"
+                    >
+                      Top Up Saldo
+                    </Link>
+                  </motion.div>
                 </div>
                 <button
                   onClick={handleSignOut}
@@ -173,7 +200,9 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 className={`text-[14px] font-medium py-2.5 transition-colors duration-150 ${
-                  pathname === link.href ? "text-foreground" : "text-foreground/50"
+                  pathname === link.href
+                    ? "text-foreground"
+                    : "text-foreground/50"
                 }`}
               >
                 {link.label}
@@ -186,8 +215,12 @@ export default function Navbar() {
                     {session.user?.name ?? session.user?.email}
                   </div>
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-[12px] text-foreground/30">Saldo</span>
-                    <span className="text-[13px] font-semibold text-foreground">{formatPrice(balance)}</span>
+                    <span className="text-[12px] text-foreground/30">
+                      Saldo
+                    </span>
+                    <span className="text-[13px] font-semibold text-foreground">
+                      {formatPrice(balance)}
+                    </span>
                   </div>
                   <Link
                     href="/dashboard/balance"
@@ -197,19 +230,29 @@ export default function Navbar() {
                     Top Up Saldo
                   </Link>
                   <button
-                    onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                    onClick={() => {
+                      setMobileOpen(false);
+                      handleSignOut();
+                    }}
                     className="text-[14px] text-foreground/50 py-2 text-left cursor-pointer flex items-center gap-1"
                   >
-                    Keluar <LogOut size={14} className="inline-block"/>
+                    Keluar <LogOut size={14} className="inline-block" />
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/auth/signin" onClick={() => setMobileOpen(false)}>
-                    <ButtonPrimary variant="ghost" className="w-full py-2.5">Masuk</ButtonPrimary>
+                  <Link
+                    href="/auth/signin"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <ButtonPrimary variant="ghost" className="w-full py-2.5">
+                      Masuk
+                    </ButtonPrimary>
                   </Link>
                   <Link href="/products" onClick={() => setMobileOpen(false)}>
-                    <ButtonPrimary className="w-full py-2.5">Beli Sekarang</ButtonPrimary>
+                    <ButtonPrimary className="w-full py-2.5">
+                      Beli Sekarang
+                    </ButtonPrimary>
                   </Link>
                 </>
               )}
