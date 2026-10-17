@@ -11,7 +11,7 @@ import { TransactionSkeleton } from "@/components/ui/Skeleton";
 import { getCategoryIcon } from "@/lib/categoryIcons";
 import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
-import { Hash, Package, KeyRound, Star, Copy, Clock, CheckCircle2, Loader2 } from "lucide-react";
+import { Hash, Package, KeyRound, Star, Copy, Clock, CheckCircle2, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -372,7 +372,7 @@ export default function TransactionDetailPage() {
       : false);
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
         <Link href="/dashboard/transactions" className="hover:text-foreground transition-colors">
           Transaksi
@@ -499,7 +499,7 @@ export default function TransactionDetailPage() {
               </div>
               <Link href={`/order/${tx.db_order_id}`}>
                 <span className="text-[12px] font-medium text-foreground/60 hover:text-foreground transition-colors border border-foreground/20 rounded-xl px-4 py-2">
-                  {tx.db_status === "PAID" ? "Lihat detail order →" : "Lihat instruksi bayar →"}
+                  {tx.db_status === "PAID" ? "Lihat detail order" : "Lihat instruksi bayar"} <ArrowRight size={14} className="inline" />
                 </span>
               </Link>
             </GlassCard>
@@ -525,7 +525,7 @@ export default function TransactionDetailPage() {
           <div className="pt-2">
             <Link href="/dashboard/transactions">
               <ButtonPrimary variant="ghost" className="text-[13px]">
-                ← Kembali ke Riwayat
+                <ArrowLeft size={15} /> Kembali ke Riwayat
               </ButtonPrimary>
             </Link>
           </div>

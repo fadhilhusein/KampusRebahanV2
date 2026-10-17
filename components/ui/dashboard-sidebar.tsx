@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronRight, CornerDownLeft, Menu, PanelLeftClose, PanelLeftOpen, Search, X } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -32,6 +33,25 @@ export type SidebarUser = {
 function matchesPath(href: string, pathname: string) {
   if (href === "/dashboard") return pathname === href;
   return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function useDialogFocus(ref: React.RefObject<HTMLElement | null>, enabled: boolean) {
+  useEffect(() => {
+    if (!enabled || !ref.current) return;
+    const panel = ref.current;
+    const previous = document.activeElement as HTMLElement | null;
+    const selector = 'a[href],button:not(:disabled),input:not(:disabled),[tabindex="0"]';
+    (panel.querySelector(selector) as HTMLElement | null)?.focus();
+    function trap(event: KeyboardEvent) {
+      if (event.key !== "Tab") return;
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(selector)).filter(el => el.offsetParent !== null);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
+    panel.addEventListener("keydown", trap);
+    return () => { panel.removeEventListener("keydown", trap); previous?.focus(); };
+  }, [enabled, ref]);
 }
 
 function isItemActive(item: NavItemData, pathname: string): boolean {
@@ -188,7 +208,7 @@ export function SidebarNav({
   return (
     <div className={`flex h-full w-[260px] flex-col bg-surface p-3 ${className}`}>
       <Link href="/" onClick={onNavigate} className="mb-3 flex items-center px-1.5" aria-label="Ke beranda KampusRebahan">
-        <img src="/logo_website.png" alt="Kampus Rebahan" className="h-10 w-auto" />
+        <Image src="/logo_website.png" alt="Kampus Rebahan" width={184} height={46} className="kr-logo" />
       </Link>
 
       <button
@@ -230,6 +250,8 @@ export function SidebarNav({
 }
 
 function CommandSearch({ items, onClose }: { items: NavItemData[]; onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef, true);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
@@ -260,7 +282,7 @@ function CommandSearch({ items, onClose }: { items: NavItemData[]; onClose: () =
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center bg-background/60 px-4 pt-[15vh] backdrop-blur-sm" role="dialog" aria-label="Cari menu">
+    <div ref={dialogRef} onKeyDown={e => { if (e.key === "Escape") onClose(); }} className="fixed inset-0 z-[60] flex items-start justify-center bg-background/60 px-4 pt-[15vh] backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Cari menu">
       <div className="absolute inset-0" onClick={onClose} />
       <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-foreground/20 bg-surface">
         <div className="flex items-center border-b border-foreground/10 px-4">
@@ -330,12 +352,15 @@ export default function DashboardShell({
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+  useDialogFocus(drawerRef, mobileOpen);
 
   const allItems = useMemo(() => flattenItems([...groups.flatMap((g) => g.items), ...bottomItems]), [groups, bottomItems]);
   const activeTitle = allItems.find((item) => item.href && isItemActive(item, pathname))?.title ?? "Dashboard";
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") { setMobileOpen(false); setSearchOpen(false); }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setSearchOpen((v) => !v);
@@ -348,7 +373,7 @@ export default function DashboardShell({
   const openSearch = () => setSearchOpen(true);
 
   return (
-    <div className="flex h-dvh w-full bg-background text-foreground">
+    <div className="kr-dashboard flex h-dvh w-full text-foreground">
       {/* Desktop sidebar */}
       <aside
         inert={collapsed}
@@ -363,7 +388,8 @@ export default function DashboardShell({
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-[260px] border-r border-foreground/10">
+          <aside ref={drawerRef} role="dialog" aria-modal="true" aria-label="Navigasi dashboard" className="absolute inset-y-0 left-0 w-[260px] border-r border-foreground/10">
+            <button type="button" aria-label="Tutup menu" onClick={() => setMobileOpen(false)} className="absolute top-3 right-2 z-10 rounded-md p-2 bg-surface"><X size={18} /></button>
             <SidebarNav
               groups={groups}
               bottomItems={bottomItems}
@@ -376,7 +402,7 @@ export default function DashboardShell({
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center justify-between border-b border-foreground/10 bg-surface px-4">
+        <header className="flex h-[86px] shrink-0 items-center justify-between border-b border-foreground/10 bg-surface px-4 md:px-10">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"

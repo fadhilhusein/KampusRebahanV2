@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LegalArticle from "@/components/layout/LegalArticle";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,13 +12,14 @@ export default function TermsPage() {
     <>
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-[1280px] mx-auto">
+          <p className="kr-eyebrow mb-4">Informasi layanan</p>
           <h1 className="text-[36px] font-semibold text-foreground tracking-tight mb-2">
             Syarat & Ketentuan
           </h1>
           <p className="text-[13px] text-foreground/30 mb-10">Terakhir diperbarui: Mei 2026</p>
 
-          <div className="space-y-8 text-[14px] leading-relaxed text-foreground/70">
+          <LegalArticle headings={["Penerimaan Syarat","Layanan","Pembayaran","Saldo Akun","Pengiriman Produk","Garansi & Refund","Larangan Penggunaan","Pembatasan Tanggung Jawab","Perubahan Syarat","Kontak"]}>
 
             <section>
               <h2 className="text-[16px] font-semibold text-foreground mb-3">1. Penerimaan Syarat</h2>
@@ -92,7 +94,7 @@ export default function TermsPage() {
               <p>Untuk pertanyaan terkait syarat dan ketentuan, hubungi kami melalui email atau media sosial yang tersedia.</p>
             </section>
 
-          </div>
+          </LegalArticle>
         </div>
       </main>
       <Footer />

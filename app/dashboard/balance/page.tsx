@@ -80,7 +80,7 @@ export default function BalancePage() {
       <h1 className="mb-8 text-[28px] font-bold leading-tight tracking-tight text-foreground">Saldo Akun</h1>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className={`${cardClass} flex flex-col items-center justify-center p-6 text-center`}>
+        <div className="kr-balance-card flex flex-col items-start justify-center p-8 rounded-lg">
           <div className="mb-2 flex items-center justify-center gap-2">
             <Wallet size={14} className="text-primary" />
             <div className="text-[11px] font-semibold uppercase tracking-wider text-foreground/60">Saldo Saat Ini</div>

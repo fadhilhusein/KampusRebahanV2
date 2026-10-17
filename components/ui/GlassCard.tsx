@@ -7,7 +7,7 @@ interface GlassCardProps {
   radius?: string;
 }
 
-export default function GlassCard({ children, className = "", hover = false, radius = "rounded-[2px]" }: GlassCardProps) {
+export default function GlassCard({ children, className = "", hover = false, radius = "rounded-lg" }: GlassCardProps) {
   return (
     <div
       className={`glass ${radius} ${hover ? "glass-hover transition-all duration-300 cursor-pointer" : ""} ${className}`}

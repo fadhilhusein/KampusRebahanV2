@@ -13,7 +13,7 @@ import GatewayQr from "@/components/payment/GatewayQr";
 import Countdown from "@/components/payment/Countdown";
 import {
   Clock, CheckCircle2, Loader2, PartyPopper, XCircle, Ban, TimerOff, Package,
-  ListChecks, CreditCard, Landmark, Copy, Check, Download,
+  ListChecks, CreditCard, Landmark, Copy, Check, Download, ArrowLeft, ArrowRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -252,6 +252,7 @@ export default function OrderDetailPage() {
             <span className="text-foreground/60 font-mono truncate max-w-[160px]">{orderId}</span>
           </div>
 
+          <h1 className="text-[32px] font-medium tracking-tight mb-6">Status pesanan</h1>
           {loading ? (
             <div className="text-foreground/30 text-[14px]">Memuat...</div>
           ) : error ? (
@@ -330,14 +331,14 @@ export default function OrderDetailPage() {
               {order.status === "COMPLETED" && order.apiOrderId && (
                 <div className="text-center">
                   <Link href={`/dashboard/transactions/${order.id}`}>
-                    <ButtonPrimary>Lihat Detail Akun →</ButtonPrimary>
+                    <ButtonPrimary>Lihat Detail Akun <ArrowRight size={15} /></ButtonPrimary>
                   </Link>
                 </div>
               )}
 
               <div className="pt-2">
                 <Link href="/dashboard/transactions">
-                  <ButtonPrimary variant="ghost" className="text-[13px]">← Kembali ke Riwayat</ButtonPrimary>
+                  <ButtonPrimary variant="ghost" className="text-[13px]"><ArrowLeft size={15} /> Kembali ke Riwayat</ButtonPrimary>
                 </Link>
               </div>
             </div>

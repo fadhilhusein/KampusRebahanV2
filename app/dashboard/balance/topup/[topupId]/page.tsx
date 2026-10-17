@@ -8,7 +8,7 @@ import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import GatewayQr from "@/components/payment/GatewayQr";
 import Countdown from "@/components/payment/Countdown";
 import { useToast } from "@/components/ui/ToastContext";
-import { Zap, CheckCircle2, TimerOff } from "lucide-react";
+import { Zap, CheckCircle2, TimerOff, ArrowLeft } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -73,6 +73,7 @@ export default function TopUpPaymentPage() {
         <span className="text-foreground/60">Top Up</span>
       </div>
 
+      <h1 className="text-[30px] font-medium tracking-tight mb-6">Pembayaran top up</h1>
       {loading ? (
         <div className="text-foreground/30 text-[14px]">Memuat...</div>
       ) : error ? (
@@ -124,7 +125,7 @@ export default function TopUpPaymentPage() {
 
           <div className="pt-2 text-center">
             <Link href="/dashboard/balance">
-              <ButtonPrimary variant="ghost" className="text-[13px]">← Kembali ke Saldo</ButtonPrimary>
+              <ButtonPrimary variant="ghost" className="text-[13px]"><ArrowLeft size={15} /> Kembali ke Saldo</ButtonPrimary>
             </Link>
           </div>
         </div>

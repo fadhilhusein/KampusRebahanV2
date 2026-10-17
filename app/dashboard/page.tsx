@@ -31,7 +31,7 @@ interface StatCardProps {
 
 function StatCard({ label, value, icon: Icon, tone, loading, href, hint }: StatCardProps) {
   const body = (
-    <div className="h-full rounded-2xl border border-foreground/20 bg-surface p-5 transition-colors hover:border-foreground/40">
+    <div className="h-full rounded-lg border border-foreground/15 bg-surface p-6 transition-colors hover:border-foreground/30">
       <div className="mb-4 flex items-center justify-between">
         <span className="text-[12px] font-semibold text-foreground/60">{label}</span>
         <span className={`flex h-9 w-9 items-center justify-center rounded-full ${tone}`}>
@@ -41,7 +41,7 @@ function StatCard({ label, value, icon: Icon, tone, loading, href, hint }: StatC
       {loading ? (
         <Skeleton className="h-7 w-24" radius="rounded-lg" />
       ) : (
-        <div className="text-[24px] font-bold leading-none text-foreground">{value}</div>
+        <div className="text-[30px] font-medium leading-none text-foreground">{value}</div>
       )}
       {hint && (href && <Link href={href} className="flex items-center justify-center gap-2 mt-6 p-2 w-full rounded-xl cursor-pointer text-[11px] bg-primary font-medium text-white hover:bg-primary/15 hover:text-primary"><Wallet size={13} /> {hint}</Link>)}
     </div>
@@ -60,34 +60,32 @@ function RecentTransactionRow({ tx }: { tx: Transaction }) {
     : { href: `/checkout?variant_id=${encodeURIComponent(tx.variantId)}`, label: "Beli Lagi", aria: `Beli lagi ${tx.productName}` };
 
   return (
-    <div className="relative flex items-center gap-4 rounded-2xl border border-foreground/20 bg-surface p-4 transition-colors hover:border-foreground/40">
-      <div className="min-w-0 flex-1">
-        <div className="mb-1 flex flex-wrap items-center gap-2">
-          <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge>
-          <span className="text-[11px] text-foreground/40">{tx.created_at ? formatDate(tx.created_at) : "—"}</span>
-        </div>
+    <tr className="border-t border-foreground/10">
+      <td className="p-5">
         <Link
           href={`/dashboard/transactions/${tx.order_id}`}
-          className="block truncate text-[14px] font-semibold text-foreground after:absolute after:inset-0 after:rounded-2xl"
+          className="block text-[14px] font-medium text-foreground hover:text-primary"
         >
           {tx.productName}
         </Link>
         <div className="truncate text-[12px] text-foreground/50">
           {tx.variantName} · {tx.duration}
         </div>
-      </div>
-      <div className="flex shrink-0 flex-col items-end gap-2">
-        <div className="text-[15px] font-bold text-foreground">{formatPrice(tx.total_amount)}</div>
+      </td>
+      <td className="p-5 text-xs text-foreground/50 whitespace-nowrap">{tx.created_at ? formatDate(tx.created_at) : "—"}</td>
+      <td className="p-5"><Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge></td>
+      <td className="p-5 text-sm whitespace-nowrap">{formatPrice(tx.total_amount)}</td>
+      <td className="p-5">
         <Link
           href={cta.href}
           aria-label={cta.aria}
-          className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-[12px] font-semibold text-white transition-colors hover:bg-primary/15 hover:text-primary"
+          className="inline-flex items-center gap-1.5 rounded-md border border-foreground/15 px-3.5 py-2 text-[12px] font-medium transition-colors hover:border-primary whitespace-nowrap"
         >
           <CtaIcon size={13} />
           {cta.label}
         </Link>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 }
 
@@ -132,6 +130,7 @@ export default function DashboardHomePage() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-8">
+        <p className="kr-eyebrow mb-4">Ringkasan akun</p>
         <h1 className="mb-1 text-[28px] font-bold leading-tight tracking-tight text-foreground">
           {name ? `Halo, ${name}` : "Dashboard"}
         </h1>
@@ -207,10 +206,10 @@ export default function DashboardHomePage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {recent.map((tx) => (
-            <RecentTransactionRow key={tx.order_id} tx={tx} />
-          ))}
+        <div className="overflow-x-auto rounded-lg border border-foreground/15 bg-surface">
+          <table className="w-full min-w-[800px] text-left"><thead><tr>{["Produk","Tanggal","Status","Total","Aksi"].map(label => <th className="p-5 text-xs" key={label}>{label}</th>)}</tr></thead><tbody>
+            {recent.map((tx) => <RecentTransactionRow key={tx.order_id} tx={tx} />)}
+          </tbody></table>
         </div>
       )}
     </div>

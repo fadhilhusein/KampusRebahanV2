@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LegalArticle from "@/components/layout/LegalArticle";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,13 +12,14 @@ export default function PrivacyPage() {
     <>
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-[1280px] mx-auto">
+          <p className="kr-eyebrow mb-4">Informasi layanan</p>
           <h1 className="text-[36px] font-semibold text-foreground tracking-tight mb-2">
             Kebijakan Privasi
           </h1>
           <p className="text-[13px] text-foreground/30 mb-10">Terakhir diperbarui: Mei 2026</p>
 
-          <div className="space-y-8 text-[14px] leading-relaxed text-foreground/70">
+          <LegalArticle headings={["Informasi yang Kami Kumpulkan","Penggunaan Informasi","Keamanan Data","Berbagi Data dengan Pihak Ketiga","Penyimpanan Data","Cookie & Sesi","Hak Anda","Perubahan Kebijakan","Kontak"]}>
 
             <section>
               <h2 className="text-[16px] font-semibold text-foreground mb-3">1. Informasi yang Kami Kumpulkan</h2>
@@ -91,7 +93,7 @@ export default function PrivacyPage() {
               <p>Pertanyaan mengenai kebijakan privasi dapat disampaikan melalui email atau media sosial resmi KampusRebahan.</p>
             </section>
 
-          </div>
+          </LegalArticle>
         </div>
       </main>
       <Footer />

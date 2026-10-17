@@ -6,12 +6,12 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GradientBorder from "@/components/ui/GradientBorder";
-import GlassCard from "@/components/ui/GlassCard";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
 import { ClipboardList, CreditCard, QrCode, Landmark, Wallet, ShoppingCart } from "lucide-react";
+import ProductImage from "@/components/product/ProductImage";
 
 // Keep in sync with lib/bayarGg.ts QRIS_GATEWAY_MAX_AMOUNT (kept separate to avoid
 // bundling the server-only Bayar.gg client, which uses Node's crypto, into client code).
@@ -35,9 +35,9 @@ function CheckoutContent() {
 
   const [variant, setVariant] = useState<ProductVariant | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(Boolean(variantId));
   const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "BALANCE">("QRIS_GATEWAY");
+  const [selectedPaymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "BALANCE">("QRIS_GATEWAY");
   const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
   const [balance, setBalance] = useState(0);
   const [paymentNote, setPaymentNote] = useState("");
@@ -56,7 +56,7 @@ function CheckoutContent() {
   }, []);
 
   useEffect(() => {
-    if (!variantId) { setDataLoading(false); return; }
+    if (!variantId) return;
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
@@ -81,14 +81,10 @@ function CheckoutContent() {
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
 
-  useEffect(() => {
-    if (qrisGatewayDisabled && paymentMethod === "QRIS_GATEWAY" && bankTransferEnabled) {
-      setPaymentMethod("BANK_TRANSFER");
-    }
-    if (!bankTransferEnabled && paymentMethod === "BANK_TRANSFER" && !qrisGatewayDisabled) {
-      setPaymentMethod("QRIS_GATEWAY");
-    }
-  }, [qrisGatewayDisabled, bankTransferEnabled, paymentMethod]);
+  const paymentMethod = selectedPaymentMethod === "QRIS_GATEWAY" && qrisGatewayDisabled && bankTransferEnabled
+    ? "BANK_TRANSFER"
+    : selectedPaymentMethod === "BANK_TRANSFER" && !bankTransferEnabled && !qrisGatewayDisabled
+      ? "QRIS_GATEWAY" : selectedPaymentMethod;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -150,7 +146,7 @@ function CheckoutContent() {
     <>
       <Navbar />
       <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
             <Link href={`/products/${productId}`} className="hover:text-foreground transition-colors">
               {product?.name ?? "Produk"}
@@ -160,11 +156,12 @@ function CheckoutContent() {
           </div>
 
           <h1 className="text-[32px] font-semibold text-foreground leading-none tracking-tight mb-8">
-            Checkout
+            Selesaikan pesananmu.
           </h1>
 
           <GradientBorder radius="rounded-2xl">
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="kr-checkout-form p-6 md:p-8">
+              <div className="space-y-6 min-w-0">
 
               {/* Order summary */}
               {variant && (
@@ -173,7 +170,8 @@ function CheckoutContent() {
                     <ClipboardList size={12} />
                     Ringkasan Order
                   </div>
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-5 mb-3">
+                    <div className="relative w-24 h-24 shrink-0 overflow-hidden rounded-md"><ProductImage name={product?.name ?? "Produk"} sizes="96px" /></div>
                     <div>
                       <div className="text-[15px] font-medium text-foreground">{product?.name}</div>
                       <div className="text-[12px] text-foreground/40 mt-0.5">
@@ -195,14 +193,14 @@ function CheckoutContent() {
                   <CreditCard size={12} />
                   Metode Pembayaran
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3">
                   <button
                     type="button"
                     disabled={qrisGatewayDisabled}
                     onClick={() => setPaymentMethod("QRIS_GATEWAY")}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                       paymentMethod === "QRIS_GATEWAY"
-                        ? "border-foreground/50 text-foreground bg-foreground/10"
+                        ? "border-primary text-primary bg-primary/5"
                         : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
@@ -214,7 +212,7 @@ function CheckoutContent() {
                       onClick={() => setPaymentMethod("BANK_TRANSFER")}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer ${
                         paymentMethod === "BANK_TRANSFER"
-                          ? "border-foreground/50 text-foreground bg-foreground/10"
+                          ? "border-primary text-primary bg-primary/5"
                           : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                       }`}
                     >
@@ -227,7 +225,7 @@ function CheckoutContent() {
                     onClick={() => setPaymentMethod("BALANCE")}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
                       paymentMethod === "BALANCE"
-                        ? "border-foreground/50 text-foreground bg-foreground/10"
+                        ? "border-primary text-primary bg-primary/5"
                         : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
                     }`}
                   >
@@ -251,11 +249,12 @@ function CheckoutContent() {
 
               {/* Quantity */}
               <div>
-                <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                <label htmlFor="checkout-quantity" className="block text-[13px] font-semibold text-foreground/70 mb-2">
                   Jumlah <span className="text-foreground/40 font-normal">(unit)</span>
                   {stock > 0 && <span className="text-foreground/40 font-normal ml-1">· Stok: {stock}</span>}
                 </label>
                 <input
+                  id="checkout-quantity"
                   type="number"
                   min={1}
                   max={stock || 100}
@@ -273,18 +272,13 @@ function CheckoutContent() {
                 )}
               </div>
 
-              {/* Total */}
-              <div className="flex items-center justify-between bg-foreground/5 rounded-xl px-4 py-3">
-                <span className="text-[13px] font-medium text-foreground/60">Total ({quantity}x)</span>
-                <span className="text-[20px] font-semibold text-foreground">{formatPrice(totalSell)}</span>
-              </div>
-
               {/* Note */}
               <div>
-                <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                <label htmlFor="checkout-note" className="block text-[13px] font-semibold text-foreground/70 mb-2">
                   Catatan <span className="text-foreground/40 font-normal">(opsional)</span>
                 </label>
                 <textarea
+                  id="checkout-note"
                   value={paymentNote}
                   onChange={(e) => setPaymentNote(e.target.value)}
                   placeholder="Informasi tambahan jika ada..."
@@ -296,10 +290,11 @@ function CheckoutContent() {
               {/* Email Invite (required for Invite-type products) */}
               {isInvite && (
                 <div>
-                  <label className="block text-[13px] font-semibold text-foreground/70 mb-2">
+                  <label htmlFor="checkout-invite" className="block text-[13px] font-semibold text-foreground/70 mb-2">
                     Email Invite <span className="text-primary font-normal">(wajib)</span>
                   </label>
                   <input
+                    id="checkout-invite"
                     type="email"
                     value={emailInvite}
                     onChange={(e) => setEmailInvite(e.target.value)}
@@ -323,6 +318,11 @@ function CheckoutContent() {
                 </div>
               )}
 
+              </div>
+              <aside className="kr-checkout-summary space-y-6">
+                <h2 className="text-[23px] font-medium tracking-tight">Ringkasan pesanan</h2>
+                <p className="text-sm text-foreground/60">{quantity} × {product?.name}</p>
+                <div className="border-t border-foreground/10 pt-5"><p className="text-xs text-foreground/50 mb-2">Total pembayaran</p><p className="text-[34px] font-medium tracking-tight">{formatPrice(totalSell)}</p></div>
               {error && (
                 <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
                   {error}
@@ -335,12 +335,13 @@ function CheckoutContent() {
                 className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
               >
                 {!outOfStock && !loading && <ShoppingCart size={16} />}
-                {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order →"}
+                {loading ? "Memproses..." : outOfStock ? "Stok Habis" : "Buat Order"}
               </ButtonPrimary>
 
               <p className="text-[11px] text-foreground/20 text-center">
                 Instruksi pembayaran akan ditampilkan setelah order dibuat.
               </p>
+              </aside>
             </form>
           </GradientBorder>
         </div>

@@ -4,6 +4,10 @@ import { ThemeProvider } from "next-themes";
 import { ToastProvider } from "@/components/ui/ToastContext";
 import NextAuthSessionProvider from "@/components/ui/SessionProvider";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import { Poppins } from "next/font/google";
+import "./brand.css";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", variable: "--font-poppins" });
 
 export const metadata: Metadata = {
   title: {
@@ -42,9 +46,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="id" className={`${poppins.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false} storageKey="kr-theme">
+        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false} storageKey="kr-theme">
           <NextAuthSessionProvider>
             <ToastProvider>{children}</ToastProvider>
             <WhatsAppButton />

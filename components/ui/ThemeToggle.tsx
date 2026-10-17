@@ -1,29 +1,34 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
-
-export default function ThemeToggle({ className = "" }: { className?: string }) {
+const subscribe = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+export default function ThemeToggle({
+  className = "",
+}: {
+  className?: string;
+}) {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return <div className={`w-9 h-9 rounded-full ${className}`} aria-hidden="true" />;
-  }
-
-  const isDark = theme === "dark";
-
+  const mounted = useSyncExternalStore(
+    subscribe,
+    clientSnapshot,
+    serverSnapshot,
+  );
+  if (!mounted)
+    return (
+      <span className={`block h-11 w-11 ${className}`} aria-hidden="true" />
+    );
+  const dark = theme === "dark";
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Ganti ke tema terang" : "Ganti ke tema gelap"}
-      className={`w-9 h-9 rounded-full glass glass-hover flex items-center justify-center cursor-pointer transition-colors ${className}`}
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      aria-label={dark ? "Ganti ke tema terang" : "Ganti ke tema gelap"}
+      className={`flex h-11 w-11 items-center justify-center rounded-md border border-foreground/15 text-foreground/70 hover:bg-foreground/5 transition-colors ${className}`}
     >
-      {isDark ? <Sun size={16} className="text-foreground/70" /> : <Moon size={16} className="text-foreground/70" />}
+      {dark ? <Sun size={17} /> : <Moon size={17} />}
     </button>
   );
 }

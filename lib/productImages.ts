@@ -1,39 +1,60 @@
 const productImageMap: Record<string, string> = {
-  "zoom": "/products/zoom-premium-1770486513.png",
-  "windows": "/products/windows-10-11-pro-1770493761.png",
-  "youku": "/products/youku-premium-1772129735.png",
-  "crunchyroll": "/products/crunchyroll-1772129950.png",
-  "bstation": "/products/bstation-1772127195.png",
-  "vidio": "/products/vidio-platinum-1772127344.png",
-  "scribd": "/products/scribd-1772129256.png",
-  "office 365": "/products/office365-lifetime-1770493190.png",
-  "office365": "/products/office365-lifetime-1770493190.png",
-  "prime video": "/products/prime-video-1772130447.png",
-  "prime": "/products/prime-video-1772130447.png",
-  "viu": "/products/viu-premium-1772126011.png",
-  "canva premium": "/products/canva-member-1770483590.png",
-  "canva pro": "/products/canva-member-1770483590.png",
-  "canva": "/products/canva-member-1770483590.png",
-  "domain": "/products/domain-tech-1778360523.png",
-  "ilovepdf": "/products/i-love-pdf-1772130142.png",
-  "i love pdf": "/products/i-love-pdf-1772130142.png",
-  "apple music": "/products/apple-music-1772524843.png",
-  "kiro": "/products/kiro-ai-1778536029.png",
-  "spotify": "/products/spotify-premium-1770495170.png",
-  "netflix": "/products/netflix-premium-1770492967.png",
-  "capcut": "/products/canva-head-1770484784.png",
-  "devin": "/products/devin-ai-windsurf-1777302799.png",
-  "windsurf": "/products/devin-ai-windsurf-1777302799.png",
-  "gemini ai": "/products/gemini_ai.png",
-  "loklok": "/products/loklok.png",
-  "claude": "/products/claude_ai.png"
+  "leonardo ai": "/products/red/leonardo-ai.webp",
+  "chatgpt premium": "/products/red/chatgpt-premium.webp",
+  "office365 lifetime": "/products/red/office365-lifetime.webp",
+  "apple music": "/products/red/apple-music.webp",
+  "vidio platinum": "/products/red/vidio-platinum.webp",
+  "viu premium": "/products/red/viu-premium.webp",
+  "getcontact premium": "/products/red/getcontact-premium.webp",
+  "zoom premium": "/products/red/zoom-premium.webp",
+  "hma vpn": "/products/red/hma-vpn.webp",
+  "prime video": "/products/red/prime-video.webp",
+  "express vpn": "/products/red/express-vpn.webp",
+  "windows 10 / 11 pro": "/products/red/windows-10-11-pro.webp",
+  "tradingview premium": "/products/red/tradingview-premium.webp",
+  scribd: "/products/red/scribd.webp",
+  "picsart pro": "/products/red/picsart-pro.webp",
+  "remini premium": "/products/red/remini-premium.webp",
+  "wink premium": "/products/red/wink-premium.webp",
+  "youku premium": "/products/red/youku-premium.webp",
+  bstation: "/products/red/bstation.webp",
+  "i love pdf": "/products/red/i-love-pdf.webp",
+  "meitu premium": "/products/red/meitu-premium.webp",
+  "alight motion": "/products/red/alight-motion.webp",
+  "vcc trial aplikasi": "/products/red/vcc-trial-aplikasi.webp",
+  "wetv vip": "/products/red/wetv-vip.webp",
+  "grok ai": "/products/red/grok-ai.webp",
+  crunchyroll: "/products/red/crunchyroll.webp",
+  "disney hotstar": "/products/red/disney-hotstar.webp",
+  "surfshark vpn": "/products/red/surfshark-vpn.webp",
+  loklok: "/products/red/loklok.webp",
+  "kiro ai": "/products/red/kiro-ai.webp",
+  "devin ai windsurf": "/products/red/devin-ai-windsurf.webp",
+  camscanner: "/products/red/camscanner.webp",
+  "hbo max": "/products/red/hbo-max.webp",
+  iqiyi: "/products/red/iqiyi.webp",
+  "domain murah": "/products/red/domain-murah.webp",
+  "drakor id": "/products/red/drakor-id.webp",
+  upcloud: "/products/red/upcloud.webp",
+  "adobe creative cloud": "/products/red/adobe-creative-cloud.webp",
+  "github student": "/products/red/github-student.webp",
+  "github copilot": "/products/red/github-copilot.webp",
+  "api testing": "/products/red/api-testing.webp",
+  "drama all in one": "/products/red/drama-all-in-one.webp",
+  "netflix premium": "/products/red/netflix-premium.webp",
+  "capcut pro": "/products/red/capcut-pro.webp",
+  "claude pro": "/products/red/claude-pro.webp",
+  "youtube premium": "/products/red/youtube-premium.webp",
+  "spotify premium": "/products/red/spotify-premium.webp",
+  "canva premium": "/products/red/canva-premium.webp",
+  "gemini ai antigravity": "/products/red/gemini-ai-antigravity.webp",
 };
-
 export function getProductImage(productName: string): string | null {
   if (!productName) return null;
-  const lower = productName.toLowerCase();
-  for (const [key, path] of Object.entries(productImageMap)) {
-    if (lower.includes(key)) return path;
-  }
-  return null;
+  const key = productName.trim().toLowerCase();
+  if (productImageMap[key]) return productImageMap[key];
+  const match = Object.keys(productImageMap)
+    .sort((a, b) => b.length - a.length)
+    .find((name) => key.includes(name));
+  return match ? productImageMap[match] : null;
 }

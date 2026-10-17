@@ -1,73 +1,68 @@
 "use client";
-
+import { Circle, CheckCircle2, LockKeyhole } from "lucide-react";
 import type { ProductVariant } from "@/lib/types";
-
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(price);
-}
-
-interface VariantSelectorProps {
-  variants: ProductVariant[];
-  selected: ProductVariant | null;
-  onSelect: (v: ProductVariant) => void;
-  radius?: string;
-}
-
 export default function VariantSelector({
   variants,
   selected,
   onSelect,
-  radius = "rounded-[2px]"
-}: VariantSelectorProps) {
+}: {
+  variants: ProductVariant[];
+  selected: ProductVariant | null;
+  onSelect: (v: ProductVariant) => void;
+  radius?: string;
+}) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="group" aria-label="Pilihan varian">
       {variants.map((v) => {
-        const isSelected = selected?.id === v.id;
-        const outOfStock = v.stock === 0;
-
+        const active = selected?.id === v.id,
+          out = v.stock === 0;
         return (
           <button
             key={v.id}
-            onClick={() => !outOfStock && onSelect(v)}
-            disabled={outOfStock}
-            className={`w-full ${radius} p-4 text-left border transition-all duration-150 cursor-pointer rounded-xl
-              ${isSelected
-                ? "border-foreground/60 bg-foreground/8"
-                : "border-foreground/10 hover:border-foreground/25 bg-transparent"
-              }
-              ${outOfStock ? "opacity-40 cursor-not-allowed" : ""}
-            `}
+            type="button"
+            onClick={() => onSelect(v)}
+            disabled={out}
+            aria-pressed={active}
+            className={`w-full rounded-md border p-4 md:p-5 text-left transition-colors disabled:cursor-not-allowed ${active ? "border-primary bg-primary/5" : "border-foreground/15 hover:border-primary/50"} ${out ? "bg-foreground/5 text-foreground/50" : ""}`}
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[14px] font-medium text-foreground">{v.name}</div>
-                <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-foreground/10 text-foreground/70">
-                    {v.duration}
+            <div className="flex gap-3 items-start">
+              {active ? (
+                <CheckCircle2
+                  size={18}
+                  className="text-primary mt-0.5 shrink-0"
+                />
+              ) : (
+                <Circle
+                  size={18}
+                  className="text-foreground/40 mt-0.5 shrink-0"
+                />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap justify-between gap-2">
+                  <span className="text-sm font-medium">{v.name}</span>
+                  <span className="text-sm font-medium">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      maximumFractionDigits: 0,
+                    }).format(v.price)}
                   </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-secondary/15 text-secondary">
-                    {v.type.toLowerCase() === "private" ? "🔏 Private" : v.type}
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-2 text-xs kr-muted mt-3">
+                  <span>{v.duration}</span>
+                  <span className="inline-flex gap-1 items-center">
+                    {v.type.toLowerCase() === "private" && (
+                      <LockKeyhole size={12} />
+                    )}{" "}
+                    {v.type}
                   </span>
-                  {v.warranty && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-tertiary/15 text-tertiary">
-                      Garansi {v.warranty}
-                    </span>
-                  )}
+                  {v.warranty && <span>Garansi {v.warranty}</span>}
                 </div>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <div className="text-[16px] font-semibold text-foreground">
-                  {formatPrice(v.price)}
-                </div>
-                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold mt-1.5 ${
-                  outOfStock ? "bg-foreground/10 text-foreground/40" : "bg-green-400/15 text-green-500"
-                }`}>
-                  {outOfStock ? "Habis" : `Stok ${v.stock}`}
-                </span>
+                <p
+                  className={`mt-3 text-xs ${out ? "kr-muted" : "text-primary"}`}
+                >
+                  {out ? "Habis" : `Stok ${v.stock}`}
+                </p>
               </div>
             </div>
           </button>

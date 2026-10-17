@@ -1,37 +1,34 @@
 import Link from "next/link";
-
+import Image from "next/image";
 export default function Footer() {
   return (
-    <footer className="border-t border-foreground/8 mt-auto">
-      <div className="max-w-6xl mx-auto px-8 py-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col items-center md:items-start">
-            <span className="text-foreground font-semibold text-[14px]">
-              Kampus<span className="text-primary">Rebahan</span>
-            </span>
-            <p className="text-foreground/30 text-[11px] mt-1">
-              Akun digital premium, harga terjangkau.
-            </p>
-          </div>
-
-          <nav className="flex items-center gap-6 flex-wrap justify-center">
-            <Link href="/" className="text-foreground/40 hover:text-foreground text-[12px] transition-colors duration-150">
-              Home
-            </Link>
-            <Link href="/products" className="text-foreground/40 hover:text-foreground text-[12px] transition-colors duration-150">
-              Produk
-            </Link>
-            <Link href="/terms" className="text-foreground/40 hover:text-foreground text-[12px] transition-colors duration-150">
-              Syarat & Ketentuan
-            </Link>
-            <Link href="/privacy" className="text-foreground/40 hover:text-foreground text-[12px] transition-colors duration-150">
-              Kebijakan Privasi
-            </Link>
+    <footer className="kr-footer mt-auto">
+      <div className="kr-container">
+        <div className="kr-footer-top">
+          <Link href="/">
+            <Image
+              src="/logo_website.png"
+              alt="KampusRebahan"
+              width={184}
+              height={46}
+              className="kr-logo"
+            />
+          </Link>
+          <nav
+            className="flex flex-wrap gap-x-7 gap-y-4 text-xs kr-muted"
+            aria-label="Navigasi footer"
+          >
+            <Link href="/">Beranda</Link>
+            <Link href="/products">Produk</Link>
+            <Link href="/terms">Syarat &amp; Ketentuan</Link>
+            <Link href="/privacy">Kebijakan Privasi</Link>
           </nav>
-
-          <p className="text-foreground/20 text-[11px]">
+        </div>
+        <div className="kr-footer-bottom">
+          <p>
             © {new Date().getFullYear()} KampusRebahan. All rights reserved.
           </p>
+          <p>Akun digital premium, harga terjangkau.</p>
         </div>
       </div>
     </footer>

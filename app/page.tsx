@@ -1,37 +1,20 @@
 import { getProductsWithStats } from "@/lib/products";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import Hero from "@/components/landing/Hero";
-import FeaturedProducts from "@/components/landing/FeaturedProducts";
-import CategoryGrid from "@/components/landing/CategoryGrid";
-import HowItWorks from "@/components/landing/HowItWorks";
-
+import EditorialLanding from "@/components/landing/EditorialLanding";
+import type { Product } from "@/lib/types";
 export const revalidate = 300;
-
 export default async function HomePage() {
-  let products: import("@/lib/types").Product[] = [];
-
+  let products: Product[] = [];
   try {
     const res = await getProductsWithStats();
-    if (res.success) {
-      products = res.data;
-    }
-  } catch {
-    // graceful empty state
-  }
-
+    if (res.success) products = res.data;
+  } catch {}
   return (
     <>
       <Navbar />
-      <main className="flex-1 overflow-x-hidden overflow-y-hidden w-full max-w-full">
-        <Hero />
-        {products.length > 0 && (
-          <>
-            <CategoryGrid products={products} />
-            <FeaturedProducts products={products} />
-          </>
-        )}
-        <HowItWorks />
+      <main className="flex-1 w-full min-w-0">
+        <EditorialLanding products={products} />
       </main>
       <Footer />
     </>

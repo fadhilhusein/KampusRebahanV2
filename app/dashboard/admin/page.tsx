@@ -7,6 +7,7 @@ import {
   Banknote,
   CheckCircle2,
   Clock,
+  ChevronDown,
   Gift,
   Landmark,
   QrCode,
@@ -102,7 +103,14 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
   const MethodIcon = method?.icon;
 
   return (
-    <div className={`${cardClass} p-5`}>
+    <details className="kr-admin-order">
+      <summary className="kr-admin-summary">
+        <div className="min-w-0"><p className="text-xs font-medium truncate">{order.user.name ?? order.user.email}</p><p className="text-xs kr-muted mt-1 truncate">{order.productName} — {order.variantName}</p></div>
+        <span className="text-xs kr-muted">{formatDate(order.createdAt)}</span>
+        <Badge color={statusColor[order.status] ?? "default"}>{statusLabel[order.status] ?? order.status}</Badge>
+        <span>{formatPrice(order.sellPrice)}</span><span>{formatPrice(order.costPrice)}</span><span>{formatPrice(order.sellPrice - order.costPrice)}</span><ChevronDown size={15} />
+      </summary>
+      <div className="p-5 border-t border-foreground/10">
       <div className="flex flex-col md:flex-row md:items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -204,7 +212,8 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </details>
   );
 });
 
@@ -369,6 +378,7 @@ export default function AdminPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
+        <p className="kr-eyebrow mb-4">Admin</p>
         <h1 className="text-[28px] font-bold text-foreground leading-tight tracking-tight mb-1">Kelola Order</h1>
         <p className="text-[14px] text-foreground/50">Kelola order masuk dan konfirmasi pembayaran.</p>
       </div>
@@ -480,7 +490,8 @@ export default function AdminPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-foreground/40 text-[14px] font-medium">Tidak ada order.</div>
       ) : (
-        <div className="space-y-3">
+        <div className="overflow-x-auto rounded-lg border border-foreground/15 bg-surface">
+          <div className="kr-admin-summary kr-admin-head"><span>Pelanggan / Produk</span><span>Tanggal</span><span>Status</span><span>Harga jual</span><span>Cost</span><span>Profit</span><span /></div>
           {filtered.map((order) => (
             <OrderCard
               key={order.id}

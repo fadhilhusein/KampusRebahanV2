@@ -1,327 +1,258 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  ShoppingCart,
+  MessageSquare,
+  Truck,
+  ScrollText,
+  RotateCw,
+} from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import GradientBorder from "@/components/ui/GradientBorder";
-import GlassCard from "@/components/ui/GlassCard";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
-import Badge from "@/components/ui/Badge";
+import ProductImage from "@/components/product/ProductImage";
 import VariantSelector from "@/components/product/VariantSelector";
+import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import RatingStars from "@/components/ui/RatingStars";
 import { ProductDetailSkeleton } from "@/components/ui/Skeleton";
-import Image from "next/image";
-import { getCategoryIcon, getCategoryColor } from "@/lib/categoryIcons";
-import { getProductImage } from "@/lib/productImages";
-import type { Product, ProductReview, ProductVariant } from "@/lib/types";
-import { ScrollText, Truck, ShoppingCart } from "lucide-react";
-
-function NumberedList({ text }: { text: string }) {
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+import type { Product, ProductVariant, ProductReview } from "@/lib/types";
+function Terms({ text }: { text: string }) {
   return (
-    <ol className="space-y-2.5">
-      {lines.map((line, i) => (
-        <li key={i} className="flex items-start gap-3">
-          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/15 text-primary text-[11px] font-semibold flex items-center justify-center mt-0.5">
-            {i + 1}
-          </span>
-          <span className="text-[13px] text-foreground/80 font-medium leading-6">{line}</span>
-        </li>
-      ))}
+    <ol className="space-y-3 list-decimal pl-5 text-sm leading-7 kr-muted">
+      {text
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .map((l, i) => (
+          <li key={i}>{l}</li>
+        ))}
     </ol>
   );
 }
-
-function formatReviewDate(dateStr: string) {
-  try {
-    return new Date(dateStr).toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return dateStr;
-  }
-}
-
-export default function ProductDetailPage() {
-  const { id } = useParams<{ id: string }>();
+function ProductDetailContent({ id }: { id: string }) {
   const router = useRouter();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [selected, setSelected] = useState<ProductVariant | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [termsOpen, setTermsOpen] = useState(false);
-  const [reviews, setReviews] = useState<ProductReview[]>([]);
-  const [reviewSummary, setReviewSummary] = useState<{
-    averageRating: number | null;
-    reviewCount: number;
-  }>({ averageRating: null, reviewCount: 0 });
-
+  const [product, setProduct] = useState<Product | null>(null),
+    [selected, setSelected] = useState<ProductVariant | null>(null),
+    [loading, setLoading] = useState(true),
+    [error, setError] = useState(""),
+    [reviews, setReviews] = useState<ProductReview[]>([]),
+    [summary, setSummary] = useState<{
+      averageRating: number | null;
+      reviewCount: number;
+    }>({ averageRating: null, reviewCount: 0 }),
+    [retry, setRetry] = useState(0);
   useEffect(() => {
+    let active = true;
     fetch("/api/products")
       .then((r) => r.json())
-      .then((data) => {
-        if (data.success) {
-          const found = data.data.find((p: Product) => p.id === id);
-          if (found) {
-            setProduct(found);
-            document.title = `${found.name} | KampusRebahan`;
-            const firstInStock = found.variants.find((v: ProductVariant) => v.stock > 0);
-            setSelected(firstInStock ?? found.variants[0] ?? null);
-            fetch(`/api/reviews?productName=${encodeURIComponent(found.name)}`)
-              .then((r) => r.json())
-              .then((reviewData) => {
-                if (reviewData.success) {
-                  setReviews(reviewData.data ?? []);
-                  setReviewSummary({
-                    averageRating: reviewData.summary?.averageRating ?? null,
-                    reviewCount: reviewData.summary?.reviewCount ?? 0,
-                  });
-                }
-              })
-              .catch(() => {
-                setReviews([]);
-                setReviewSummary({ averageRating: null, reviewCount: 0 });
-              });
-          }
+      .then((d) => {
+        if (!active) return;
+        if (!d.success) throw new Error("Gagal memuat produk");
+        const found = d.data.find((p: Product) => p.id === id);
+        if (found) {
+          setProduct(found);
+          setSelected(
+            found.variants.find((v: ProductVariant) => v.stock > 0) ??
+              found.variants[0] ??
+              null,
+          );
+          document.title = found.name + " | KampusRebahan";
+          fetch("/api/reviews?productName=" + encodeURIComponent(found.name))
+            .then((r) => r.json())
+            .then((d) => {
+              if (active && d.success) {
+                setReviews(d.data ?? []);
+                setSummary({
+                  averageRating: d.summary?.averageRating ?? null,
+                  reviewCount: d.summary?.reviewCount ?? 0,
+                });
+              }
+            })
+            .catch(() => {});
         }
       })
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <main className="flex-1 pt-24 pb-16 px-8">
-          <ProductDetailSkeleton />
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
-  if (!product) {
-    return (
-      <>
-        <Navbar />
-        <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-foreground/40 mb-4">Produk tidak ditemukan.</p>
-            <Link href="/products">
-              <ButtonPrimary>Kembali ke Produk</ButtonPrimary>
-            </Link>
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
-  const icon = getCategoryIcon(product.category);
-  const color = getCategoryColor(product.category);
-  const productImage = getProductImage(product.name);
-  const averageRating = reviewSummary.averageRating ?? product.averageRating ?? null;
-  const reviewCount = reviewSummary.reviewCount || product.reviewCount || 0;
-
+      .catch(() => {
+        if (active) setError("Produk belum dapat dimuat. Coba lagi.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [id, retry]);
+  const rating = summary.averageRating ?? product?.averageRating ?? null,
+    count = summary.reviewCount || product?.reviewCount || 0;
   return (
     <>
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
-            <Link href="/products" className="hover:text-foreground transition-colors">
-              Produk
-            </Link>
-            <span>/</span>
-            <span className="text-foreground/60">{product.name}</span>
+      <main className="kr-container flex-1 py-12 md:py-14">
+        {loading ? (
+          <ProductDetailSkeleton />
+        ) : !product ? (
+          <div className="py-20 text-center">
+            <p className="kr-muted mb-5">
+              {error || "Produk tidak ditemukan."}
+            </p>
+            {error ? (
+              <ButtonPrimary onClick={() => { setLoading(true); setError(""); setRetry((v) => v + 1); }}>
+                <RotateCw size={16} />
+                Coba Lagi
+              </ButtonPrimary>
+            ) : (
+              <Link href="/products" className="kr-link">
+                Kembali ke Produk
+              </Link>
+            )}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left — Info */}
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                {productImage ? (
-                  <div className="w-12 h-12 rounded-[2px] overflow-hidden flex-shrink-0">
-                    <Image src={productImage} alt={product.name} width={48} height={48} className="w-full h-full object-contain" />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-[2px] glass flex items-center justify-center text-[24px]">
-                    {icon}
-                  </div>
-                )}
-                <Badge color={color}>{product.category}</Badge>
+        ) : (
+          <>
+            <nav aria-label="Breadcrumb" className="text-xs kr-muted mb-9">
+              <Link href="/">Beranda</Link> /{" "}
+              <Link href="/products">Produk</Link> / {product.name}
+            </nav>
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-14">
+              <div>
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-[#74131C]">
+                  <ProductImage name={product.name} priority />
+                </div>
+                <p className="kr-eyebrow mt-5">
+                  {product.name} / {product.category}
+                </p>
               </div>
-
-              <h1 className="text-[32px] font-semibold text-foreground leading-tight tracking-tight mb-4">
-                {product.name}
-              </h1>
-
-              {product.description && (
-                <p className="text-[14px] text-foreground/50 leading-6 mb-6">
+              <div className="min-w-0">
+                <span className="inline-block bg-primary/5 text-primary rounded px-3 py-1 text-xs mb-5">
+                  {product.category}
+                </span>
+                <h1 className="kr-heading mb-5">{product.name}</h1>
+                <p className="kr-muted text-sm leading-7 mb-6 whitespace-pre-line">
                   {product.description}
                 </p>
-              )}
-
-              {selected && (
-                <GlassCard radius="rounded-2xl" className="p-5 mb-6">
-                  <div className="text-[11px] text-foreground/30 mb-1">Harga terpilih</div>
-                  <div className="text-[28px] font-semibold text-foreground">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 0,
-                    }).format(selected.price)}
+                {selected && (
+                  <div className="mb-7">
+                    <p className="text-xs kr-muted mb-2">Harga pilihan</p>
+                    <p className="text-3xl font-medium">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        maximumFractionDigits: 0,
+                      }).format(selected.price)}
+                    </p>
                   </div>
-                  <div className="text-[12px] text-foreground/40 mt-1">
-                    {selected.duration} · {selected.type}
-                    {selected.warranty ? ` · Garansi ${selected.warranty}` : ""}
-                  </div>
-                </GlassCard>
-              )}
-
-              {/* Right — Variant selector */}
-              <div className="mb-6 md:hidden">
-                <GradientBorder radius="rounded-2xl">
-                  <div className="p-5">
-                    <h2 className="text-[14px] font-medium text-foreground">
-                      Pilih Varian
+                )}
+                <h2 className="text-sm font-medium mb-4">Pilih varian</h2>
+                <VariantSelector
+                  variants={product.variants}
+                  selected={selected}
+                  onSelect={setSelected}
+                />
+                <ButtonPrimary
+                  className="w-full mt-6"
+                  disabled={!selected || selected.stock === 0}
+                  onClick={() => {
+                    if (selected)
+                      router.push(
+                        `/checkout?variant_id=${selected.id}&product_id=${product.id}`,
+                      );
+                  }}
+                >
+                  <ShoppingCart size={16} />
+                  {!selected || selected.stock === 0
+                    ? "Stok Habis"
+                    : "Beli Sekarang"}
+                </ButtonPrimary>
+                <p className="text-xs kr-muted mt-4">
+                  Periksa syarat penggunaan sebelum membeli.
+                </p>
+              </div>
+            </div>
+            {(selected?.terms || selected?.delivery_terms) && (
+              <section className="mt-12 rounded-lg bg-[var(--kr-soft)] p-6 md:p-8 space-y-8">
+                {selected.terms && (
+                  <div>
+                    <p className="kr-eyebrow mb-3">Sebelum mulai</p>
+                    <h2 className="flex items-center gap-3 text-2xl font-medium mb-6">
+                      <ScrollText size={21} />
+                      Syarat penggunaan akun
                     </h2>
-                    <VariantSelector
-                      variants={product.variants}
-                      selected={selected}
-                      onSelect={setSelected}
-                      radius="rounded-xl"
-                    />
+                    <Terms text={selected.terms} />
                   </div>
-                </GradientBorder>
-              </div>              
-
-              {/* Terms accordion */}
-              {selected?.terms && (
-                <div className="mb-6 space-y-3">
-                  <GlassCard radius="rounded-2xl" className="overflow-hidden">
-                    <button
-                      onClick={() => setTermsOpen(!termsOpen)}
-                      className="w-full flex items-center justify-between text-[14px] font-semibold text-foreground px-5 py-4 cursor-pointer"
-                    >
-                      <span className="flex items-center gap-2">
-                        <ScrollText size={16} className="text-primary" />
-                        Syarat & Ketentuan
-                      </span>
-                      <span className="text-foreground/40">{termsOpen ? "−" : "+"}</span>
-                    </button>
-                    {termsOpen && (
-                      <div className="px-5 pb-5 pt-4 border-t border-foreground/10">
-                        <NumberedList text={selected.terms} />
-                      </div>
-                    )}
-                  </GlassCard>
-
-                  {selected.delivery_terms && (
-                    <GlassCard radius="rounded-2xl" className="p-5">
-                      <div className="flex items-center gap-2 text-[14px] font-semibold text-foreground mb-3">
-                        <Truck size={16} className="text-primary" />
-                        Info Pengiriman
-                      </div>
-                      <NumberedList text={selected.delivery_terms} />
-                    </GlassCard>
-                  )}
-                </div>
-              )}
-
-              <ButtonPrimary
-                className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
-                disabled={!selected || selected.stock === 0}
-                onClick={() => {
-                  if (selected)
-                    router.push(
-                      `/checkout?variant_id=${selected.id}&product_id=${product.id}`
-                    );
-                }}
-              >
-                {selected?.stock !== 0 && <ShoppingCart size={16} />}
-                {selected?.stock === 0 ? "Stok Habis" : "Beli Sekarang"}
-              </ButtonPrimary>
-            </div>
-
-            {/* Right — Variant selector */}
-            <div className="hidden md:inline">
-              <GradientBorder radius="rounded-2xl">
-                <div className="p-5">
-                  <h2 className="text-[14px] font-medium text-foreground mb-4">
-                    Pilih Varian
-                  </h2>
-                  <VariantSelector
-                    variants={product.variants}
-                    selected={selected}
-                    onSelect={setSelected}
-                  />
-                </div>
-              </GradientBorder>
-            </div>
-          </div>
-
-          <section className="mt-8">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
-              <div>
-                <div className="text-[11px] font-medium text-foreground/50 uppercase tracking-wider mb-2">
-                  Testimoni Produk
-                </div>
-                <h2 className="text-[22px] font-semibold text-foreground tracking-tight">
+                )}
+                {selected.delivery_terms && (
+                  <div>
+                    <h2 className="flex items-center gap-3 text-xl mb-5">
+                      <Truck size={20} />
+                      Info pengiriman
+                    </h2>
+                    <Terms text={selected.delivery_terms} />
+                  </div>
+                )}
+              </section>
+            )}
+            <section className="mt-14 mb-6">
+              <p className="kr-eyebrow mb-4">Testimoni produk</p>
+              <div className="flex flex-wrap justify-between gap-5 items-center mb-7">
+                <h2 className="text-[28px] font-medium tracking-tight">
                   Pengalaman pembeli
                 </h2>
+                <div className="flex items-center gap-3 text-xs kr-muted">
+                  {rating != null && <RatingStars rating={rating} />}
+                  <span>
+                    {rating == null
+                      ? "Belum ada rating"
+                      : rating.toFixed(1) + " dari 5"}
+                  </span>
+                  <span>{count} ulasan</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-[12px] text-foreground/40">
-                <span className="text-tertiary tracking-[1px]" aria-hidden="true">★★★★★</span>
-                <span>
-                  {averageRating != null ? `${averageRating.toFixed(1)} dari 5` : "Belum ada rating"}
-                </span>
-                <span className="h-1 w-1 rounded-full bg-foreground/15" />
-                <span>{reviewCount} ulasan</span>
-              </div>
-            </div>
-
-            {reviews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {reviews.map((review) => (
-                  <GlassCard key={review.id} className="p-5">
-                    <div className="flex items-start justify-between gap-3 mb-4">
-                      <div>
-                        <div className="text-[13px] font-medium text-foreground">
-                          {review.userName}
+              {reviews.length ? (
+                <div className="grid md:grid-cols-2 gap-5">
+                  {reviews.map((r) => (
+                    <article key={r.id} className="glass rounded-lg p-6">
+                      <div className="flex justify-between gap-4">
+                        <div>
+                          <p className="text-sm font-medium">{r.userName}</p>
+                          <div className="mt-2">
+                            <RatingStars rating={r.rating} />
+                          </div>
                         </div>
-                        <div className="mt-1 flex items-center gap-2">
-                          <span className="text-tertiary text-[12px] tracking-[1px]" aria-hidden="true">
-                            {"★".repeat(review.rating)}
-                            <span className="text-foreground/15">{"★".repeat(5 - review.rating)}</span>
-                          </span>
-                          <span className="text-[11px] text-foreground/30">{review.rating}/5</span>
-                        </div>
+                        <time className="text-xs kr-muted">
+                          {new Date(r.createdAt).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </time>
                       </div>
-                      <span className="text-[11px] text-foreground/25">
-                        {formatReviewDate(review.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-[13px] text-foreground/50 leading-6">
-                      {review.testimonial}
-                    </p>
-                  </GlassCard>
-                ))}
-              </div>
-            ) : (
-              <GlassCard className="p-6">
-                <p className="text-[13px] text-foreground/35 leading-6">
-                  Belum ada testimoni untuk produk ini. Testimoni akan muncul setelah pembeli menyelesaikan transaksi dan mengirim review.
-                </p>
-              </GlassCard>
-            )}
-          </section>
-        </div>
+                      <p className="text-sm leading-7 kr-muted mt-5">
+                        {r.testimonial}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="glass rounded-lg p-10 text-center">
+                  <MessageSquare
+                    size={28}
+                    className="mx-auto mb-4 text-foreground/40"
+                  />
+                  <p className="font-medium">Belum ada rating</p>
+                  <p className="text-sm kr-muted mt-3">
+                    Testimoni muncul setelah pembeli menyelesaikan transaksi dan
+                    mengirim review.
+                  </p>
+                </div>
+              )}
+            </section>
+          </>
+        )}
       </main>
       <Footer />
     </>
   );
+}
+export default function ProductDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  return <ProductDetailContent key={id} id={id} />;
 }
