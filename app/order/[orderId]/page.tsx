@@ -52,6 +52,8 @@ interface Order {
   apiOrderId: string | null;
   gatewayQrString: string | null;
   gatewayExpiresAt: string | null;
+  bridgePaymentUrl: string | null;
+  bridgeExpiresAt: string | null;
   createdAt: string;
 }
 
@@ -90,7 +92,11 @@ function PaymentInstructions({ order }: { order: Order }) {
         <div className="border-t border-foreground/8 pt-4 space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-[13px] font-medium text-foreground/60">
-              {order.paymentMethod === "QRIS_GATEWAY" ? "Total Pembayaran" : order.paymentMethod === "QRIS" ? "Nominal QRIS" : "Transfer tepat sebesar"}
+              {order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE"
+                ? "Total Pembayaran"
+                : order.paymentMethod === "QRIS"
+                ? "Nominal QRIS"
+                : "Transfer tepat sebesar"}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[24px] font-bold text-foreground">{formatPrice(totalAmount)}</span>
@@ -104,7 +110,7 @@ function PaymentInstructions({ order }: { order: Order }) {
           )}
         </div>
 
-        {order.paymentMethod !== "QRIS_GATEWAY" && (
+        {order.paymentMethod !== "QRIS_GATEWAY" && order.paymentMethod !== "QRIS_BRIDGE" && (
           <div className="bg-tertiary/10 border border-tertiary/20 rounded-xl px-3 py-2.5 text-[11px] font-medium text-tertiary/80">
             <ul className="list-disc list-inside space-y-1">
               <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
@@ -127,6 +133,23 @@ function PaymentInstructions({ order }: { order: Order }) {
             {order.gatewayExpiresAt && (
               <div className="text-[12px] text-foreground/40">
                 Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={order.gatewayExpiresAt} /></span>
+              </div>
+            )}
+            <div className="text-[11px] text-foreground/30">Status pembayaran akan otomatis terupdate begitu QRIS ini dibayar.</div>
+          </div>
+        ) : order.paymentMethod === "QRIS_BRIDGE" ? (
+          <div className="text-center space-y-3">
+            <div className="text-[13px] font-medium text-foreground/60">Bayar lewat halaman QRIS Instan</div>
+            {order.bridgePaymentUrl && (
+              <a href={order.bridgePaymentUrl} target="_blank" rel="noopener noreferrer">
+                <ButtonPrimary className="w-full py-3 text-[14px] flex items-center justify-center gap-2">
+                  Lanjutkan Pembayaran <ArrowRight size={15} />
+                </ButtonPrimary>
+              </a>
+            )}
+            {order.bridgeExpiresAt && (
+              <div className="text-[12px] text-foreground/40">
+                Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={order.bridgeExpiresAt} /></span>
               </div>
             )}
             <div className="text-[11px] text-foreground/30">Status pembayaran akan otomatis terupdate begitu QRIS ini dibayar.</div>
@@ -194,11 +217,14 @@ export default function OrderDetailPage() {
   }, [orderId]);
 
   useEffect(() => {
-    if (!order || order.paymentMethod !== "QRIS_GATEWAY" || order.status !== "PENDING_PAYMENT") return;
+    if (!order || order.status !== "PENDING_PAYMENT") return;
+    if (order.paymentMethod !== "QRIS_GATEWAY" && order.paymentMethod !== "QRIS_BRIDGE") return;
+
+    const statusEndpoint = order.paymentMethod === "QRIS_GATEWAY" ? "gateway-status" : "bridge-status";
 
     const id = setInterval(async () => {
       try {
-        const res = await fetch(`/api/order/${orderId}/gateway-status`);
+        const res = await fetch(`/api/order/${orderId}/${statusEndpoint}`);
         const data = await res.json();
         if (data.success && data.data?.status && data.data.status !== "pending") {
           const orderRes = await fetch(`/api/order/${orderId}`);
@@ -281,7 +307,7 @@ export default function OrderDetailPage() {
                   ["Produk", order.productName],
                   ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
                   ["Jumlah", String(order.quantity)],
-                  ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
+                  ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS_BRIDGE: "QRIS Instan (Bridge)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
                   ["Tanggal", formatDate(order.createdAt)],
                 ] as [string, string][]).map(([label, value]) => (
                   <div key={label} className="flex justify-between gap-4">
@@ -306,7 +332,7 @@ export default function OrderDetailPage() {
               {order.status === "PENDING_PAYMENT" && (
                 <>
                   <PaymentInstructions order={order} />
-                  {order.paymentMethod === "QRIS_GATEWAY" ? (
+                  {order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE" ? (
                     <div className="text-center text-[12px] text-foreground/30">
                       Menunggu pembayaran... status akan terupdate otomatis.
                     </div>

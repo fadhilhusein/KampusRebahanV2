@@ -51,6 +51,10 @@ model Order {
   gatewayQrString  String?
   gatewayStatus    String?
   refundedAt       DateTime?
+  bridgeRef        String?
+  bridgePaymentUrl String?        @db.Text
+  bridgeStatus     String?
+  bridgeExpiresAt  DateTime?
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   review           ProductReview?
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { warungApi } from "@/lib/api";
 import { bayarGg, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
+import { paymentBridge } from "@/lib/paymentBridge";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { getMarkupPercent, isBankTransferEnabled } from "@/lib/settings";
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER", emailInvite } = body;
 
-    if (!["BANK_TRANSFER", "QRIS_GATEWAY", "BALANCE"].includes(paymentMethod)) {
+    if (!["BANK_TRANSFER", "QRIS_GATEWAY", "QRIS_BRIDGE", "BALANCE"].includes(paymentMethod)) {
       return NextResponse.json({ success: false, message: "Metode pembayaran tidak valid." }, { status: 400 });
     }
 
@@ -176,7 +177,43 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ success: true, data: { order_id: order.id, unique_code: order.uniqueCode } });
+    let bridgePaymentUrl: string | undefined;
+
+    if (paymentMethod === "QRIS_BRIDGE") {
+      const appUrl = process.env.APP_URL || new URL(req.url).origin;
+      const bridgeResult = await paymentBridge.createPayment({
+        order_id: order.id,
+        amount: totalSellPrice,
+        success_return_url: `${appUrl}/payment/success`,
+        cancel_return_url: `${appUrl}/payment/cancel`,
+        metadata: { user_id: userId },
+      });
+
+      if (!bridgeResult.success) {
+        await prisma.order.update({ where: { id: order.id }, data: { status: "FAILED" } });
+        return NextResponse.json(
+          { success: false, message: `Gagal membuat pembayaran QRIS Bridge: ${bridgeResult.error}` },
+          { status: 502 }
+        );
+      }
+
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          bridgeRef: bridgeResult.data.ref,
+          bridgePaymentUrl: bridgeResult.data.payment_url,
+          bridgeStatus: bridgeResult.data.status,
+          bridgeExpiresAt: new Date(bridgeResult.data.expires_at),
+        },
+      });
+
+      bridgePaymentUrl = bridgeResult.data.payment_url;
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: { order_id: order.id, unique_code: order.uniqueCode, payment_url: bridgePaymentUrl },
+    });
   } catch (err) {
     return NextResponse.json({ success: false, message: String(err) }, { status: 500 });
   }

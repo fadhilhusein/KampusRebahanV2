@@ -57,6 +57,7 @@ const statusLabel: Record<string, string> = {
 
 const paymentMethodInfo: Record<string, { label: string; icon: LucideIcon }> = {
   QRIS_GATEWAY: { label: "QRIS (Bayar.gg)", icon: Zap },
+  QRIS_BRIDGE: { label: "QRIS (Bridge)", icon: Zap },
   QRIS: { label: "QRIS (manual)", icon: QrCode },
   BANK_TRANSFER: { label: "Transfer Bank", icon: Landmark },
   BALANCE: { label: "Saldo", icon: Wallet },
@@ -79,6 +80,8 @@ interface AdminOrder {
   apiResponse: unknown;
   gatewayInvoiceId: string | null;
   gatewayStatus: string | null;
+  bridgeRef: string | null;
+  bridgeStatus: string | null;
   createdAt: string;
   user: { email: string; name: string | null };
 }
@@ -89,6 +92,7 @@ interface OrderCardProps {
   onConfirm: (id: string) => void;
   onReject: (id: string, refundEligible: boolean) => void;
   onRecheckGateway: (id: string) => void;
+  onRecheckBridge: (id: string) => void;
 }
 
 const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"];
@@ -98,7 +102,7 @@ const actionBtn =
 const confirmBtn = `${actionBtn} border-secondary/40 text-secondary hover:bg-secondary/10`;
 const rejectBtn = `${actionBtn} border-primary/30 text-primary hover:bg-primary/10`;
 
-const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onReject, onRecheckGateway }: OrderCardProps) {
+const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onReject, onRecheckGateway, onRecheckBridge }: OrderCardProps) {
   const method = paymentMethodInfo[order.paymentMethod];
   const MethodIcon = method?.icon;
 
@@ -153,6 +157,12 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
                 {order.gatewayStatus && <span className="text-foreground/30 ml-1">({order.gatewayStatus})</span>}
               </div>
             )}
+            {order.bridgeRef && (
+              <div className="col-span-2 text-foreground/40">
+                Ref Bridge: <span className="text-foreground/60 font-mono text-[11px]">{order.bridgeRef}</span>
+                {order.bridgeStatus && <span className="text-foreground/30 ml-1">({order.bridgeStatus})</span>}
+              </div>
+            )}
             {order.status === "AWAITING_RETRY" && order.apiResponse != null && (
               <div className="col-span-2 text-primary/70">
                 Alasan gagal: <span className="font-mono text-[11px]">
@@ -194,6 +204,15 @@ const OrderCard = memo(function OrderCard({ order, isLoading, onConfirm, onRejec
               >
                 <RotateCw size={13} />
                 {isLoading ? "..." : "Cek status Bayar.gg"}
+              </button>
+            ) : order.paymentMethod === "QRIS_BRIDGE" ? (
+              <button
+                onClick={() => onRecheckBridge(order.id)}
+                disabled={isLoading}
+                className={`${actionBtn} border-tertiary/40 text-tertiary hover:bg-tertiary/10`}
+              >
+                <RotateCw size={13} />
+                {isLoading ? "..." : "Cek status Bridge"}
               </button>
             ) : (
               <>
@@ -331,6 +350,20 @@ export default function AdminPage() {
     setNotice(
       data.success
         ? { ok: true, text: `Status Bayar.gg: ${data.data?.status ?? "?"}` }
+        : { ok: false, text: data.message ?? "Gagal cek status." }
+    );
+    setActionLoading(null);
+    await refreshOneOrder(orderId);
+  }, [refreshOneOrder]);
+
+  const recheckBridge = useCallback(async (orderId: string) => {
+    setActionLoading(orderId);
+    setNotice(null);
+    const res = await fetch(`/api/order/${orderId}/bridge-status`);
+    const data = await res.json();
+    setNotice(
+      data.success
+        ? { ok: true, text: `Status Bridge: ${data.data?.status ?? "?"}` }
         : { ok: false, text: data.message ?? "Gagal cek status." }
     );
     setActionLoading(null);
@@ -500,6 +533,7 @@ export default function AdminPage() {
               onConfirm={confirmOrder}
               onReject={rejectOrder}
               onRecheckGateway={recheckGateway}
+              onRecheckBridge={recheckBridge}
             />
           ))}
         </div>

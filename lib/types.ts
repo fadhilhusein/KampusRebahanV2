@@ -166,3 +166,54 @@ export interface BayarGgWebhookPayload {
   signature: string;
   [key: string]: unknown;
 }
+
+export interface BridgeSuccess<T> {
+  success: true;
+  data: T;
+}
+
+export interface BridgeError {
+  success: false;
+  error: string;
+  status?: number;
+}
+
+export type BridgeResponse<T> = BridgeSuccess<T> | BridgeError;
+
+export interface BridgeCreatePaymentPayload {
+  order_id: string;
+  amount: number;
+  expires_in_hours?: number;
+  success_return_url?: string;
+  cancel_return_url?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export type BridgePaymentStatus = "pending" | "paid" | "failed" | "expired";
+
+export interface BridgePaymentData {
+  ref: string;
+  order_id: string;
+  amount: number;
+  fee: number;
+  net_amount: number;
+  currency: string;
+  payment_method: string;
+  status: BridgePaymentStatus;
+  payment_url: string;
+  metadata?: Record<string, unknown> | null;
+  expires_at: string;
+  paid_at?: string | null;
+  created_at: string;
+}
+
+export interface BridgeWebhookPayload {
+  event: "payment.paid" | "payment.failed" | "payment.expired";
+  data: {
+    ref: string;
+    order_id: string;
+    status: BridgePaymentStatus;
+    amount: number;
+    [key: string]: unknown;
+  };
+}

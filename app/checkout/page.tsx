@@ -37,7 +37,7 @@ function CheckoutContent() {
   const [product, setProduct] = useState<Product | null>(null);
   const [dataLoading, setDataLoading] = useState(Boolean(variantId));
   const [quantity, setQuantity] = useState(1);
-  const [selectedPaymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "BALANCE">("QRIS_GATEWAY");
+  const [selectedPaymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "QRIS_BRIDGE" | "BALANCE">("QRIS_GATEWAY");
   const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
   const [balance, setBalance] = useState(0);
   const [paymentNote, setPaymentNote] = useState("");
@@ -81,10 +81,12 @@ function CheckoutContent() {
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
 
-  const paymentMethod = selectedPaymentMethod === "QRIS_GATEWAY" && qrisGatewayDisabled && bankTransferEnabled
-    ? "BANK_TRANSFER"
-    : selectedPaymentMethod === "BANK_TRANSFER" && !bankTransferEnabled && !qrisGatewayDisabled
-      ? "QRIS_GATEWAY" : selectedPaymentMethod;
+  // QRIS_BRIDGE has no amount cap, so it's always a safe fallback once QRIS_GATEWAY's cap is hit.
+  const paymentMethod = selectedPaymentMethod === "QRIS_GATEWAY" && qrisGatewayDisabled
+    ? "QRIS_BRIDGE"
+    : selectedPaymentMethod === "BANK_TRANSFER" && !bankTransferEnabled
+      ? (qrisGatewayDisabled ? "QRIS_BRIDGE" : "QRIS_GATEWAY")
+      : selectedPaymentMethod;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,7 +104,11 @@ function CheckoutContent() {
       const data = await res.json();
       if (data.success) {
         addToast("Order berhasil dibuat!", "success");
-        router.push(`/order/${data.data.order_id}`);
+        if (data.data.payment_url) {
+          window.location.href = data.data.payment_url;
+        } else {
+          router.push(`/order/${data.data.order_id}`);
+        }
       } else {
         const msg = data.message ?? "Gagal membuat order.";
         setError(msg);
@@ -206,6 +212,17 @@ function CheckoutContent() {
                   >
                     <QrCode size={14} /> QRIS
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("QRIS_BRIDGE")}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer ${
+                      paymentMethod === "QRIS_BRIDGE"
+                        ? "border-primary text-primary bg-primary/5"
+                        : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
+                    }`}
+                  >
+                    <QrCode size={14} /> QRIS Instan
+                  </button>
                   {bankTransferEnabled && (
                     <button
                       type="button"
@@ -234,8 +251,7 @@ function CheckoutContent() {
                 </div>
                 {qrisGatewayDisabled && (
                   <p className="text-[11px] text-foreground/30 mt-2">
-                    QRIS otomatis maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}
-                    {bankTransferEnabled ? ", gunakan transfer bank untuk nominal ini." : "."}
+                    QRIS maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}, gunakan QRIS Instan untuk nominal ini.
                   </p>
                 )}
                 {paymentMethod === "BALANCE" && balanceInsufficient && (
@@ -312,12 +328,6 @@ function CheckoutContent() {
                 </div>
               )}
 
-              {qrisGatewayDisabled && !bankTransferEnabled && (
-                <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-primary">
-                  Tidak ada metode pembayaran yang tersedia untuk nominal ini.
-                </div>
-              )}
-
               </div>
               <aside className="kr-checkout-summary space-y-6">
                 <h2 className="text-[23px] font-medium tracking-tight">Ringkasan pesanan</h2>
@@ -331,7 +341,7 @@ function CheckoutContent() {
 
               <ButtonPrimary
                 type="submit"
-                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (qrisGatewayDisabled && !bankTransferEnabled)}
+                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient)}
                 className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
               >
                 {!outOfStock && !loading && <ShoppingCart size={16} />}
