@@ -32,3 +32,35 @@ export async function setBankTransferEnabled(enabled: boolean): Promise<void> {
     create: { key: "bank_transfer_enabled", value: String(enabled) },
   });
 }
+
+export async function isQrisGatewayEnabled(): Promise<boolean> {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key: "qris_gateway_enabled" } });
+    if (row) return row.value === "true";
+  } catch {}
+  return true;
+}
+
+export async function setQrisGatewayEnabled(enabled: boolean): Promise<void> {
+  await prisma.setting.upsert({
+    where: { key: "qris_gateway_enabled" },
+    update: { value: String(enabled) },
+    create: { key: "qris_gateway_enabled", value: String(enabled) },
+  });
+}
+
+export async function isQrisBridgeEnabled(): Promise<boolean> {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key: "qris_bridge_enabled" } });
+    if (row) return row.value === "true";
+  } catch {}
+  return true;
+}
+
+export async function setQrisBridgeEnabled(enabled: boolean): Promise<void> {
+  await prisma.setting.upsert({
+    where: { key: "qris_bridge_enabled" },
+    update: { value: String(enabled) },
+    create: { key: "qris_bridge_enabled", value: String(enabled) },
+  });
+}

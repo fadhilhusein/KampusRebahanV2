@@ -39,6 +39,8 @@ function CheckoutContent() {
   const [quantity, setQuantity] = useState(1);
   const [selectedPaymentMethod, setPaymentMethod] = useState<"BANK_TRANSFER" | "QRIS_GATEWAY" | "QRIS_BRIDGE" | "BALANCE">("QRIS_GATEWAY");
   const [bankTransferEnabled, setBankTransferEnabled] = useState(true);
+  const [qrisGatewayEnabled, setQrisGatewayEnabled] = useState(true);
+  const [qrisBridgeEnabled, setQrisBridgeEnabled] = useState(true);
   const [balance, setBalance] = useState(0);
   const [paymentNote, setPaymentNote] = useState("");
   const [emailInvite, setEmailInvite] = useState("");
@@ -48,7 +50,12 @@ function CheckoutContent() {
   useEffect(() => {
     fetch("/api/settings/public")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setBankTransferEnabled(d.data.bankTransferEnabled); });
+      .then((d) => {
+        if (!d.success) return;
+        setBankTransferEnabled(d.data.bankTransferEnabled);
+        setQrisGatewayEnabled(d.data.qrisGatewayEnabled);
+        setQrisBridgeEnabled(d.data.qrisBridgeEnabled);
+      });
     fetch("/api/balance")
       .then((r) => r.json())
       .then((d) => { if (d.success) setBalance(d.data.balance); })
@@ -81,12 +88,19 @@ function CheckoutContent() {
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
 
-  // QRIS_BRIDGE has no amount cap, so it's always a safe fallback once QRIS_GATEWAY's cap is hit.
-  const paymentMethod = selectedPaymentMethod === "QRIS_GATEWAY" && qrisGatewayDisabled
-    ? "QRIS_BRIDGE"
-    : selectedPaymentMethod === "BANK_TRANSFER" && !bankTransferEnabled
-      ? (qrisGatewayDisabled ? "QRIS_BRIDGE" : "QRIS_GATEWAY")
-      : selectedPaymentMethod;
+  // If the selected method becomes unavailable (admin toggle off, or QRIS_GATEWAY's amount
+  // cap), fall through to the first still-available method in this priority order.
+  const methodAvailable: Record<string, boolean> = {
+    QRIS_GATEWAY: qrisGatewayEnabled && !qrisGatewayDisabled,
+    QRIS_BRIDGE: qrisBridgeEnabled,
+    BANK_TRANSFER: bankTransferEnabled,
+    BALANCE: true,
+  };
+  const methodFallbackOrder = ["QRIS_GATEWAY", "QRIS_BRIDGE", "BANK_TRANSFER", "BALANCE"] as const;
+  const paymentMethod = methodAvailable[selectedPaymentMethod]
+    ? selectedPaymentMethod
+    : methodFallbackOrder.find((m) => methodAvailable[m]) ?? selectedPaymentMethod;
+  const noMethodUsable = !methodAvailable.QRIS_GATEWAY && !methodAvailable.QRIS_BRIDGE && !bankTransferEnabled && balanceInsufficient;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -200,29 +214,33 @@ function CheckoutContent() {
                   Metode Pembayaran
                 </div>
                 <div className="flex flex-col gap-3">
-                  <button
-                    type="button"
-                    disabled={qrisGatewayDisabled}
-                    onClick={() => setPaymentMethod("QRIS_GATEWAY")}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
-                      paymentMethod === "QRIS_GATEWAY"
-                        ? "border-primary text-primary bg-primary/5"
-                        : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
-                    }`}
-                  >
-                    <QrCode size={14} /> QRIS
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("QRIS_BRIDGE")}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer ${
-                      paymentMethod === "QRIS_BRIDGE"
-                        ? "border-primary text-primary bg-primary/5"
-                        : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
-                    }`}
-                  >
-                    <QrCode size={14} /> QRIS Instan
-                  </button>
+                  {qrisGatewayEnabled && (
+                    <button
+                      type="button"
+                      disabled={qrisGatewayDisabled}
+                      onClick={() => setPaymentMethod("QRIS_GATEWAY")}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${
+                        paymentMethod === "QRIS_GATEWAY"
+                          ? "border-primary text-primary bg-primary/5"
+                          : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
+                      }`}
+                    >
+                      <QrCode size={14} /> QRIS
+                    </button>
+                  )}
+                  {qrisBridgeEnabled && (
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("QRIS_BRIDGE")}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[12px] font-medium transition-colors cursor-pointer ${
+                        paymentMethod === "QRIS_BRIDGE"
+                          ? "border-primary text-primary bg-primary/5"
+                          : "border-foreground/10 text-foreground/40 hover:text-foreground hover:border-foreground/20"
+                      }`}
+                    >
+                      <QrCode size={14} /> QRIS Instan
+                    </button>
+                  )}
                   {bankTransferEnabled && (
                     <button
                       type="button"
@@ -249,14 +267,19 @@ function CheckoutContent() {
                     <Wallet size={14} /> Saldo ({formatPrice(balance)})
                   </button>
                 </div>
-                {qrisGatewayDisabled && (
+                {qrisGatewayEnabled && qrisGatewayDisabled && (
                   <p className="text-[11px] text-foreground/30 mt-2">
-                    QRIS maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}, gunakan QRIS Instan untuk nominal ini.
+                    QRIS maksimal {formatPrice(QRIS_GATEWAY_MAX_AMOUNT)}{qrisBridgeEnabled ? ", gunakan QRIS Instan untuk nominal ini." : "."}
                   </p>
                 )}
                 {paymentMethod === "BALANCE" && balanceInsufficient && (
                   <p className="text-[11px] text-primary mt-2">
                     Saldo tidak cukup. <Link href="/dashboard/balance" className="underline underline-offset-2">Top up saldo</Link>
+                  </p>
+                )}
+                {noMethodUsable && (
+                  <p className="text-[11px] text-primary mt-2">
+                    Tidak ada metode pembayaran yang tersedia saat ini. Hubungi admin.
                   </p>
                 )}
               </div>
@@ -341,7 +364,7 @@ function CheckoutContent() {
 
               <ButtonPrimary
                 type="submit"
-                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient)}
+                disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || noMethodUsable}
                 className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
               >
                 {!outOfStock && !loading && <ShoppingCart size={16} />}

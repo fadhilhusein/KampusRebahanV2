@@ -4,7 +4,7 @@ import { bayarGg, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
 import { paymentBridge } from "@/lib/paymentBridge";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { getMarkupPercent, isBankTransferEnabled } from "@/lib/settings";
+import { getMarkupPercent, isBankTransferEnabled, isQrisGatewayEnabled, isQrisBridgeEnabled } from "@/lib/settings";
 import { fulfillOrder } from "@/lib/fulfillOrder";
 
 export async function POST(req: NextRequest) {
@@ -32,6 +32,14 @@ export async function POST(req: NextRequest) {
 
     if (paymentMethod === "BANK_TRANSFER" && !(await isBankTransferEnabled())) {
       return NextResponse.json({ success: false, message: "Transfer bank manual sedang tidak tersedia." }, { status: 400 });
+    }
+
+    if (paymentMethod === "QRIS_GATEWAY" && !(await isQrisGatewayEnabled())) {
+      return NextResponse.json({ success: false, message: "QRIS (Bayar.gg) sedang tidak tersedia." }, { status: 400 });
+    }
+
+    if (paymentMethod === "QRIS_BRIDGE" && !(await isQrisBridgeEnabled())) {
+      return NextResponse.json({ success: false, message: "QRIS Instan sedang tidak tersedia." }, { status: 400 });
     }
 
     const quantity = Number(body.quantity ?? 1);

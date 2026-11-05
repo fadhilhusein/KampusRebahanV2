@@ -260,6 +260,36 @@ function Stat({ label, value, icon: Icon, highlight, loading }: StatProps) {
   );
 }
 
+interface ToggleRowProps {
+  title: string;
+  description: string;
+  enabled: boolean;
+  loading: boolean;
+  onToggle: () => void;
+}
+
+function ToggleRow({ title, description, enabled, loading, onToggle }: ToggleRowProps) {
+  return (
+    <div className="mt-4 pt-4 border-t border-foreground/10 flex flex-col sm:flex-row sm:items-center gap-4">
+      <div className="flex-1">
+        <div className="text-[13px] font-semibold text-foreground/80 mb-0.5">{title}</div>
+        <div className="text-[12px] text-foreground/40">{description}</div>
+      </div>
+      <button
+        onClick={onToggle}
+        disabled={loading}
+        className={`${actionBtn} flex-shrink-0 ${
+          enabled
+            ? "border-secondary/40 text-secondary hover:bg-secondary/10"
+            : "border-foreground/15 text-foreground/50 hover:bg-foreground/10"
+        }`}
+      >
+        {loading ? "..." : enabled ? "Aktif" : "Nonaktif"}
+      </button>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
@@ -274,6 +304,10 @@ export default function AdminPage() {
   const [markupMsg, setMarkupMsg] = useState("");
   const [bankTransferEnabled, setBankTransferEnabledState] = useState(true);
   const [bankToggleLoading, setBankToggleLoading] = useState(false);
+  const [qrisGatewayEnabled, setQrisGatewayEnabledState] = useState(true);
+  const [qrisGatewayToggleLoading, setQrisGatewayToggleLoading] = useState(false);
+  const [qrisBridgeEnabled, setQrisBridgeEnabledState] = useState(true);
+  const [qrisBridgeToggleLoading, setQrisBridgeToggleLoading] = useState(false);
 
   // Refreshes only the one order that changed, keeping every other order's
   // object reference stable so memoized OrderCard rows skip re-rendering.
@@ -310,6 +344,8 @@ export default function AdminPage() {
         if (cancelled || !d.success) return;
         setMarkup(d.data.markup_percent);
         setBankTransferEnabledState(d.data.bank_transfer_enabled);
+        setQrisGatewayEnabledState(d.data.qris_gateway_enabled);
+        setQrisBridgeEnabledState(d.data.qris_bridge_enabled);
       });
 
     return () => { cancelled = true; };
@@ -329,18 +365,29 @@ export default function AdminPage() {
     setMarkupLoading(false);
   }
 
-  async function toggleBankTransfer() {
-    const next = !bankTransferEnabled;
-    setBankToggleLoading(true);
+  async function toggleSetting(
+    key: string,
+    nextValue: boolean,
+    setValue: (v: boolean) => void,
+    setLoading: (v: boolean) => void
+  ) {
+    setLoading(true);
     const res = await fetch("/api/admin/settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bank_transfer_enabled: next }),
+      body: JSON.stringify({ [key]: nextValue }),
     });
     const data = await res.json();
-    if (data.success) setBankTransferEnabledState(next);
-    setBankToggleLoading(false);
+    if (data.success) setValue(nextValue);
+    setLoading(false);
   }
+
+  const toggleBankTransfer = () =>
+    toggleSetting("bank_transfer_enabled", !bankTransferEnabled, setBankTransferEnabledState, setBankToggleLoading);
+  const toggleQrisGateway = () =>
+    toggleSetting("qris_gateway_enabled", !qrisGatewayEnabled, setQrisGatewayEnabledState, setQrisGatewayToggleLoading);
+  const toggleQrisBridge = () =>
+    toggleSetting("qris_bridge_enabled", !qrisBridgeEnabled, setQrisBridgeEnabledState, setQrisBridgeToggleLoading);
 
   const recheckGateway = useCallback(async (orderId: string) => {
     setActionLoading(orderId);
@@ -462,25 +509,27 @@ export default function AdminPage() {
         </div>
         {markupMsg && <div className="mt-3 text-[12px] font-medium text-secondary">{markupMsg}</div>}
 
-        <div className="mt-4 pt-4 border-t border-foreground/10 flex flex-col sm:flex-row sm:items-center gap-4">
-          <div className="flex-1">
-            <div className="text-[13px] font-semibold text-foreground/80 mb-0.5">Transfer Bank Manual</div>
-            <div className="text-[12px] text-foreground/40">
-              Nyalakan/matikan opsi transfer bank di checkout. QRIS otomatis (Bayar.gg) selalu aktif.
-            </div>
-          </div>
-          <button
-            onClick={toggleBankTransfer}
-            disabled={bankToggleLoading}
-            className={`${actionBtn} flex-shrink-0 ${
-              bankTransferEnabled
-                ? "border-secondary/40 text-secondary hover:bg-secondary/10"
-                : "border-foreground/15 text-foreground/50 hover:bg-foreground/10"
-            }`}
-          >
-            {bankToggleLoading ? "..." : bankTransferEnabled ? "Aktif" : "Nonaktif"}
-          </button>
-        </div>
+        <ToggleRow
+          title="Transfer Bank Manual"
+          description="Nyalakan/matikan opsi transfer bank di checkout."
+          enabled={bankTransferEnabled}
+          loading={bankToggleLoading}
+          onToggle={toggleBankTransfer}
+        />
+        <ToggleRow
+          title="QRIS (Bayar.gg)"
+          description="Nyalakan/matikan opsi QRIS otomatis via Bayar.gg di checkout."
+          enabled={qrisGatewayEnabled}
+          loading={qrisGatewayToggleLoading}
+          onToggle={toggleQrisGateway}
+        />
+        <ToggleRow
+          title="QRIS Instan (Bridge)"
+          description="Nyalakan/matikan opsi QRIS Instan via payment bridge di checkout."
+          enabled={qrisBridgeEnabled}
+          loading={qrisBridgeToggleLoading}
+          onToggle={toggleQrisBridge}
+        />
       </div>
 
       {notice && (

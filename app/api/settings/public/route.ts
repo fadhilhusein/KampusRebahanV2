@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
-import { isBankTransferEnabled } from "@/lib/settings";
+import { isBankTransferEnabled, isQrisGatewayEnabled, isQrisBridgeEnabled } from "@/lib/settings";
 
 export async function GET() {
-  const bankTransferEnabled = await isBankTransferEnabled();
-  return NextResponse.json({ success: true, data: { bankTransferEnabled } });
+  const [bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled] = await Promise.all([
+    isBankTransferEnabled(),
+    isQrisGatewayEnabled(),
+    isQrisBridgeEnabled(),
+  ]);
+
+  return NextResponse.json({ success: true, data: { bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled } });
 }
