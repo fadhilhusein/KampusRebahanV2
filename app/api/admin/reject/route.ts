@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/adminAuth";
 
-const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"];
+const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"] as const;
 
 export async function POST(req: NextRequest) {
   const admin = await requireAdmin();
@@ -14,17 +14,15 @@ export async function POST(req: NextRequest) {
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) return NextResponse.json({ success: false, message: "Order tidak ditemukan." }, { status: 404 });
 
-  const shouldRefund =
+  const refunded =
     refund === true &&
-    order.refundedAt === null &&
-    REFUND_ELIGIBLE_STATUSES.includes(order.status);
-
-  if (shouldRefund) {
-    await prisma.$transaction(async (tx) => {
-      await tx.order.update({
-        where: { id: orderId },
+    (await prisma.$transaction(async (tx) => {
+      // Claim the refund atomically so a double click or two admins can't credit twice.
+      const claimed = await tx.order.updateMany({
+        where: { id: orderId, refundedAt: null, status: { in: [...REFUND_ELIGIBLE_STATUSES] } },
         data: { status: "REJECTED", paymentNote: reason ?? order.paymentNote, refundedAt: new Date() },
       });
+      if (claimed.count === 0) return false;
 
       const updatedUser = await tx.user.update({
         where: { id: order.userId },
@@ -41,8 +39,10 @@ export async function POST(req: NextRequest) {
           note: reason ?? null,
         },
       });
-    });
+      return true;
+    }));
 
+  if (refunded) {
     return NextResponse.json({ success: true, message: "Order ditolak dan saldo dikembalikan." });
   }
 

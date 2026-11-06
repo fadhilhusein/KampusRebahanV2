@@ -107,54 +107,57 @@ export async function POST(req: NextRequest) {
     // Generate unique payment code 1-999 so admin can identify manual bank transfers by exact amount
     const uniqueCode = paymentMethod === "BANK_TRANSFER" ? Math.floor(Math.random() * 999) + 1 : 0;
 
+    const orderData = {
+      userId,
+      variantId,
+      productName: foundProduct.name,
+      variantName: foundVariant.name,
+      duration: foundVariant.duration,
+      type: foundVariant.type,
+      sellPrice: totalSellPrice,
+      costPrice: costPrice * quantity,
+      quantity,
+      uniqueCode,
+      paymentRef: paymentRef?.trim() || null,
+      paymentNote: paymentNote?.trim() || null,
+      emailInvite: emailInvite?.trim() || null,
+      paymentMethod,
+    };
+
     if (paymentMethod === "BALANCE") {
-      // Atomic check-and-debit: only succeeds if balance is still sufficient at
-      // the moment of the update, preventing a race from overspending.
-      const debited = await prisma.user.updateMany({
-        where: { id: userId, balance: { gte: totalSellPrice } },
-        data: { balance: { decrement: totalSellPrice } },
+      // Debit, order and ledger entry commit together, so a failure can't leave
+      // the balance debited without an order.
+      const order = await prisma.$transaction(async (tx) => {
+        // Atomic check-and-debit: only succeeds if balance is still sufficient.
+        const debited = await tx.user.updateMany({
+          where: { id: userId, balance: { gte: totalSellPrice } },
+          data: { balance: { decrement: totalSellPrice } },
+        });
+        if (debited.count === 0) return null;
+
+        const created = await tx.order.create({ data: { ...orderData, status: "PAID" } });
+        const updatedUser = await tx.user.findUnique({ where: { id: userId }, select: { balance: true } });
+        await tx.balanceTransaction.create({
+          data: {
+            userId,
+            type: "PURCHASE",
+            amount: -totalSellPrice,
+            balanceAfter: updatedUser?.balance ?? 0,
+            orderId: created.id,
+          },
+        });
+        return created;
       });
 
-      if (debited.count === 0) {
+      if (!order) {
         return NextResponse.json({ success: false, message: "Saldo tidak mencukupi." }, { status: 400 });
       }
-    }
-
-    const order = await prisma.order.create({
-      data: {
-        userId,
-        variantId,
-        productName: foundProduct.name,
-        variantName: foundVariant.name,
-        duration: foundVariant.duration,
-        type: foundVariant.type,
-        sellPrice: totalSellPrice,
-        costPrice: costPrice * quantity,
-        quantity,
-        uniqueCode,
-        paymentRef: paymentRef?.trim() || null,
-        paymentNote: paymentNote?.trim() || null,
-        emailInvite: emailInvite?.trim() || null,
-        paymentMethod,
-        status: paymentMethod === "BALANCE" ? "PAID" : "PENDING_PAYMENT",
-      },
-    });
-
-    if (paymentMethod === "BALANCE") {
-      const updatedUser = await prisma.user.findUnique({ where: { id: userId }, select: { balance: true } });
-      await prisma.balanceTransaction.create({
-        data: {
-          userId,
-          type: "PURCHASE",
-          amount: -totalSellPrice,
-          balanceAfter: updatedUser?.balance ?? 0,
-          orderId: order.id,
-        },
-      });
 
       await fulfillOrder(order.id);
       return NextResponse.json({ success: true, data: { order_id: order.id, unique_code: order.uniqueCode } });
     }
+
+    const order = await prisma.order.create({ data: { ...orderData, status: "PENDING_PAYMENT" } });
 
     if (paymentMethod === "QRIS_GATEWAY") {
       const appUrl = process.env.APP_URL || new URL(req.url).origin;
