@@ -3,36 +3,29 @@ interface SkeletonProps {
   radius?: string;
 }
 
-export function Skeleton({ className = "", radius = "rounded-[2px]" }: SkeletonProps) {
+export function Skeleton({ className = "", radius = "rounded-full" }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-foreground/6 ${radius} ${className}`}
+      aria-hidden="true"
+      className={`kr-shimmer ${radius} ${className}`}
     />
   );
 }
 
 export function ProductDetailSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 mb-8">
-        <Skeleton className="h-4 w-16" />
-        <Skeleton className="h-4 w-4" />
-        <Skeleton className="h-4 w-32" />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="mx-auto w-full max-w-5xl" role="status" aria-label="Memuat produk">
+      <Skeleton className="mb-8 h-4 w-48" />
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-14">
+        <Skeleton radius="rounded-[28px] md:rounded-[36px]" className="h-[260px] w-full md:h-[520px]" />
         <div className="space-y-4">
-          <Skeleton className="h-6 w-24" />
-          <Skeleton className="h-9 w-3/4" />
+          <Skeleton className="h-6 w-28" />
+          <Skeleton className="h-10 w-3/4" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
           <Skeleton className="h-4 w-4/6" />
-          <Skeleton className="h-24 w-full mt-4" />
+          <Skeleton radius="rounded-[20px]" className="mt-4 h-16 w-full" />
           <Skeleton className="h-12 w-full" />
-        </div>
-        <div className="space-y-3">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
         </div>
       </div>
     </div>
@@ -41,13 +34,13 @@ export function ProductDetailSkeleton() {
 
 export function CheckoutSkeleton() {
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <Skeleton className="h-9 w-48" />
-      <Skeleton radius="rounded-2xl" className="h-32 w-full" />
+    <div className="mx-auto w-full max-w-2xl space-y-6" role="status" aria-label="Memuat checkout">
+      <Skeleton className="h-10 w-48" />
+      <Skeleton radius="rounded-[28px]" className="h-32 w-full" />
       <div className="space-y-4">
-        <Skeleton radius="rounded-xl" className="h-12 w-full" />
-        <Skeleton radius="rounded-xl" className="h-12 w-full" />
-        <Skeleton radius="rounded-xl" className="h-12 w-full" />
+        <Skeleton radius="rounded-[14px]" className="h-12 w-full" />
+        <Skeleton radius="rounded-[14px]" className="h-12 w-full" />
+        <Skeleton radius="rounded-[14px]" className="h-12 w-full" />
       </div>
     </div>
   );
@@ -55,9 +48,9 @@ export function CheckoutSkeleton() {
 
 export function TransactionSkeleton() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" role="status" aria-label="Memuat transaksi">
       {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton key={i} radius="rounded-2xl" className="h-20 w-full" />
+        <Skeleton key={i} radius="rounded-[20px]" className="h-20 w-full" />
       ))}
     </div>
   );

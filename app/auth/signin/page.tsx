@@ -1,11 +1,5 @@
-import Navbar from "@/components/layout/Navbar";
 import ModernLoginSignup from "@/components/ui/modern-login-signup";
 
 export default function SignInPage() {
-  return (
-    <>
-      <Navbar />
-      <ModernLoginSignup mode="signin" />
-    </>
-  );
+  return <ModernLoginSignup mode="signin" />;
 }

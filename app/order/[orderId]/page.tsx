@@ -5,15 +5,14 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import GlassCard from "@/components/ui/GlassCard";
-import GradientBorder from "@/components/ui/GradientBorder";
 import Badge from "@/components/ui/Badge";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import GatewayQr from "@/components/payment/GatewayQr";
+import { Skeleton } from "@/components/ui/Skeleton";
 import Countdown from "@/components/payment/Countdown";
 import {
   Clock, CheckCircle2, Loader2, PartyPopper, XCircle, Ban, TimerOff, Package,
-  ListChecks, CreditCard, Landmark, Copy, Check, Download, ArrowLeft, ArrowRight,
+  Landmark, Copy, Check, Download, ArrowRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -34,6 +33,13 @@ const statusInfo: Record<string, { label: string; color: "primary" | "secondary"
   FAILED:          { label: "Gagal", color: "primary", icon: XCircle, desc: "Terjadi masalah saat memproses order. Hubungi admin." },
   REJECTED:        { label: "Ditolak", color: "primary", icon: Ban, desc: "Order ditolak. Hubungi admin untuk informasi lebih lanjut." },
   EXPIRED:         { label: "Kadaluarsa", color: "primary", icon: TimerOff, desc: "QRIS kadaluarsa sebelum dibayar. Buat order baru untuk mencoba lagi." },
+};
+
+const toneClass = {
+  primary: "bg-danger-bg text-danger",
+  secondary: "bg-success-bg text-success",
+  tertiary: "bg-warn-bg text-warn",
+  default: "bg-pill text-muted",
 };
 
 interface Order {
@@ -57,7 +63,7 @@ interface Order {
   createdAt: string;
 }
 
-function CopyButton({ value }: { value: string; label?: string }) {
+function CopyButton({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
   function copy() {
     navigator.clipboard.writeText(value);
@@ -68,9 +74,10 @@ function CopyButton({ value }: { value: string; label?: string }) {
     <button
       type="button"
       onClick={copy}
-      className="text-foreground/30 hover:text-foreground/70 transition-colors cursor-pointer"
+      aria-label={`Salin ${label}`}
+      className="kr-press inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted hover:bg-pill hover:text-ink"
     >
-      {copied ? <Check size={14} className="text-secondary" /> : <Copy size={14} />}
+      {copied ? <Check size={18} className="kr-fade-in text-success" /> : <Copy size={18} />}
     </button>
   );
 }
@@ -80,120 +87,139 @@ function PaymentInstructions({ order }: { order: Order }) {
   const bankName = process.env.NEXT_PUBLIC_BANK_NAME ?? "BCA";
   const bankNumber = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NUMBER ?? "-";
   const bankHolder = process.env.NEXT_PUBLIC_BANK_ACCOUNT_NAME ?? "-";
+  const isQris = order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE" || order.paymentMethod === "QRIS";
+  const heading = isQris ? "Scan untuk membayar" : "Transfer untuk membayar";
+  const amountLabel = order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE"
+    ? "Total pembayaran"
+    : order.paymentMethod === "QRIS"
+    ? "Nominal QRIS"
+    : "Transfer tepat sebesar";
 
   return (
-    <GradientBorder radius="rounded-2xl">
-      <div className="p-5 space-y-5">
-        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider">
-          <CreditCard size={12} />
-          Instruksi Pembayaran
-        </div>
+    <section className="kr-fade-up flex min-w-0 flex-1 flex-col items-center gap-5 rounded-[28px] bg-surface p-6 text-center shadow-card md:rounded-[36px] md:p-10">
+      <Badge color="tertiary">Menunggu pembayaran</Badge>
+      <h2 className="text-[26px] font-bold tracking-tight text-ink md:text-4xl">{heading}</h2>
 
-        <div className="border-t border-foreground/8 pt-4 space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-[13px] font-medium text-foreground/60">
-              {order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE"
-                ? "Total Pembayaran"
-                : order.paymentMethod === "QRIS"
-                ? "Nominal QRIS"
-                : "Transfer tepat sebesar"}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-[24px] font-bold text-foreground">{formatPrice(totalAmount)}</span>
-              <CopyButton value={String(totalAmount)} />
+      {order.paymentMethod === "QRIS_GATEWAY" && (
+        <>
+          {order.gatewayQrString ? (
+            <div className="kr-fade-up" style={{ animationDelay: "150ms" }}>
+              <GatewayQr value={order.gatewayQrString} className="h-[240px] w-[240px] md:h-[280px] md:w-[280px]" />
             </div>
-          </div>
-          {order.uniqueCode > 0 && (
-            <div className="text-[11px] text-foreground/30">
-              Harga produk <span className="text-foreground/50">{formatPrice(order.sellPrice)}</span> + <span className="text-tertiary font-semibold">+{order.uniqueCode} (Kode Unik)</span>
+          ) : (
+            <div className="flex h-[240px] w-[240px] items-center justify-center rounded-[20px] border-2 border-ink bg-white p-3 text-xs text-[#5B5F66] md:h-[280px] md:w-[280px]">QR tidak tersedia</div>
+          )}
+          {order.gatewayExpiresAt && (
+            <div className="kr-fade-in" style={{ animationDelay: "250ms" }}>
+              <Countdown expiresAt={order.gatewayExpiresAt} />
             </div>
           )}
-        </div>
+        </>
+      )}
 
-        {order.paymentMethod !== "QRIS_GATEWAY" && order.paymentMethod !== "QRIS_BRIDGE" && (
-          <div className="bg-tertiary/10 border border-tertiary/20 rounded-xl px-3 py-2.5 text-[11px] font-medium text-tertiary/80">
-            <ul className="list-disc list-inside space-y-1">
-              <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
-              <li>Admin akan verifikasi otomatis berdasarkan jumlah yang masuk.</li>
-              <li><strong>Kesalahan nominal</strong> bukan tanggung jawab kami dan tidak terdapat pengembalian dana.</li>
-            </ul>
-          </div>
-        )}
-
-        {order.paymentMethod === "QRIS_GATEWAY" ? (
-          <div className="text-center space-y-3">
-            <div className="text-[13px] font-medium text-foreground/60">Scan QR code berikut</div>
-            <div className="inline-block bg-white p-3 rounded-xl">
-              {order.gatewayQrString ? (
-                <GatewayQr value={order.gatewayQrString} />
-              ) : (
-                <div className="w-72 h-72 flex items-center justify-center text-black/40 text-[12px]">QR tidak tersedia</div>
-              )}
-            </div>
-            {order.gatewayExpiresAt && (
-              <div className="text-[12px] text-foreground/40">
-                Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={order.gatewayExpiresAt} /></span>
-              </div>
-            )}
-            <div className="text-[11px] text-foreground/30">Status pembayaran akan otomatis terupdate begitu QRIS ini dibayar.</div>
-          </div>
-        ) : order.paymentMethod === "QRIS_BRIDGE" ? (
-          <div className="text-center space-y-3">
-            <div className="text-[13px] font-medium text-foreground/60">Bayar lewat halaman QRIS Instan</div>
-            {order.bridgePaymentUrl && (
-              <a href={order.bridgePaymentUrl} target="_blank" rel="noopener noreferrer">
-                <ButtonPrimary className="w-full py-3 text-[14px] flex items-center justify-center gap-2">
-                  Lanjutkan Pembayaran <ArrowRight size={15} />
-                </ButtonPrimary>
-              </a>
-            )}
-            {order.bridgeExpiresAt && (
-              <div className="text-[12px] text-foreground/40">
-                Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={order.bridgeExpiresAt} /></span>
-              </div>
-            )}
-            <div className="text-[11px] text-foreground/30">Status pembayaran akan otomatis terupdate begitu QRIS ini dibayar.</div>
-          </div>
-        ) : order.paymentMethod === "QRIS" ? (
-          <div className="text-center space-y-3">
-            <div className="text-[13px] font-medium text-foreground/60">Scan QR code berikut</div>
-            <div className="inline-block bg-white p-3 rounded-xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/qris.png" alt="QRIS KampusRebahan" className="w-72 h-72 object-contain" />
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[13px] font-semibold text-foreground">KampusRebahan</div>
-              <div className="text-[11px] text-foreground/40">NMID: ID1026520725130</div>
-            </div>
-            <a
-              href="/qris.png"
-              download="QRIS-KampusRebahan.png"
-              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-foreground/50 hover:text-foreground border border-foreground/15 hover:border-foreground/30 rounded-xl px-4 py-2 transition-colors"
-            >
-              <Download size={14} /> Download QRIS
+      {order.paymentMethod === "QRIS_BRIDGE" && (
+        <>
+          {order.bridgePaymentUrl && (
+            <a href={order.bridgePaymentUrl} target="_blank" rel="noopener noreferrer" className={`${buttonClass()} w-full max-w-sm`}>
+              Lanjutkan pembayaran <ArrowRight size={16} aria-hidden="true" />
             </a>
+          )}
+          {order.bridgeExpiresAt && (
+            <div className="kr-fade-in" style={{ animationDelay: "250ms" }}>
+              <Countdown expiresAt={order.bridgeExpiresAt} />
+            </div>
+          )}
+        </>
+      )}
+
+      {order.paymentMethod === "QRIS" && (
+        <>
+          <div className="kr-fade-up rounded-[20px] border-2 border-ink bg-white p-3" style={{ animationDelay: "150ms" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/qris.png" alt="QRIS KampusRebahan" className="h-[240px] w-[240px] object-contain md:h-[280px] md:w-[280px]" />
           </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-1.5 text-[12px] font-medium text-foreground/50"><Landmark size={13} /> Bank</span>
-              <span className="text-[14px] font-medium text-foreground">{bankName}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[12px] font-medium text-foreground/50">No. Rekening</span>
-              <div className="flex items-center gap-2">
-                <span className="text-[15px] font-mono font-semibold text-foreground">{bankNumber}</span>
-                <CopyButton value={bankNumber} />
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[12px] font-medium text-foreground/50">Atas Nama</span>
-              <span className="text-[14px] text-foreground">{bankHolder}</span>
-            </div>
+          <div>
+            <div className="text-sm font-semibold text-ink">KampusRebahan</div>
+            <div className="text-[13px] text-muted">NMID: ID1026520725130</div>
+          </div>
+          <a href="/qris.png" download="QRIS-KampusRebahan.png" className={buttonClass("secondary", "sm")}>
+            <Download size={14} aria-hidden="true" /> Download QRIS
+          </a>
+        </>
+      )}
+
+      {!isQris && (
+        <dl className="flex w-full max-w-sm flex-col gap-3 text-left">
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-card px-4 py-3">
+            <dt className="flex items-center gap-1.5 text-xs font-semibold text-muted"><Landmark size={14} aria-hidden="true" /> Bank</dt>
+            <dd className="text-sm font-medium text-ink">{bankName}</dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-card py-1 pl-4 pr-1">
+            <dt className="text-xs font-semibold text-muted">No. Rekening</dt>
+            <dd className="flex items-center gap-1">
+              <span className="font-mono text-sm font-medium text-ink">{bankNumber}</span>
+              <CopyButton value={bankNumber} label="nomor rekening" />
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-card px-4 py-3">
+            <dt className="text-xs font-semibold text-muted">Atas Nama</dt>
+            <dd className="text-sm font-medium text-ink">{bankHolder}</dd>
+          </div>
+        </dl>
+      )}
+
+      <div>
+        <div className="text-[13px] font-semibold text-muted">{amountLabel}</div>
+        <div className="flex items-center justify-center gap-1">
+          <span className="text-[28px] font-bold text-ink md:text-[32px]">{formatPrice(totalAmount)}</span>
+          <CopyButton value={String(totalAmount)} label="nominal" />
+        </div>
+        {order.uniqueCode > 0 && (
+          <div className="text-[13px] text-muted">
+            Harga produk {formatPrice(order.sellPrice)} + <span className="font-semibold text-warn">{order.uniqueCode} (kode unik)</span>
           </div>
         )}
       </div>
-    </GradientBorder>
+
+      {!isQris && (
+        <ul className="w-full max-w-sm list-inside list-disc space-y-1 rounded-2xl bg-warn-bg px-4 py-3 text-left text-[13px] font-medium text-warn">
+          <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
+          <li>Admin akan verifikasi otomatis berdasarkan jumlah yang masuk.</li>
+          <li><strong>Kesalahan nominal</strong> bukan tanggung jawab kami dan tidak terdapat pengembalian dana.</li>
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function OrderSummary({ order }: { order: Order }) {
+  const rows: [string, string][] = [
+    ["Order", `#${order.id}`],
+    ["Produk", order.productName],
+    ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
+    ["Jumlah", String(order.quantity)],
+    ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS_BRIDGE: "QRIS Instan (Bridge)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
+    ["Tanggal", formatDate(order.createdAt)],
+  ];
+  if (order.paymentRef) rows.push(["Ref Transfer", order.paymentRef]);
+  if (order.paymentNote) rows.push(["Catatan", order.paymentNote]);
+
+  return (
+    <section className="kr-fade-up rounded-[28px] bg-surface p-5 shadow-card md:p-7" style={{ animationDelay: "80ms" }}>
+      <h2 className="mb-4 text-xl font-semibold text-ink">Ringkasan</h2>
+      <dl className="flex flex-col gap-3">
+        {rows.map(([label, value]) => (
+          <div key={label} className="flex justify-between gap-4 text-sm">
+            <dt className="shrink-0 text-muted">{label}</dt>
+            <dd className="break-all text-right font-medium text-ink">{value}</dd>
+          </div>
+        ))}
+        <div className="flex items-baseline justify-between gap-4 border-t border-hairline pt-3">
+          <dt className="text-sm font-semibold text-ink">Total</dt>
+          <dd className="text-xl font-bold text-ink">{formatPrice(order.sellPrice + order.uniqueCode)}</dd>
+        </div>
+      </dl>
+    </section>
   );
 }
 
@@ -266,112 +292,94 @@ export default function OrderDetailPage() {
   const info = order
     ? (statusInfo[order.status] ?? { label: order.status, color: "default" as const, icon: Package, desc: "" })
     : null;
+  const isPending = order?.status === "PENDING_PAYMENT";
+  const isAutoQris = order?.paymentMethod === "QRIS_GATEWAY" || order?.paymentMethod === "QRIS_BRIDGE";
 
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-xl mx-auto">
-          <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
-            <Link href="/dashboard/transactions" className="hover:text-foreground transition-colors">Transaksi</Link>
-            <span>/</span>
-            <span className="text-foreground/60 font-mono truncate max-w-[160px]">{orderId}</span>
+      <main className="flex-1 py-8 md:py-10">
+        <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-[13px] text-muted">
+          <Link href="/dashboard/transactions" className="hover:text-ink hover:underline">Transaksi</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" className="max-w-[160px] truncate font-mono font-semibold text-ink">{orderId}</span>
+        </nav>
+
+        {loading ? (
+          <div role="status" aria-label="Memuat pesanan" className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
+            <div className="flex min-h-[420px] flex-1 flex-col items-center gap-5 rounded-[28px] bg-surface p-6 shadow-card md:rounded-[36px] md:p-10">
+              <Skeleton className="h-7 w-40" />
+              <Skeleton className="h-9 w-64" />
+              <Skeleton radius="rounded-[20px]" className="h-[240px] w-[240px] md:h-[280px] md:w-[280px]" />
+            </div>
+            <div className="flex w-full flex-col gap-3 rounded-[28px] bg-surface p-5 shadow-card md:p-7 lg:w-[420px] lg:shrink-0">
+              <Skeleton className="mb-2 h-6 w-32" />
+              {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-4 w-full" />)}
+            </div>
           </div>
-
-          <h1 className="text-[32px] font-medium tracking-tight mb-6">Status pesanan</h1>
-          {loading ? (
-            <div className="text-foreground/30 text-[14px]">Memuat...</div>
-          ) : error ? (
-            <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px]">{error}</div>
-          ) : order && info ? (
-            <div className="space-y-5">
-              <div className="text-center py-8">
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 ${
-                  info.color === "primary" ? "bg-primary/15 text-primary" :
-                  info.color === "secondary" ? "bg-secondary/15 text-secondary" :
-                  info.color === "tertiary" ? "bg-tertiary/15 text-tertiary" :
-                  "bg-foreground/10 text-foreground/60"
-                }`}>
-                  <info.icon size={30} className={info.spin ? "animate-spin" : ""} />
-                </div>
-                <Badge color={info.color}>{info.label}</Badge>
-                <p className="text-[13px] text-foreground/40 mt-3 max-w-sm mx-auto">{info.desc}</p>
-              </div>
-
-              <GlassCard radius="rounded-2xl" className="p-5 space-y-3">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground/60 uppercase tracking-wider mb-1">
-                  <ListChecks size={12} />
-                  Detail Order
-                </div>
-                {([
-                  ["Produk", order.productName],
-                  ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
-                  ["Jumlah", String(order.quantity)],
-                  ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS_BRIDGE: "QRIS Instan (Bridge)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
-                  ["Tanggal", formatDate(order.createdAt)],
-                ] as [string, string][]).map(([label, value]) => (
-                  <div key={label} className="flex justify-between gap-4">
-                    <span className="text-[12px] font-medium text-foreground/50 flex-shrink-0">{label}</span>
-                    <span className="text-[13px] text-foreground text-right break-all">{value}</span>
+        ) : error ? (
+          <div role="alert" className="kr-fade-in rounded-2xl bg-danger-bg px-6 py-4 text-sm font-medium text-danger">{error}</div>
+        ) : order && info ? (
+          isPending ? (
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
+              <h1 className="sr-only">Status pesanan</h1>
+              <PaymentInstructions order={order} />
+              <div className="flex w-full flex-col gap-5 lg:w-[420px] lg:shrink-0">
+                <OrderSummary order={order} />
+                {isAutoQris ? null : confirmMsg ? (
+                  <div role="status" className="kr-fade-in rounded-2xl bg-success-bg px-4 py-3 text-center text-[13px] font-medium text-success">
+                    {confirmMsg}
                   </div>
-                ))}
-                {order.paymentRef && (
-                  <div className="flex justify-between gap-4">
-                    <span className="text-[12px] text-foreground/40 flex-shrink-0">Ref Transfer</span>
-                    <span className="text-[13px] text-foreground text-right font-mono">{order.paymentRef}</span>
-                  </div>
+                ) : (
+                  <ButtonPrimary type="button" onClick={handleConfirmPayment} disabled={confirming} className="w-full">
+                    {confirming ? "Memproses..." : "Sudah bayar"}
+                  </ButtonPrimary>
                 )}
-                {order.paymentNote && (
-                  <div className="flex justify-between gap-4">
-                    <span className="text-[12px] text-foreground/40 flex-shrink-0">Catatan</span>
-                    <span className="text-[13px] text-foreground/60 text-right">{order.paymentNote}</span>
-                  </div>
-                )}
-              </GlassCard>
-
-              {order.status === "PENDING_PAYMENT" && (
-                <>
-                  <PaymentInstructions order={order} />
-                  {order.paymentMethod === "QRIS_GATEWAY" || order.paymentMethod === "QRIS_BRIDGE" ? (
-                    <div className="text-center text-[12px] text-foreground/30">
-                      Menunggu pembayaran... status akan terupdate otomatis.
-                    </div>
-                  ) : confirmMsg ? (
-                    <div className="bg-secondary/10 border border-secondary/30 rounded-xl px-4 py-3 text-[13px] font-medium text-secondary text-center">
-                      {confirmMsg}
-                    </div>
-                  ) : (
-                    <ButtonPrimary
-                      type="button"
-                      onClick={handleConfirmPayment}
-                      disabled={confirming}
-                      className="w-full py-3 text-[14px] flex items-center justify-center gap-2"
-                    >
-                      {!confirming && <CheckCircle2 size={16} />}
-                      {confirming ? "Memproses..." : "Sudah Bayar"}
-                    </ButtonPrimary>
-                  )}
-                </>
-              )}
-
-              {order.status === "COMPLETED" && order.apiOrderId && (
-                <div className="text-center">
-                  <Link href={`/dashboard/transactions/${order.id}`}>
-                    <ButtonPrimary>Lihat Detail Akun <ArrowRight size={15} /></ButtonPrimary>
-                  </Link>
-                </div>
-              )}
-
-              <div className="pt-2">
-                <Link href="/dashboard/transactions">
-                  <ButtonPrimary variant="ghost" className="text-[13px]"><ArrowLeft size={15} /> Kembali ke Riwayat</ButtonPrimary>
-                </Link>
+                <p className="text-[13px] text-muted">
+                  {isAutoQris
+                    ? "Halaman ini diperbarui otomatis setelah pembayaran terdeteksi."
+                    : "Admin akan memverifikasi setelah dana masuk."}
+                </p>
               </div>
             </div>
-          ) : null}
-        </div>
+          ) : (
+            <div className="flex flex-col gap-8">
+              <header className="kr-fade-up flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div className="min-w-0">
+                  <p className="break-all text-sm font-medium text-muted">Pesanan #{order.id}</p>
+                  <h1 className="text-4xl font-bold tracking-[-1.5px] text-ink md:text-[56px] md:tracking-[-2.5px]">{order.productName}</h1>
+                </div>
+                <div className="shrink-0"><Badge color={info.color}>{info.label}</Badge></div>
+              </header>
+
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
+                <section className="kr-fade-up flex min-w-0 flex-1 items-start gap-4 rounded-[24px] bg-surface p-5 shadow-card md:rounded-[32px] md:p-8" style={{ animationDelay: "80ms" }}>
+                  <div className={`flex size-12 shrink-0 items-center justify-center rounded-full ${toneClass[info.color]}`} aria-hidden="true">
+                    <info.icon size={24} className={info.spin ? "animate-spin" : ""} />
+                  </div>
+                  <div className="flex min-w-0 flex-col gap-4">
+                    <div>
+                      <h2 className="text-[22px] font-semibold text-ink">{info.label}</h2>
+                      <p className="text-sm text-muted">{info.desc}</p>
+                    </div>
+                    {order.status === "COMPLETED" && order.apiOrderId && (
+                      <Link href={`/dashboard/transactions/${order.id}`} className={`${buttonClass()} self-start`}>
+                        Lihat detail akun <ArrowRight size={16} aria-hidden="true" />
+                      </Link>
+                    )}
+                  </div>
+                </section>
+                <div className="w-full lg:w-[420px] lg:shrink-0"><OrderSummary order={order} /></div>
+              </div>
+
+              <div>
+                <Link href="/dashboard/transactions" className={buttonClass("secondary")}>Kembali ke riwayat</Link>
+              </div>
+            </div>
+          )
+        ) : null}
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

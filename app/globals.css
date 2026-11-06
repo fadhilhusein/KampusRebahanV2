@@ -2,110 +2,270 @@
 @source "../app/**/*.{ts,tsx}";
 @source "../components/**/*.{ts,tsx}";
 
-@theme {
-  --color-primary: #E11D48;
-  --color-secondary: #4338CA;
-  --color-tertiary: #F97316;
-  --color-surface: #0A0A0A;
-  --color-background: #000000;
-  --color-foreground: #FFFFFF;
-  --color-btn-fill: #FFFFFF;
-  --color-btn-text: #000000;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-  --radius-card: 2px;
-  --radius-btn: 9999px;
-
-  --blur-glass: 12px;
-}
-
-/* Magic UI shine-border. `inline` keeps var(--duration) resolving on the element itself
-   (the component sets it inline); a plain @theme would resolve it at :root, where it is undefined. */
-@theme inline {
-  --animate-shine: shine var(--duration) infinite linear;
-
-  @keyframes shine {
-    0% {
-      background-position: 0% 0%;
-    }
-    50% {
-      background-position: 100% 100%;
-    }
-    to {
-      background-position: 0% 0%;
-    }
-  }
-}
-
+:root,
 [data-theme="light"] {
-  --color-primary: #BE185D;
-  --color-secondary: #2563EB;
-  --color-tertiary: #7C3AED;
-  --color-surface: #FFFFFF;
-  --color-background: #F7F7FB;
-  --color-foreground: #1E1B4B;
-  --color-btn-fill: #1E1B4B;
-  --color-btn-text: #FFFFFF;
+  color-scheme: light;
+  --kr-card: #F7F7F8;
+  --kr-surface: #FFFFFF;
+  --kr-ink: #111113;
+  --kr-ink-hover: #2A2A2E;
+  --kr-on-ink: #FFFFFF;
+  --kr-on-ink-muted: #C9CBD1;
+  --kr-muted: #5B5F66;
+  --kr-pill: #E8E9EC;
+  --kr-pill-hover: #DCDDE1;
+  --kr-line: #8A8E96;
+  --kr-hairline: #E2E3E6;
+  --kr-accent: #2447E0;
+  --kr-success: #146C3A;
+  --kr-success-bg: #DDF3E4;
+  --kr-warn: #8A4B08;
+  --kr-warn-bg: #FDEBCB;
+  --kr-danger: #A4210F;
+  --kr-danger-bg: #FBE0DA;
+  --kr-danger-bg-hover: #F7CFC6;
+  --kr-toast-icon: #7BE0A0;
+  --kr-shadow-card: 0 10px 30px rgba(17, 18, 19, 0.10);
+  --kr-shadow-card-hover: 0 14px 36px rgba(17, 18, 19, 0.14);
+  --kr-shadow-soft: 0 2px 8px rgba(17, 18, 19, 0.08);
+  --kr-dur-fast: 150ms;
+  --kr-dur: 250ms;
+  --kr-dur-slow: 400ms;
+  --kr-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --kr-card: #0F1012;
+  --kr-surface: #1A1B1F;
+  --kr-ink: #F2F3F5;
+  --kr-ink-hover: #D9DBE0;
+  --kr-on-ink: #111113;
+  --kr-on-ink-muted: #4A4E55;
+  --kr-muted: #A2A6AE;
+  --kr-pill: #26282D;
+  --kr-pill-hover: #31333A;
+  --kr-line: #6B7079;
+  --kr-hairline: #2A2C31;
+  --kr-accent: #7C95FF;
+  --kr-success: #6FD69A;
+  --kr-success-bg: #12301F;
+  --kr-warn: #F2B45A;
+  --kr-warn-bg: #3A2A0E;
+  --kr-danger: #FF8A75;
+  --kr-danger-bg: #3D1712;
+  --kr-danger-bg-hover: #4D1E17;
+  --kr-toast-icon: #146C3A;
+  --kr-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --kr-shadow-card-hover: 0 14px 36px rgba(0, 0, 0, 0.55);
+  --kr-shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), system-ui, sans-serif;
+
+  --color-card: var(--kr-card);
+  --color-surface: var(--kr-surface);
+  --color-ink: var(--kr-ink);
+  --color-ink-hover: var(--kr-ink-hover);
+  --color-on-ink: var(--kr-on-ink);
+  --color-on-ink-muted: var(--kr-on-ink-muted);
+  --color-muted: var(--kr-muted);
+  --color-pill: var(--kr-pill);
+  --color-pill-hover: var(--kr-pill-hover);
+  --color-line: var(--kr-line);
+  --color-hairline: var(--kr-hairline);
+  --color-accent: var(--kr-accent);
+  --color-success: var(--kr-success);
+  --color-success-bg: var(--kr-success-bg);
+  --color-warn: var(--kr-warn);
+  --color-warn-bg: var(--kr-warn-bg);
+  --color-danger: var(--kr-danger);
+  --color-danger-bg: var(--kr-danger-bg);
+  --color-danger-bg-hover: var(--kr-danger-bg-hover);
+  --color-toast-icon: var(--kr-toast-icon);
+
+  --radius-card: 28px;
+
+  --shadow-card: var(--kr-shadow-card);
+  --shadow-card-hover: var(--kr-shadow-card-hover);
+  --shadow-soft: var(--kr-shadow-soft);
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--kr-card);
+  color: var(--kr-ink);
+  font-family: var(--font-sans);
 }
 
-.glass {
-  background: color-mix(in srgb, var(--color-foreground) 4%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in srgb, var(--color-foreground) 12%, transparent);
-  box-shadow: rgba(0,0,0,0) 0 0 0 0, color-mix(in srgb, var(--color-foreground) 15%, transparent) 0 0 50px 0;
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
 }
 
-.glass-hover:hover {
-  background: color-mix(in srgb, var(--color-foreground) 7%, transparent);
-  border-color: color-mix(in srgb, var(--color-foreground) 20%, transparent);
-  box-shadow: rgba(0,0,0,0) 0 0 0 0, color-mix(in srgb, var(--color-foreground) 20%, transparent) 0 0 20px 0;
+:focus-visible {
+  outline: 3px solid var(--kr-accent);
+  outline-offset: 2px;
 }
 
-.gradient-border {
-  position: relative;
-  background: linear-gradient(color-mix(in srgb, var(--color-foreground) 3%, transparent) 1px, rgba(0,0,0,0) 1px);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-.orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(80px);
-  pointer-events: none;
+@layer components {
+  .kr-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding: 16px 20px 28px;
+  }
+  @media (min-width: 768px) {
+    .kr-page {
+      padding: 24px 80px 48px;
+    }
+  }
+
+  .kr-field {
+    width: 100%;
+    height: 48px;
+    border-radius: 14px;
+    border: 1px solid var(--kr-line);
+    background: var(--kr-surface);
+    padding-inline: 16px;
+    font-size: 14px;
+    color: var(--kr-ink);
+  }
+  .kr-field::placeholder {
+    color: var(--kr-muted);
+  }
+  .kr-field:focus,
+  .kr-field:focus-visible {
+    outline: none;
+    border: 2px solid var(--kr-ink);
+    padding-inline: 15px;
+  }
+  .kr-field[aria-invalid="true"] {
+    border: 2px solid var(--kr-danger);
+    padding-inline: 15px;
+  }
+
+  .kr-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    width: 100%;
+    border-radius: 9999px;
+    border: 1px solid var(--kr-line);
+    background: var(--kr-surface);
+    padding-inline: 18px;
+    color: var(--kr-muted);
+  }
+  .kr-search input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    font-size: 14px;
+    color: var(--kr-ink);
+  }
+  .kr-search input:focus-visible {
+    outline: none;
+  }
+  .kr-search input::placeholder {
+    color: var(--kr-muted);
+  }
+  .kr-search:focus-within {
+    border: 2px solid var(--kr-ink);
+    padding-inline: 17px;
+  }
+  @media (min-width: 768px) {
+    .kr-search {
+      max-width: 360px;
+    }
+  }
+
+  .kr-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    border-radius: 9999px;
+    background: var(--kr-pill);
+    color: var(--kr-ink);
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.15s;
+  }
+  .kr-chip:hover {
+    background: var(--kr-pill-hover);
+  }
+  .kr-chip[aria-pressed="true"],
+  .kr-chip[aria-current] {
+    background: var(--kr-ink);
+    color: var(--kr-on-ink);
+  }
 }
 
-/* Navbar sits over the homepage Hero, which stays permanently dark by design.
-   In light theme, low-opacity glass would put dark navy text against that
-   dark Hero with poor contrast — force an opaque surface behind the navbar
-   in light mode only. Dark theme keeps the original transparent .glass look. */
-[data-theme="light"] .navbar-surface {
-  background: var(--color-surface);
-  border-color: color-mix(in srgb, var(--color-foreground) 10%, transparent);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+/* Motion primitives (unlayered: menang atas utilitas Tailwind seperti transition-colors).
+   Dokumentasi: .devflow/redesign-ui/progress-r1.md */
+@keyframes kr-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes kr-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes kr-shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+@keyframes kr-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
 }
 
-/* Hero band background — logo-derived colors per theme. Dark keeps the
-   original maroon/black gradient; light gets a soft lavender-to-pink wash. */
-.hero-gradient {
-  background: linear-gradient(to bottom, #030407 0%, #090205 35%, #4c0618 78%, #72081f 100%);
+.kr-fade-up {
+  animation: kr-fade-up var(--kr-dur-slow) var(--kr-ease) both;
 }
-
-[data-theme="light"] .hero-gradient {
-  background: linear-gradient(to bottom, #FAFAFF 0%, #F3ECFF 35%, #F3E0F5 78%, #FBD9EC 100%);
+.kr-fade-in {
+  animation: kr-fade-in var(--kr-dur) var(--kr-ease) both;
 }
-
-.hero-overlay {
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.12), rgba(0,0,0,0) 34%),
-    linear-gradient(to bottom, rgba(0,0,0,0.04), rgba(0,0,0,0.58));
+.kr-float {
+  animation: kr-float 6s ease-in-out infinite;
 }
-
-[data-theme="light"] .hero-overlay {
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.5), rgba(255,255,255,0) 34%),
-    linear-gradient(to bottom, rgba(255,255,255,0.35), rgba(255,255,255,0.75));
+.kr-shimmer {
+  background: linear-gradient(90deg, var(--kr-pill) 30%, var(--kr-pill-hover) 50%, var(--kr-pill) 70%) 0 0 / 200% 100%;
+  animation: kr-shimmer 1.4s linear infinite;
+}
+.kr-lift {
+  transition: translate var(--kr-dur) var(--kr-ease), box-shadow var(--kr-dur) var(--kr-ease);
+}
+.kr-lift:hover {
+  translate: 0 -4px;
+}
+.kr-press {
+  transition-property: color, background-color, border-color, box-shadow, scale, translate;
+  transition-duration: var(--kr-dur-fast);
+  transition-timing-function: var(--kr-ease);
+}
+.kr-press:active:not(:disabled) {
+  scale: 0.97;
 }

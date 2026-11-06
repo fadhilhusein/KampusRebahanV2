@@ -36,9 +36,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
 
-export const toolbarButtonClass =
-  "inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-foreground/20 bg-surface px-3.5 text-[13px] font-semibold text-foreground/70 transition-colors hover:border-foreground/40 hover:text-foreground";
+export const toolbarButtonClass = `kr-press ${buttonClass("secondary", "sm")}`;
+
+// Stagger masuk baris (kr-fade-up), dibatasi agar halaman panjang tidak menunggu lama.
+const rowDelay = (i: number) => ({ animationDelay: `${Math.min(i, 8) * 40}ms` });
 
 interface SortHeaderProps<TData, TValue> {
   column: Column<TData, TValue>;
@@ -56,12 +59,12 @@ export function SortHeader<TData, TValue>({ column, label, align = "left" }: Sor
       <button
         type="button"
         onClick={() => column.toggleSorting(sorted === "asc")}
-        className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-[12px] font-semibold transition-colors hover:bg-foreground/5 hover:text-foreground ${
+        className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold transition-colors hover:text-ink ${
           align === "right" ? "-mr-2" : "-ml-2"
-        } ${sorted ? "text-foreground" : "text-foreground/50"}`}
+        } ${sorted ? "text-ink" : "text-muted"}`}
       >
         {label}
-        <Icon size={13} className={sorted ? "text-primary" : "text-foreground/30"} />
+        <Icon size={13} className={sorted ? "text-accent" : "text-line"} />
       </button>
     </div>
   );
@@ -85,6 +88,8 @@ interface DataTableProps<TData> {
   emptyMessage?: string;
   /** Applied to every body row; use "relative" with a stretched link to make rows clickable. */
   rowClassName?: string;
+  /** Renders each row as a list item below 768px; the desktop table is hidden there. */
+  mobileRow?: (row: TData) => ReactNode;
 }
 
 export default function DataTable<TData>({
@@ -100,6 +105,7 @@ export default function DataTable<TData>({
   rowNoun = "data",
   emptyMessage = "Tidak ada data.",
   rowClassName = "",
+  mobileRow,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -132,28 +138,27 @@ export default function DataTable<TData>({
   return (
     <div className="w-full">
       {showToolbar && (
-        <div className="mb-4 flex flex-wrap items-center gap-3">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center md:gap-4">
           {searchPlaceholder && (
-            <div className="relative w-full sm:max-w-xs">
-              <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-foreground/40" />
+            <label className="kr-search">
+              <Search size={18} aria-hidden="true" />
+              <span className="sr-only">{searchPlaceholder}</span>
               <input
                 type="search"
                 value={globalFilter}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 placeholder={searchPlaceholder}
-                aria-label={searchPlaceholder}
-                className="h-10 w-full rounded-xl border border-foreground/20 bg-surface pl-10 pr-3 text-[13px] font-medium text-foreground transition-colors placeholder:text-foreground/30 focus:border-foreground/40 focus:outline-none"
               />
-            </div>
+            </label>
           )}
           {toolbar?.(table)}
           {columnToggle && hideableColumns.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button type="button" className={`${toolbarButtonClass} sm:ml-auto`}>
+                <button type="button" className={`${toolbarButtonClass} max-md:hidden md:ml-auto`}>
                   <Columns3 size={15} />
                   Kolom
-                  <ChevronDown size={14} className="text-foreground/40" />
+                  <ChevronDown size={14} aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -175,7 +180,8 @@ export default function DataTable<TData>({
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-foreground/20 bg-surface">
+      <div>
+        <div className={mobileRow ? "hidden md:block" : ""}>
         <Table className="min-w-[720px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -196,8 +202,8 @@ export default function DataTable<TData>({
           </TableHeader>
           <TableBody>
             {rows.length ? (
-              rows.map((row) => (
-                <TableRow key={row.id} className={rowClassName}>
+              rows.map((row, i) => (
+                <TableRow key={row.id} className={`kr-fade-up ${rowClassName}`} style={rowDelay(i)}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
@@ -205,22 +211,37 @@ export default function DataTable<TData>({
               ))
             ) : (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-32 text-center font-medium text-foreground/40">
+                <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-32 text-center font-medium text-muted">
                   {emptyMessage}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+        </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-foreground/10 px-4 py-3">
-          <div className="text-[12px] font-medium text-foreground/50">
+        {mobileRow && (
+          <ul className="flex flex-col gap-3 md:hidden">
+            {rows.length ? (
+              rows.map((row, i) => (
+                <li key={row.id} className="kr-fade-up" style={rowDelay(i)}>
+                  {mobileRow(row.original)}
+                </li>
+              ))
+            ) : (
+              <li className="kr-fade-in rounded-[22px] bg-surface p-6 text-center text-sm font-medium text-muted shadow-card">{emptyMessage}</li>
+            )}
+          </ul>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 px-2">
+          <div className="text-xs font-medium text-muted">
             {filteredCount} {rowNoun}
             {filteredCount !== data.length && ` (dari ${data.length})`}
           </div>
           {pageCount > 1 && (
             <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium text-foreground/50">
+              <span className="text-xs font-medium text-muted">
                 Halaman {pageIndex + 1} dari {pageCount}
               </span>
               <button
@@ -228,7 +249,7 @@ export default function DataTable<TData>({
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
                 aria-label="Halaman sebelumnya"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-foreground/20 text-foreground/70 transition-colors hover:border-foreground/40 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                className="kr-press flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-pill text-ink hover:bg-pill-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -237,7 +258,7 @@ export default function DataTable<TData>({
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
                 aria-label="Halaman berikutnya"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-foreground/20 text-foreground/70 transition-colors hover:border-foreground/40 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
+                className="kr-press flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-pill text-ink hover:bg-pill-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <ChevronRight size={16} />
               </button>

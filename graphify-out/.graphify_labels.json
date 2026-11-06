@@ -1,1 +1,15 @@
-{"0": "Auth & Checkout Pages", "1": "Balance & History Tables", "2": "Admin Panel UI", "3": "Order Creation & Gateways", "4": "Products, Settings & Markup", "5": "Docs, Audit & Design Notes", "6": "Password Reset UI Kit", "7": "Webhooks & Top-up Crediting", "8": "Dashboard Shell & Navigation", "9": "Dev Dependencies", "10": "Admin Order API", "11": "Order Detail & Credentials", "12": "Landing Hero & Banners", "13": "Runtime Dependencies", "14": "Session & Account API", "15": "TypeScript Config", "16": "Root Layout & Providers", "17": "Loyalty Coupon Rewards", "18": "Payment Bridge QRIS", "19": "Password Reset Email", "20": "ESLint Config", "21": "Product Reviews API", "22": "Route Protection Middleware", "23": "Prisma Config", "24": "NPM Scripts", "25": "Prisma PG Adapter", "26": "Prisma Client", "27": "Three.js", "28": "PostCSS Config", "29": "NextAuth Handlers"}
+{
+  "1": "Balance & History Tables",
+  "5": "Docs, Audit & Design Notes",
+  "6": "Password Reset UI Kit",
+  "9": "Dev Dependencies",
+  "13": "Runtime Dependencies",
+  "15": "TypeScript Config",
+  "16": "Root Layout & Providers",
+  "20": "ESLint Config",
+  "22": "Route Protection Middleware",
+  "23": "Prisma Config",
+  "24": "NPM Scripts",
+  "28": "PostCSS Config",
+  "29": "NextAuth Handlers"
+}

@@ -5,44 +5,40 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import GlassCard from "@/components/ui/GlassCard";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
+import StatusIcon from "../StatusIcon";
+import { X } from "lucide-react";
 
 function PaymentCancelContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id") ?? "";
 
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center">
-        <div className="max-w-md w-full text-center">
-          <GlassCard radius="rounded-2xl" className="p-8">
-            <div className="text-[48px] mb-3">🚫</div>
-            <h1 className="text-[20px] font-semibold text-foreground mb-2">Pembayaran dibatalkan</h1>
-            <p className="text-[13px] text-foreground/40 mb-6">
-              Kamu membatalkan halaman pembayaran. Order belum dihapus — kamu masih bisa menyelesaikan pembayarannya.
-            </p>
-            {orderId ? (
-              <Link href={`/order/${orderId}`}>
-                <ButtonPrimary className="w-full justify-center py-3">Lanjutkan Pembayaran →</ButtonPrimary>
-              </Link>
-            ) : (
-              <Link href="/dashboard/transactions">
-                <ButtonPrimary className="w-full justify-center py-3">Lihat Riwayat Transaksi →</ButtonPrimary>
-              </Link>
-            )}
-          </GlassCard>
+      <main className="flex flex-1 flex-col items-center justify-center gap-5 py-12 text-center">
+        <StatusIcon Icon={X} tone="bg-danger-bg text-danger" />
+        <h1 className="kr-fade-up text-[32px] font-bold tracking-[-1.5px] text-ink md:text-[64px] md:tracking-[-3px]" style={{ animationDelay: "80ms" }}>Pembayaran dibatalkan</h1>
+        <p className="kr-fade-up max-w-[480px] text-base text-muted" style={{ animationDelay: "120ms" }}>
+          Kamu membatalkan halaman pembayaran. Order belum dihapus — kamu masih bisa menyelesaikan pembayarannya.
+        </p>
+        <div className="kr-fade-up flex w-full flex-col gap-3 pt-3 sm:w-auto sm:flex-row" style={{ animationDelay: "160ms" }}>
+          {orderId ? (
+            <Link href={`/order/${orderId}`} className={buttonClass()}>Lanjutkan pembayaran</Link>
+          ) : (
+            <Link href="/dashboard/transactions" className={buttonClass()}>Lihat riwayat transaksi</Link>
+          )}
+          <Link href="/products" className={buttonClass("secondary")}>Kembali ke produk</Link>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
 export default function PaymentCancelPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+    <Suspense fallback={<div className="min-h-dvh bg-card" />}>
       <PaymentCancelContent />
     </Suspense>
   );

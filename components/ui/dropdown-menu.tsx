@@ -13,7 +13,7 @@ const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
 const itemBase =
-  "relative flex cursor-pointer select-none items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] font-medium text-foreground/80 outline-none transition-colors focus:bg-foreground/10 focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
+  "relative flex cursor-pointer select-none items-center gap-2 rounded-lg px-2.5 py-2 text-[13px] font-medium text-ink outline-none transition-colors focus:bg-pill focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-accent data-[disabled]:pointer-events-none data-[disabled]:opacity-50";
 
 const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
@@ -24,7 +24,9 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-[70] min-w-[10rem] overflow-hidden rounded-xl border border-foreground/20 bg-surface p-1 text-foreground",
+        "z-[70] min-w-[10rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-[20px] bg-surface p-1.5 text-ink shadow-card",
+        // buka: @starting-style (fade + scale). Tutup tanpa animasi: Presence Radix butuh keyframe keluar berbeda nama.
+        "transition-[opacity,scale] duration-(--kr-dur-fast) ease-(--kr-ease) starting:scale-95 starting:opacity-0",
         className,
       )}
       {...props}
@@ -48,7 +50,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem ref={ref} className={cn(itemBase, "pl-8", className)} checked={checked} {...props}>
     <span className="absolute left-2.5 flex h-4 w-4 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Check size={14} className="text-primary" />
+        <Check size={14} className="text-ink" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -63,7 +65,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem ref={ref} className={cn(itemBase, "pl-8", className)} {...props}>
     <span className="absolute left-2.5 flex h-4 w-4 items-center justify-center">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Circle size={8} className="fill-primary text-primary" />
+        <Circle size={8} className="fill-ink text-ink" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -77,7 +79,7 @@ const DropdownMenuLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn("px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-foreground/40", className)}
+    className={cn("px-2.5 py-1.5 text-xs font-semibold text-muted", className)}
     {...props}
   />
 ));
@@ -87,7 +89,7 @@ const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-foreground/10", className)} {...props} />
+  <DropdownMenuPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-hairline", className)} {...props} />
 ));
 DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 

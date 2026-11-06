@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import GradientBorder from "@/components/ui/GradientBorder";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
 import GatewayQr from "@/components/payment/GatewayQr";
 import Countdown from "@/components/payment/Countdown";
+import Reveal, { RevealItem } from "@/components/ui/Reveal";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
-import { Zap, CheckCircle2, TimerOff, ArrowLeft } from "lucide-react";
+import { CheckCircle2, TimerOff, ArrowLeft } from "lucide-react";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -21,6 +23,8 @@ interface TopUp {
   gatewayQrString: string | null;
   gatewayExpiresAt: string | null;
 }
+
+const QR_SIZE = "h-[220px] w-[220px] md:h-[260px] md:w-[260px]";
 
 export default function TopUpPaymentPage() {
   const { topupId } = useParams<{ topupId: string }>();
@@ -66,69 +70,74 @@ export default function TopUpPaymentPage() {
   }, [topup, topupId, router, addToast]);
 
   return (
-    <div className="max-w-xl mx-auto">
-      <div className="flex items-center gap-2 text-[12px] text-foreground/30 mb-8">
-        <Link href="/dashboard/balance" className="hover:text-foreground transition-colors">Saldo</Link>
-        <span>/</span>
-        <span className="text-foreground/60">Top Up</span>
-      </div>
+    <div className="flex flex-col gap-5 md:gap-7">
+      <DashboardHeader title="Isi saldo" subtitle={`Top up #${String(topupId).slice(-8).toUpperCase()}`} />
 
-      <h1 className="text-[30px] font-medium tracking-tight mb-6">Pembayaran top up</h1>
       {loading ? (
-        <div className="text-foreground/30 text-[14px]">Memuat...</div>
+        <div role="status" aria-label="Memuat top up" className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+          <Skeleton className="kr-shimmer h-[420px] flex-1 md:h-[500px]" radius="rounded-[32px]" />
+          <Skeleton className="kr-shimmer h-56 lg:w-[400px] lg:shrink-0" radius="rounded-[28px]" />
+        </div>
       ) : error ? (
-        <div className="glass rounded-2xl px-6 py-4 border border-primary/30 text-primary text-[14px]">{error}</div>
+        <div role="alert" className="kr-fade-in rounded-[22px] bg-danger-bg px-6 py-4 text-sm font-medium text-danger">
+          {error}
+        </div>
       ) : topup ? (
-        <div className="space-y-5">
-          <div className="text-center py-4">
-            <div className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-foreground/60 mb-1">
-              <Zap size={13} className="text-primary" />
-              Top Up Saldo
-            </div>
-            <div className="text-[32px] font-bold text-foreground">{formatPrice(topup.amount)}</div>
-          </div>
-
-          {topup.status === "PENDING" ? (
-            <GradientBorder radius="rounded-2xl">
-              <div className="p-5 space-y-4 text-center">
-                <div className="text-[13px] font-medium text-foreground/60">Scan QR code berikut</div>
-                <div className="inline-block bg-white p-3 rounded-xl">
-                  {topup.gatewayQrString ? (
-                    <GatewayQr value={topup.gatewayQrString} />
-                  ) : (
-                    <div className="w-72 h-72 flex items-center justify-center text-black/40 text-[12px]">QR tidak tersedia</div>
-                  )}
-                </div>
-                {topup.gatewayExpiresAt && (
-                  <div className="text-[12px] text-foreground/40">
-                    Kadaluarsa dalam <span className="text-tertiary font-semibold"><Countdown expiresAt={topup.gatewayExpiresAt} /></span>
+        <Reveal onMount stagger={0.06} className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+          <RevealItem className="flex min-w-0 flex-1 flex-col items-center gap-4 rounded-[32px] bg-surface p-6 text-center shadow-card md:p-8">
+            {topup.status === "PENDING" ? (
+              <>
+                <h2 className="text-2xl font-semibold md:text-[32px]">Scan untuk isi saldo</h2>
+                <p role="status" className="inline-flex items-center gap-2 text-[13px] font-medium text-muted">
+                  <span aria-hidden="true" className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
+                    <span className="relative h-2.5 w-2.5 rounded-full bg-success" />
+                  </span>
+                  Menunggu pembayaran, dicek otomatis
+                </p>
+                {topup.gatewayQrString ? (
+                  <GatewayQr value={topup.gatewayQrString} className={QR_SIZE} />
+                ) : (
+                  <div className={`flex items-center justify-center rounded-[20px] bg-pill text-xs text-muted ${QR_SIZE}`}>
+                    QR tidak tersedia
                   </div>
                 )}
-                <div className="text-[11px] text-foreground/30">Saldo akan otomatis bertambah begitu QRIS ini dibayar.</div>
+                <div className="font-display text-3xl font-bold">{formatPrice(topup.amount)}</div>
+                {topup.gatewayExpiresAt && <Countdown expiresAt={topup.gatewayExpiresAt} />}
+              </>
+            ) : topup.status === "PAID" ? (
+              <div className="kr-fade-in py-8">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-success-bg text-success">
+                  <CheckCircle2 size={30} aria-hidden="true" />
+                </div>
+                <p className="text-sm font-medium">Saldo berhasil ditambahkan.</p>
               </div>
-            </GradientBorder>
-          ) : topup.status === "PAID" ? (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-secondary/15 text-secondary flex items-center justify-center mx-auto mb-3">
-                <CheckCircle2 size={30} />
+            ) : (
+              <div className="kr-fade-in py-8">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-danger-bg text-danger">
+                  <TimerOff size={30} aria-hidden="true" />
+                </div>
+                <p className="text-sm font-medium">Top up kedaluwarsa atau dibatalkan. Buat top up baru untuk mencoba lagi.</p>
               </div>
-              <p className="text-[14px] font-medium text-foreground/70">Saldo berhasil ditambahkan.</p>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-full bg-primary/15 text-primary flex items-center justify-center mx-auto mb-3">
-                <TimerOff size={30} />
-              </div>
-              <p className="text-[14px] font-medium text-foreground/70">Top up kadaluarsa atau dibatalkan. Buat top up baru untuk mencoba lagi.</p>
-            </div>
-          )}
+            )}
+          </RevealItem>
 
-          <div className="pt-2 text-center">
-            <Link href="/dashboard/balance">
-              <ButtonPrimary variant="ghost" className="text-[13px]"><ArrowLeft size={15} /> Kembali ke Saldo</ButtonPrimary>
+          <RevealItem className="flex flex-col gap-4 rounded-[28px] bg-surface p-5 shadow-card md:p-7 lg:w-[400px] lg:shrink-0 lg:self-start">
+            <h2 className="text-xl font-semibold">Detail top up</h2>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted">Nominal</span>
+              <span className="font-semibold">{formatPrice(topup.amount)}</span>
+            </div>
+            {topup.status === "PENDING" && (
+              <p className="text-[13px] text-muted">
+                Saldo bertambah otomatis setelah pembayaran terdeteksi. Jangan tutup halaman ini.
+              </p>
+            )}
+            <Link href="/dashboard/balance" className={`kr-press ${buttonClass("secondary")} w-full`}>
+              <ArrowLeft size={15} aria-hidden="true" /> Kembali ke Saldo
             </Link>
-          </div>
-        </div>
+          </RevealItem>
+        </Reveal>
       ) : null}
     </div>
   );

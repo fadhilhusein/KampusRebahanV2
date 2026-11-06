@@ -3,17 +3,14 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import type { ColumnDef, FilterFn, Table as TanstackTable } from "@tanstack/react-table";
-import { ChevronDown, Copy, Eye, ListFilter, MoreHorizontal } from "lucide-react";
-import DataTable, { SortHeader, toolbarButtonClass } from "@/components/dashboard/DataTable";
+import { Copy, Eye, MoreHorizontal } from "lucide-react";
+import DataTable, { SortHeader } from "@/components/dashboard/DataTable";
 import Badge from "@/components/ui/Badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/ToastContext";
@@ -66,30 +63,19 @@ function StatusFilter({ table }: { table: TanstackTable<Transaction> }) {
   const statuses = Array.from(new Set(table.getCoreRowModel().rows.map((row) => row.getValue<string>("status"))));
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button type="button" className={toolbarButtonClass}>
-          <ListFilter size={15} />
-          {current === "ALL" ? "Semua status" : current}
-          <ChevronDown size={14} className="text-foreground/40" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start">
-        <DropdownMenuLabel>Filter status</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={current}
-          onValueChange={(value) => column?.setFilterValue(value === "ALL" ? undefined : value)}
+    <div role="group" aria-label="Filter status" className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+      {["ALL", ...statuses].map((value) => (
+        <button
+          key={value}
+          type="button"
+          aria-pressed={current === value}
+          onClick={() => column?.setFilterValue(value === "ALL" ? undefined : value)}
+          className="kr-chip kr-press"
         >
-          <DropdownMenuRadioItem value="ALL">Semua status</DropdownMenuRadioItem>
-          {statuses.map((label) => (
-            <DropdownMenuRadioItem key={label} value={label}>
-              {label}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {value === "ALL" ? "Semua" : value}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -112,7 +98,7 @@ function RowActions({ tx }: { tx: Transaction }) {
         <button
           type="button"
           aria-label={`Aksi untuk ${tx.productName}`}
-          className="relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-foreground/50 transition-colors hover:bg-foreground/10 hover:text-foreground"
+          className="kr-press relative z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-muted hover:bg-pill hover:text-ink"
         >
           <MoreHorizontal size={16} />
         </button>
@@ -142,7 +128,7 @@ export default function TransactionsTable({ transactions }: { transactions: Tran
         accessorFn: (tx) => (tx.created_at ? new Date(tx.created_at).getTime() : 0),
         header: ({ column }) => <SortHeader column={column} label="Tanggal" />,
         cell: ({ row }) => (
-          <span className="whitespace-nowrap text-foreground/60">
+          <span className="whitespace-nowrap">
             {row.original.created_at ? formatDate(row.original.created_at) : "—"}
           </span>
         ),
@@ -158,11 +144,11 @@ export default function TransactionsTable({ transactions }: { transactions: Tran
               {/* after:inset-0 stretches this link over the whole (relative) row */}
               <Link
                 href={`/dashboard/transactions/${tx.order_id}`}
-                className="font-semibold text-foreground after:absolute after:inset-0 hover:underline"
+                className="font-semibold text-ink after:absolute after:inset-0 hover:underline"
               >
                 {tx.productName}
               </Link>
-              <div className="mt-0.5 text-[12px] text-foreground/50">
+              <div className="mt-0.5 text-xs font-normal text-muted">
                 {tx.variantName} · {tx.duration} · {tx.type}
               </div>
             </div>
@@ -184,20 +170,20 @@ export default function TransactionsTable({ transactions }: { transactions: Tran
         id: "method",
         accessorFn: (tx) => paymentLabels[tx.paymentMethod] ?? tx.paymentMethod,
         header: "Metode",
-        cell: ({ getValue }) => <span className="whitespace-nowrap text-foreground/70">{getValue<string>()}</span>,
+        cell: ({ getValue }) => <span className="whitespace-nowrap">{getValue<string>()}</span>,
       },
       {
         id: "quantity",
         accessorFn: (tx) => tx.quantity,
         header: () => <div className="text-right">Jumlah</div>,
-        cell: ({ row }) => <div className="text-right text-foreground/70">{row.original.quantity}x</div>,
+        cell: ({ row }) => <div className="text-right">{row.original.quantity}x</div>,
       },
       {
         id: "total",
         accessorFn: (tx) => tx.total_amount,
         header: ({ column }) => <SortHeader column={column} label="Total" align="right" />,
         cell: ({ row }) => (
-          <div className="whitespace-nowrap text-right font-bold text-foreground">{formatPrice(row.original.total_amount)}</div>
+          <div className="whitespace-nowrap text-right font-bold text-ink">{formatPrice(row.original.total_amount)}</div>
         ),
       },
       {
@@ -227,6 +213,22 @@ export default function TransactionsTable({ transactions }: { transactions: Tran
       rowNoun="transaksi"
       emptyMessage="Tidak ada transaksi yang cocok."
       rowClassName="relative"
+      mobileRow={(tx) => (
+        <div className="kr-press relative flex items-center justify-between gap-3 rounded-[22px] bg-surface p-4 shadow-card">
+          <div className="min-w-0">
+            <Link
+              href={`/dashboard/transactions/${tx.order_id}`}
+              className="block truncate text-sm font-semibold text-ink after:absolute after:inset-0 after:rounded-[22px]"
+            >
+              {tx.productName}
+            </Link>
+            <div className="mt-0.5 truncate text-xs text-muted">
+              {tx.created_at ? formatDate(tx.created_at) : "—"} · {formatPrice(tx.total_amount)}
+            </div>
+          </div>
+          <span className="shrink-0 whitespace-nowrap"><Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge></span>
+        </div>
+      )}
     />
   );
 }

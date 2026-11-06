@@ -7,6 +7,8 @@ import {
   type ReactNode,
 } from "react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { EASE } from "@/components/ui/Reveal";
 export type ToastType = "success" | "error" | "info";
 export interface Toast {
   id: string;
@@ -36,31 +38,49 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <div className="fixed bottom-20 right-4 left-4 z-[100] flex flex-col items-end gap-3 pointer-events-none">
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed inset-x-4 bottom-20 z-[100] flex flex-col items-center gap-3 md:inset-x-auto md:right-6 md:bottom-auto md:top-20 md:items-end"
+      >
+        {/* reducedMotion="user": tanpa geser/skala/layout, tinggal fade */}
+        <MotionConfig reducedMotion="user">
+        <AnimatePresence mode="popLayout" initial={false}>
         {toasts.map((t) => {
           const Icon = {
             success: CheckCircle2,
             error: AlertCircle,
             info: Info,
           }[t.type];
+          const iconColor = {
+            success: "text-toast-icon",
+            error: "text-[#FF8A75]",
+            info: "text-on-ink-muted",
+          }[t.type];
           return (
-            <div
+            <motion.div
               key={t.id}
+              layout
+              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.2, ease: EASE } }}
+              transition={{ type: "spring", stiffness: 420, damping: 34, mass: 0.8 }}
               role={t.type === "error" ? "alert" : "status"}
-              className="pointer-events-auto flex gap-3 w-full max-w-sm rounded-lg border border-foreground/15 bg-surface p-4 shadow-lg"
+              className="pointer-events-auto flex w-full max-w-[340px] items-center gap-3 rounded-[20px] bg-ink px-[18px] py-3.5 text-on-ink shadow-card"
             >
-              <Icon size={18} className="mt-0.5 text-primary shrink-0" />
-              <p className="text-sm flex-1">{t.message}</p>
+              <Icon size={20} className={`shrink-0 ${iconColor}`} />
+              <p className="flex-1 text-sm font-medium">{t.message}</p>
               <button
-                aria-label="Tutup notifikasi"
+                aria-label="Tutup"
                 onClick={() => removeToast(t.id)}
-                className="h-8 w-8 -m-1 flex items-center justify-center"
+                className="kr-press -my-2 -mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
               >
                 <X size={16} />
               </button>
-            </div>
+            </motion.div>
           );
         })}
+        </AnimatePresence>
+        </MotionConfig>
       </div>
     </ToastContext.Provider>
   );

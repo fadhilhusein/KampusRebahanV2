@@ -2,6 +2,8 @@
 import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { EASE } from "@/components/ui/Reveal";
 const subscribe = () => () => {};
 const clientSnapshot = () => true;
 const serverSnapshot = () => false;
@@ -26,9 +28,23 @@ export default function ThemeToggle({
       type="button"
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={dark ? "Ganti ke tema terang" : "Ganti ke tema gelap"}
-      className={`flex h-11 w-11 items-center justify-center rounded-md border border-foreground/15 text-foreground/70 hover:bg-foreground/5 transition-colors ${className}`}
+      className={`kr-press relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-hairline bg-surface text-ink shadow-soft hover:bg-pill ${className}`}
     >
-      {dark ? <Sun size={17} /> : <Moon size={17} />}
+      {/* reducedMotion="user": hanya cross-fade, tanpa putar/skala */}
+      <MotionConfig reducedMotion="user">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={dark ? "sun" : "moon"}
+            className="flex"
+            initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
+            transition={{ duration: 0.25, ease: EASE }}
+          >
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </motion.span>
+        </AnimatePresence>
+      </MotionConfig>
     </button>
   );
 }

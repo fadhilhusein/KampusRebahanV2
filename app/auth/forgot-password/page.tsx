@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Hash, KeyRound, Mail, RotateCw, Send, ShieldCheck } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
+import { Hash, KeyRound, Mail, Send, ShieldCheck } from "lucide-react";
 import {
   AuthCard,
   AuthField,
@@ -114,109 +113,110 @@ export default function ForgotPasswordPage() {
     }
   }
 
-  return (
-    <>
-      <Navbar />
-      <AuthShell>
-        <AuthCard
-          icon={KeyRound}
-          title={step === "email" ? "Lupa Password" : "Reset Password"}
-          subtitle={
-            step === "email"
-              ? "Masukkan email akun kamu, kami kirim kode reset."
-              : "Masukkan kode dari email dan buat password baru."
-          }
+  const linkClass = "font-semibold text-ink hover:underline focus-visible:underline";
+  const footer =
+    step === "email" ? (
+      <>
+        Ingat password?{" "}
+        <Link href="/auth/signin" className={linkClass}>
+          Masuk
+        </Link>
+      </>
+    ) : (
+      <>
+        Belum menerima kode?{" "}
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={cooldown > 0}
+          className={`${linkClass} cursor-pointer tabular-nums disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline`}
         >
-          {step === "email" ? (
-            <form onSubmit={handleSendCode} className="space-y-4">
-              <AuthField
-                id="forgot-email"
-                label="Email"
-                icon={Mail}
-                type="email"
-                required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@contoh.com"
-              />
+          {cooldown > 0 ? `Kirim ulang (${cooldown}s)` : "Kirim ulang"}
+        </button>
+      </>
+    );
 
-              {error && <AuthNotice tone="error">{error}</AuthNotice>}
+  return (
+    <AuthShell>
+      <AuthCard
+        icon={KeyRound}
+        title={step === "email" ? "Lupa password" : "Reset password"}
+        subtitle={
+          step === "email"
+            ? "Masukkan email, kode reset dikirim ke inbox kamu."
+            : "Masukkan kode 6 digit dan password baru."
+        }
+        footer={footer}
+      >
+        {step === "email" ? (
+          <form key="email" onSubmit={handleSendCode} className="kr-fade-up flex flex-col gap-[18px]">
+            <AuthField
+              id="forgot-email"
+              label="Email"
+              icon={Mail}
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nama@email.com"
+            />
 
-              <AuthSubmit loading={loading} loadingText="Mengirim..." icon={Send}>
-                Kirim Kode Reset
-              </AuthSubmit>
-            </form>
-          ) : (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              {info && <AuthNotice tone="info">{info}</AuthNotice>}
+            {error && <AuthNotice tone="error">{error}</AuthNotice>}
 
-              <AuthField
-                id="forgot-code"
-                label="Kode Reset"
-                icon={Hash}
-                type="text"
-                inputMode="numeric"
-                autoComplete="one-time-code"
-                maxLength={6}
-                required
-                value={code}
-                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-                placeholder="123456"
-                className="tracking-[4px]"
-              />
+            <AuthSubmit loading={loading} loadingText="Mengirim..." icon={Send}>
+              Kirim kode
+            </AuthSubmit>
+          </form>
+        ) : (
+          <form key="reset" onSubmit={handleResetPassword} className="kr-fade-up flex flex-col gap-[18px]">
+            {info && <AuthNotice tone="info">{info}</AuthNotice>}
 
-              <AuthPasswordField
-                id="forgot-new-password"
-                label="Password Baru"
-                required
-                minLength={8}
-                autoComplete="new-password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimal 8 karakter"
-              />
+            <AuthField
+              id="forgot-code"
+              label="Kode 6 digit"
+              icon={Hash}
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              required
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              placeholder="123456"
+              className="tracking-[4px]"
+            />
 
-              <AuthPasswordField
-                id="forgot-confirm-password"
-                label="Konfirmasi Password"
-                required
-                minLength={8}
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi password baru"
-              />
+            <AuthPasswordField
+              id="forgot-new-password"
+              label="Password baru"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Minimal 8 karakter"
+            />
 
-              {error && <AuthNotice tone="error">{error}</AuthNotice>}
+            <AuthPasswordField
+              id="forgot-confirm-password"
+              label="Konfirmasi password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Ulangi password baru"
+            />
 
-              <AuthSubmit loading={loading} loadingText="Memproses..." icon={ShieldCheck}>
-                Reset Password
-              </AuthSubmit>
+            {error && <AuthNotice tone="error">{error}</AuthNotice>}
 
-              <button
-                type="button"
-                onClick={handleResend}
-                disabled={cooldown > 0}
-                className="flex w-full cursor-pointer items-center justify-center gap-1.5 text-[12px] font-medium text-foreground/50 transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <RotateCw size={13} />
-                {cooldown > 0 ? `Kirim ulang kode (${cooldown}s)` : "Kirim ulang kode"}
-              </button>
-            </form>
-          )}
-
-          <p className="mt-5 text-center text-[13px] text-foreground/50">
-            Ingat password?{" "}
-            <Link
-              href="/auth/signin"
-              className="font-semibold text-foreground underline underline-offset-2 transition-colors hover:text-primary"
-            >
-              Masuk
-            </Link>
-          </p>
-        </AuthCard>
-      </AuthShell>
-    </>
+            <AuthSubmit loading={loading} loadingText="Memproses..." icon={ShieldCheck}>
+              Simpan password
+            </AuthSubmit>
+          </form>
+        )}
+      </AuthCard>
+    </AuthShell>
   );
 }

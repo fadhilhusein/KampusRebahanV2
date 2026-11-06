@@ -84,29 +84,45 @@ function SignInSignUpCard({ mode }: { mode: AuthMode }) {
 
   const HeaderIcon = isSignIn ? LogIn : UserPlus;
 
+  const linkClass = "font-semibold text-ink hover:underline focus-visible:underline";
+
+  const footer = (
+    <>
+      {isSignIn ? "Belum punya akun? " : "Sudah punya akun? "}
+      <Link href={isSignIn ? `/auth/signup${query}` : `/auth/signin${query}`} className={linkClass}>
+        {isSignIn ? "Daftar" : "Masuk"}
+      </Link>
+      {isSignIn && (
+        <>
+          {" · "}
+          <Link href="/auth/forgot-password" className={linkClass}>
+            Lupa password?
+          </Link>
+        </>
+      )}
+    </>
+  );
+
   return (
     <AuthCard
       icon={HeaderIcon}
-      title={isSignIn ? "Masuk ke Akun" : "Buat Akun Baru"}
-      subtitle={isSignIn ? "Masuk untuk lanjut belanja dan lihat transaksi kamu." : "Buat akun untuk mulai berbelanja."}
+      title={isSignIn ? "Masuk" : "Daftar"}
+      subtitle={isSignIn ? "Masuk untuk melihat pesanan dan saldo." : "Gratis, selesai dalam satu menit."}
+      footer={footer}
     >
-      {notice && (
-        <div className="mb-4">
-          <AuthNotice tone="success">{notice}</AuthNotice>
-        </div>
-      )}
+      {notice && <AuthNotice tone="success">{notice}</AuthNotice>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
         {!isSignIn && (
           <AuthField
             id="auth-name"
-            label={<>Nama <span className="font-normal text-foreground/30">(opsional)</span></>}
+            label="Nama"
             icon={User}
             type="text"
             autoComplete="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Nama kamu"
+            placeholder="Nama lengkap"
           />
         )}
 
@@ -119,53 +135,26 @@ function SignInSignUpCard({ mode }: { mode: AuthMode }) {
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="email@contoh.com"
+          placeholder="nama@email.com"
         />
 
         <AuthPasswordField
           id="auth-password"
           label="Password"
-          labelExtra={
-            isSignIn && (
-              <Link
-                href="/auth/forgot-password"
-                className="text-[12px] font-medium text-foreground/50 underline underline-offset-2 transition-colors hover:text-foreground"
-              >
-                Lupa password?
-              </Link>
-            )
-          }
           required
           minLength={isSignIn ? undefined : 8}
           autoComplete={isSignIn ? "current-password" : "new-password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder={isSignIn ? "••••••••" : "Minimal 8 karakter"}
+          placeholder="Minimal 8 karakter"
         />
 
         {error && <AuthNotice tone="error">{error}</AuthNotice>}
 
         <AuthSubmit loading={loading} loadingText="Memproses..." icon={HeaderIcon}>
-          {isSignIn ? "Masuk" : "Buat Akun"}
+          {isSignIn ? "Masuk" : "Buat akun"}
         </AuthSubmit>
       </form>
-
-      <p className="mt-5 text-center text-[13px] text-foreground/50">
-        {isSignIn ? "Belum punya akun? " : "Sudah punya akun? "}
-        <Link
-          href={isSignIn ? `/auth/signup${query}` : `/auth/signin${query}`}
-          className="font-semibold text-foreground underline underline-offset-2 transition-colors hover:text-primary"
-        >
-          {isSignIn ? "Daftar sekarang" : "Masuk"}
-        </Link>
-      </p>
-
-      <p className="mt-4 text-center text-[11px] leading-5 text-foreground/40">
-        Dengan melanjutkan, kamu menyetujui{" "}
-        <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">Syarat &amp; Ketentuan</Link>
-        {" "}dan{" "}
-        <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">Kebijakan Privasi</Link>.
-      </p>
     </AuthCard>
   );
 }
@@ -178,7 +167,7 @@ export default function Component({ mode = "signin" }: ModernLoginSignupProps) {
   return (
     <AuthShell>
       {/* useSearchParams needs a Suspense boundary */}
-      <Suspense fallback={<div className="h-[420px] w-full max-w-[420px]" />}>
+      <Suspense fallback={<div className="h-[460px] w-full" />}>
         <SignInSignUpCard mode={mode} />
       </Suspense>
     </AuthShell>

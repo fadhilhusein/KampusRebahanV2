@@ -1,47 +1,29 @@
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import GradientBorder from "@/components/ui/GradientBorder";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
 
 export default function NotFound() {
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8 flex items-center justify-center min-h-screen">
-        <div className="max-w-md w-full text-center">
-          <GradientBorder>
-            <div className="p-12">
-              <div
-                className="text-[80px] font-semibold leading-none mb-4 tracking-tight"
-                style={{
-                  background: "linear-gradient(to bottom, color-mix(in srgb, var(--color-foreground) 40%, transparent), color-mix(in srgb, var(--color-foreground) 8%, transparent))",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                404
-              </div>
-              <h1 className="text-[22px] font-semibold text-foreground mb-3">
-                Halaman tidak ditemukan
-              </h1>
-              <p className="text-[14px] text-foreground/40 mb-8">
-                Halaman yang kamu cari tidak ada atau sudah dipindahkan.
-              </p>
-              <div className="flex flex-col gap-3">
-                <Link href="/products">
-                  <ButtonPrimary className="w-full py-3">Lihat Produk</ButtonPrimary>
-                </Link>
-                <Link href="/">
-                  <ButtonPrimary variant="ghost">Kembali ke Beranda</ButtonPrimary>
-                </Link>
-              </div>
-            </div>
-          </GradientBorder>
+      <main className="flex flex-1 items-center justify-center py-12">
+        <div className="flex flex-col items-center gap-5 text-center">
+          <div className="kr-fade-up font-display text-[120px] font-bold leading-[0.9] tracking-[-6px] text-ink md:text-[200px] md:tracking-[-10px]">
+            404
+          </div>
+          <h1 className="kr-fade-up text-[26px] font-semibold text-ink md:text-[40px]" style={{ animationDelay: "80ms" }}>
+            Halaman tidak ditemukan
+          </h1>
+          <p className="kr-fade-up text-base text-muted" style={{ animationDelay: "140ms" }}>
+            Alamat yang kamu buka tidak ada atau sudah dipindahkan.
+          </p>
+          <Link href="/" className={`kr-fade-up ${buttonClass("primary")}`} style={{ animationDelay: "200ms" }}>
+            Kembali ke beranda
+          </Link>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

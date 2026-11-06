@@ -11,12 +11,12 @@ export default async function HomePage() {
     if (res.success) products = res.data;
   } catch {}
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="flex-1 w-full min-w-0">
+      <main className="w-full min-w-0 flex-1 py-8 md:py-10">
         <EditorialLanding products={products} />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

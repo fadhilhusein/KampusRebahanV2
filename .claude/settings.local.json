@@ -12,7 +12,26 @@
       "mcp__plugin_context-mode_context-mode__ctx_execute_file",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:api.github.com)",
-      "Bash(npm -v)"
+      "Bash(npm -v)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(graphify claude *)",
+      "Bash(graphify query *)",
+      "PowerShell(uv tool list; $env:UV_TOOL_DIR = 'D:\\\\uv\\\\tools'; $env:UV_TOOL_BIN_DIR = 'D:\\\\uv\\\\bin'; $v = \\(uv tool list | Select-String '^graphifyy v\\(\\\\S+\\)'\\).Matches.Groups[1].Value; \"version=$v\"; uv tool install \"graphifyy==$v\"; & 'D:\\\\uv\\\\bin\\\\graphify.exe' --version)",
+      "PowerShell($env:UV_TOOL_DIR = 'D:\\\\uv\\\\tools'; $env:UV_TOOL_BIN_DIR = 'D:\\\\uv\\\\bin'; uv tool install \"graphifyy==0.9.103\"; & 'D:\\\\uv\\\\bin\\\\graphify.exe' --version; uv tool list)",
+      "PowerShell([Environment]::SetEnvironmentVariable\\('UV_TOOL_DIR', 'D:\\\\uv\\\\tools', 'User'\\); [Environment]::SetEnvironmentVariable\\('UV_TOOL_BIN_DIR', 'D:\\\\uv\\\\bin', 'User'\\); $p = [Environment]::GetEnvironmentVariable\\('Path', 'User'\\); if \\(\\($p -split ';'\\) -notcontains 'D:\\\\uv\\\\bin'\\) { [Environment]::SetEnvironmentVariable\\('Path', \"D:\\\\uv\\\\bin;$p\", 'User'\\) }; \\([Environment]::GetEnvironmentVariable\\('Path', 'User'\\) -split ';'\\)[0..2]; [Environment]::GetEnvironmentVariable\\('UV_TOOL_DIR', 'User'\\))",
+      "PowerShell(Set-Content -Path graphify-out\\\\.graphify_python -Value 'D:\\\\uv\\\\tools\\\\graphifyy\\\\Scripts\\\\python.exe' -NoNewline -Encoding ascii; & \\(Get-Content graphify-out\\\\.graphify_python\\) -c \"import graphify, sys; print\\(sys.executable\\)\"; & 'D:\\\\uv\\\\bin\\\\graphify.exe' query \"loyalty coupon redeem\" --budget 300 | Select-Object -First 4; git status --short)",
+      "Bash(git config *)",
+      "Bash(D:/uv/bin/graphify.exe hook *)",
+      "Bash(D:/uv/bin/graphify.exe --help)",
+      "Bash(D:/uv/bin/graphify.exe export *)",
+      "Bash(git check-ignore *)",
+      "PowerShell(git status --short | Where-Object { $_ -notmatch '^ ?[MD] ' })",
+      "PowerShell(npx tsc --noEmit -p . 2>&1)",
+      "PowerShell(git add -A)",
+      "PowerShell(git reset -q -- graphify-out/.graphify_build_state.json graphify-out/.graphify_labels.json.sig graphify-out/.graphify_labels.pending.json graphify-out/2026-11-06)"
     ]
   }
 }

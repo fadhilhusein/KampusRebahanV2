@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { CheckCircle2, Clock, CreditCard, History, Inbox, Receipt, ShoppingCart, Wallet } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Inbox } from "lucide-react";
+import CountUp from "@/components/dashboard/CountUp";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import LoyaltyCard from "@/components/dashboard/LoyaltyCard";
 import Badge from "@/components/ui/Badge";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/data-table";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { statusColor, statusLabel } from "@/lib/orderStatus";
 import type { Transaction } from "@/lib/types";
@@ -19,73 +23,37 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
 }
 
-interface StatCardProps {
+const formatCount = (n: number) => String(n);
+
+function StatCard({
+  label,
+  value,
+  format,
+  loading,
+  dark,
+}: {
   label: string;
-  value: string;
-  icon: LucideIcon;
-  tone: string;
+  value: number | null;
+  format: (n: number) => string;
   loading: boolean;
-  href?: string;
-  hint?: string;
-}
-
-function StatCard({ label, value, icon: Icon, tone, loading, href, hint }: StatCardProps) {
-  const body = (
-    <div className="h-full rounded-lg border border-foreground/15 bg-surface p-6 transition-colors hover:border-foreground/30">
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-[12px] font-semibold text-foreground/60">{label}</span>
-        <span className={`flex h-9 w-9 items-center justify-center rounded-full ${tone}`}>
-          <Icon size={17} />
-        </span>
-      </div>
-      {loading ? (
-        <Skeleton className="h-7 w-24" radius="rounded-lg" />
-      ) : (
-        <div className="text-[30px] font-medium leading-none text-foreground">{value}</div>
-      )}
-      {hint && (href && <Link href={href} className="flex items-center justify-center gap-2 mt-6 p-2 w-full rounded-xl cursor-pointer text-[11px] bg-primary font-medium text-white hover:bg-primary/15 hover:text-primary"><Wallet size={13} /> {hint}</Link>)}
-    </div>
-  );
-  return body;
-}
-
-// The whole row links to the transaction detail through a stretched link on the product name;
-// the CTA sits above it (relative z-10) so the two never nest as anchors.
-function RecentTransactionRow({ tx }: { tx: Transaction }) {
-  // An unpaid order continues to its payment page instead of starting a duplicate purchase.
-  const awaitingPayment = tx.db_status === "PENDING_PAYMENT";
-  const CtaIcon = awaitingPayment ? CreditCard : ShoppingCart;
-  const cta = awaitingPayment
-    ? { href: `/order/${tx.order_id}`, label: "Lanjut Bayar", aria: `Lanjut bayar ${tx.productName}` }
-    : { href: `/checkout?variant_id=${encodeURIComponent(tx.variantId)}`, label: "Beli Lagi", aria: `Beli lagi ${tx.productName}` };
-
+  dark?: boolean;
+}) {
   return (
-    <tr className="border-t border-foreground/10">
-      <td className="p-5">
-        <Link
-          href={`/dashboard/transactions/${tx.order_id}`}
-          className="block text-[14px] font-medium text-foreground hover:text-primary"
-        >
-          {tx.productName}
-        </Link>
-        <div className="truncate text-[12px] text-foreground/50">
-          {tx.variantName} · {tx.duration}
-        </div>
-      </td>
-      <td className="p-5 text-xs text-foreground/50 whitespace-nowrap">{tx.created_at ? formatDate(tx.created_at) : "—"}</td>
-      <td className="p-5"><Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge></td>
-      <td className="p-5 text-sm whitespace-nowrap">{formatPrice(tx.total_amount)}</td>
-      <td className="p-5">
-        <Link
-          href={cta.href}
-          aria-label={cta.aria}
-          className="inline-flex items-center gap-1.5 rounded-md border border-foreground/15 px-3.5 py-2 text-[12px] font-medium transition-colors hover:border-primary whitespace-nowrap"
-        >
-          <CtaIcon size={13} />
-          {cta.label}
-        </Link>
-      </td>
-    </tr>
+    <div
+      className={`kr-lift flex h-full flex-col gap-1.5 rounded-[28px] p-6 shadow-card hover:shadow-card-hover ${
+        dark ? "bg-ink text-on-ink" : "bg-surface text-ink"
+      }`}
+    >
+      <span className={`text-sm font-medium ${dark ? "text-on-ink-muted" : "text-muted"}`}>{label}</span>
+      {loading ? (
+        <Skeleton className="kr-shimmer h-8 w-28" radius="rounded-lg" />
+      ) : (
+        // lg (3 kolom di 1024px) terlalu sempit untuk "Rp 1.234.567" ukuran 36
+        <span className="font-display text-[32px] font-bold leading-none [overflow-wrap:anywhere] lg:text-[28px] xl:text-4xl">
+          {value == null ? "—" : <CountUp value={value} format={format} />}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -123,94 +91,124 @@ export default function DashboardHomePage() {
   }, []);
 
   const name = session?.user?.name ?? session?.user?.email ?? "";
-  const waiting = transactions.filter((t) => t.db_status === "PENDING_PAYMENT").length;
-  const completed = transactions.filter((t) => t.db_status === "COMPLETED").length;
   const recent = transactions.slice(0, 5);
+  // Derived client-side from the fetched list: only COMPLETED orders count as purchases.
+  const now = new Date();
+  const completed = transactions.filter((t) => t.db_status === "COMPLETED");
+  const completedThisMonth = completed.filter((t) => {
+    const d = t.created_at ? new Date(t.created_at) : null;
+    return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const totalSpent = completed.reduce((sum, t) => sum + t.total_amount, 0);
+  const orNull = (v: number) => (error ? null : v);
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="mb-8">
-        <p className="kr-eyebrow mb-4">Ringkasan akun</p>
-        <h1 className="mb-1 text-[28px] font-bold leading-tight tracking-tight text-foreground">
-          {name ? `Halo, ${name}` : "Dashboard"}
-        </h1>
-        <p className="text-[14px] text-foreground/50">Ringkasan akun dan transaksi terakhir kamu.</p>
-      </div>
+    <div className="flex flex-col gap-5 md:gap-7">
+      <DashboardHeader
+        title={name ? `Halo, ${name}` : "Dashboard"}
+        subtitle="Ringkasan akun dan transaksi terakhir kamu."
+      />
 
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard
-          label="Saldo"
-          value={balance != null ? formatPrice(balance) : "—"}
-          icon={Wallet}
-          tone="bg-secondary/15 text-secondary"
-          loading={loading}
-          href="/dashboard/balance"
-          hint="Top up saldo"
-        />
-        <StatCard
-          label="Total Transaksi"
-          value={error ? "—" : String(transactions.length)}
-          icon={Receipt}
-          tone="bg-foreground/10 text-foreground/70"
-          loading={loading}
-        />
-        <StatCard
-          label="Menunggu Bayar"
-          value={error ? "—" : String(waiting)}
-          icon={Clock}
-          tone="bg-tertiary/15 text-tertiary"
-          loading={loading}
-        />
-        <StatCard
-          label="Selesai"
-          value={error ? "—" : String(completed)}
-          icon={CheckCircle2}
-          tone="bg-green-400/15 text-green-500"
-          loading={loading}
-        />
-        <div className="col-span-full">
-          <LoyaltyCard />
-        </div>
-      </div>
+      {/* md: Saldo selebar baris, dua statistik lain berdampingan; lg: tiga sejajar (SPEC) */}
+      <Reveal onMount stagger={0.06} className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3">
+        <RevealItem className="md:col-span-2 lg:col-span-1">
+          <StatCard dark label="Saldo" value={balance} format={formatPrice} loading={loading} />
+        </RevealItem>
+        <RevealItem>
+          <StatCard label="Pesanan bulan ini" value={orNull(completedThisMonth.length)} format={formatCount} loading={loading} />
+        </RevealItem>
+        <RevealItem>
+          <StatCard label="Total belanja" value={orNull(totalSpent)} format={formatPrice} loading={loading} />
+        </RevealItem>
+      </Reveal>
 
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-[15px] font-bold text-foreground">
-          <History size={16} className="text-primary" />
-          Transaksi Terakhir
-        </h2>
+      <Reveal onMount delay={0.18}>
+        <LoyaltyCard />
+      </Reveal>
+
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold md:text-2xl">Pesanan terakhir</h2>
         <Link
           href="/dashboard/transactions"
-          className="text-[12px] font-semibold text-foreground/60 underline underline-offset-2 transition-colors hover:text-foreground"
+          className="text-[13px] font-semibold text-ink underline underline-offset-2 transition-colors hover:text-muted"
         >
           Lihat semua
         </Link>
       </div>
 
       {loading ? (
-        <div className="space-y-3">
+        <div className="space-y-3" role="status" aria-label="Memuat pesanan">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-[72px] w-full" radius="rounded-2xl" />
+            <Skeleton key={i} className="kr-shimmer h-[72px] w-full" radius="rounded-[22px]" />
           ))}
         </div>
       ) : error ? (
-        <div className="rounded-2xl border border-primary/30 bg-primary/10 px-5 py-4 text-[14px] font-medium text-primary">{error}</div>
+        <div role="alert" className="rounded-[22px] bg-danger-bg px-5 py-4 text-sm font-medium text-danger">
+          {error}
+        </div>
       ) : recent.length === 0 ? (
-        <div className="rounded-2xl border border-foreground/20 bg-surface py-12 text-center">
-          <Inbox size={36} className="mx-auto mb-3 text-foreground/20" />
-          <p className="mb-3 text-[14px] font-medium text-foreground/50">Belum ada transaksi.</p>
-          <Link
-            href="/products"
-            className="inline-block rounded-full bg-btn-fill px-5 py-2.5 text-[12px] font-semibold text-btn-text transition-opacity hover:opacity-90"
-          >
-            Lihat Produk
+        <div className="flex flex-col items-center gap-3 rounded-[28px] bg-surface py-12 text-center shadow-card">
+          <Inbox size={36} aria-hidden="true" className="text-line" />
+          <p className="text-sm font-medium text-muted">Belum ada transaksi.</p>
+          <Link href="/products" className={`kr-press ${buttonClass("primary", "sm")}`}>
+            Lihat produk
           </Link>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-foreground/15 bg-surface">
-          <table className="w-full min-w-[800px] text-left"><thead><tr>{["Produk","Tanggal","Status","Total","Aksi"].map(label => <th className="p-5 text-xs" key={label}>{label}</th>)}</tr></thead><tbody>
-            {recent.map((tx) => <RecentTransactionRow key={tx.order_id} tx={tx} />)}
-          </tbody></table>
-        </div>
+        <>
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  {["Produk", "Tanggal", "Status", "Total"].map((label) => (
+                    <TableHead key={label}>{label}</TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recent.map((tx, i) => (
+                  <TableRow key={tx.order_id} className="kr-fade-up relative" style={{ animationDelay: `${i * 40}ms` }}>
+                    <TableCell>
+                      <Link href={`/dashboard/transactions/${tx.order_id}`} className="after:absolute after:inset-0">
+                        {tx.productName}
+                      </Link>
+                      <div className="text-xs font-normal text-muted">
+                        {tx.variantName} · {tx.duration}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">{tx.created_at ? formatDate(tx.created_at) : "—"}</TableCell>
+                    <TableCell>
+                      <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap font-semibold text-ink">{formatPrice(tx.total_amount)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <ul className="flex flex-col gap-3 md:hidden">
+            {recent.map((tx, i) => (
+              <li
+                key={tx.order_id}
+                style={{ animationDelay: `${i * 40}ms` }}
+                className="kr-fade-up kr-press relative flex items-center justify-between gap-3 rounded-[22px] bg-surface p-4 shadow-card"
+              >
+                <div className="min-w-0">
+                  <Link
+                    href={`/dashboard/transactions/${tx.order_id}`}
+                    className="block truncate text-sm font-semibold text-ink after:absolute after:inset-0 after:rounded-[22px]"
+                  >
+                    {tx.productName}
+                  </Link>
+                  <div className="mt-0.5 truncate text-xs text-muted">
+                    {tx.created_at ? formatDate(tx.created_at) : "—"} · {formatPrice(tx.total_amount)}
+                  </div>
+                </div>
+                <span className="shrink-0 whitespace-nowrap"><Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status}</Badge></span>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

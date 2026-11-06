@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShoppingBag } from 'lucide-react';
 import * as motion from "motion/react-client";
+import { useReducedMotion } from "motion/react";
 
 interface RecentPurchase {
   id: string;
@@ -31,6 +31,7 @@ export default function RecentPurchaseBanner() {
   const [items, setItems] = useState<RecentPurchase[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [, setTimeTick] = useState(0);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     let cancelled = false;
@@ -80,34 +81,26 @@ export default function RecentPurchaseBanner() {
 
   return (
     <motion.div
-      className="fixed inset-x-0 top-18 z-[40] px-5"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: 0.9, ease: "easeOut" }}
-      aria-live="polite"
+      className="hidden justify-center md:flex"
+      initial={reduce ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="mx-auto flex w-full max-w-[620px] items-center justify-center">
-        <div className="glass flex items-baseline max-w-full items-center gap-3 rounded-full border-foreground/15 bg-background/70 px-4 py-2.5 shadow-lg shadow-primary/15 backdrop-blur-[12px]">
-          {/* <span className="relative flex h-2.5 w-2.5 flex-shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-400" />
-          </span> */}
-          <span className="relative flex">
-            <ShoppingBag size={13} strokeWidth={2} className="text-green-400" />
-          </span>
-          <motion.p
-            key={item.id}
-            className="truncate text-[12px] font-medium text-foreground/70"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-          >
-            <span className="text-foreground">{item.name}</span>
-            <span> baru saja membeli </span>
-            <span className="text-foreground">{item.product}</span>
-            <span className="text-foreground/35"> {relativeTime}</span>
-          </motion.p>
-        </div>
+      <div className="flex max-w-full items-center gap-3 rounded-full bg-surface px-6 py-4 shadow-soft">
+        <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-success" />
+        <motion.p
+          key={item.id}
+          className="truncate text-sm font-medium text-muted"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          <span className="text-ink">{item.name}</span>
+          <span> baru saja membeli </span>
+          <span className="text-ink">{item.product}</span>
+          <span> {relativeTime}</span>
+        </motion.p>
       </div>
     </motion.div>
   );

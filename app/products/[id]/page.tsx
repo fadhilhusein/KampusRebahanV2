@@ -3,23 +3,26 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ShoppingCart,
   MessageSquare,
   Truck,
   ScrollText,
   RotateCw,
+  Inbox,
+  TriangleAlert,
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductImage from "@/components/product/ProductImage";
 import VariantSelector from "@/components/product/VariantSelector";
-import ButtonPrimary from "@/components/ui/ButtonPrimary";
+import Badge from "@/components/ui/Badge";
+import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import RatingStars from "@/components/ui/RatingStars";
 import { ProductDetailSkeleton } from "@/components/ui/Skeleton";
+import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import type { Product, ProductVariant, ProductReview } from "@/lib/types";
 function Terms({ text }: { text: string }) {
   return (
-    <ol className="space-y-3 list-decimal pl-5 text-sm leading-7 kr-muted">
+    <ol className="list-decimal space-y-3 pl-5 text-sm text-muted">
       {text
         .split("\n")
         .map((l) => l.trim())
@@ -84,96 +87,110 @@ function ProductDetailContent({ id }: { id: string }) {
   }, [id, retry]);
   const rating = summary.averageRating ?? product?.averageRating ?? null,
     count = summary.reviewCount || product?.reviewCount || 0;
+  const price = selected
+    ? new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      }).format(selected.price)
+    : null;
+  const soldOut = !selected || selected.stock === 0;
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="kr-container flex-1 py-12 md:py-14">
+      <main className="flex w-full min-w-0 flex-1 flex-col gap-8 py-8 md:gap-12 md:py-10">
         {loading ? (
           <ProductDetailSkeleton />
         ) : !product ? (
-          <div className="py-20 text-center">
-            <p className="kr-muted mb-5">
-              {error || "Produk tidak ditemukan."}
-            </p>
+          <div className="kr-fade-up flex flex-col items-center gap-3 rounded-[28px] bg-surface p-7 text-center shadow-card">
+            <span
+              className={`flex h-14 w-14 items-center justify-center rounded-full ${error ? "bg-danger-bg text-danger" : "bg-pill text-ink"}`}
+            >
+              {error ? <TriangleAlert size={24} aria-hidden="true" /> : <Inbox size={24} aria-hidden="true" />}
+            </span>
+            <h1 className="text-xl font-semibold text-ink">
+              {error ? "Produk gagal dimuat" : "Produk tidak ditemukan"}
+            </h1>
+            <p className="text-sm text-muted">{error || "Produk yang kamu cari tidak tersedia."}</p>
             {error ? (
-              <ButtonPrimary onClick={() => { setLoading(true); setError(""); setRetry((v) => v + 1); }}>
-                <RotateCw size={16} />
-                Coba Lagi
+              <ButtonPrimary
+                variant="secondary"
+                onClick={() => { setLoading(true); setError(""); setRetry((v) => v + 1); }}
+              >
+                <RotateCw size={16} aria-hidden="true" />
+                Coba lagi
               </ButtonPrimary>
             ) : (
-              <Link href="/products" className="kr-link">
-                Kembali ke Produk
+              <Link href="/products" className={buttonClass("primary")}>
+                Lihat produk
               </Link>
             )}
           </div>
         ) : (
           <>
-            <nav aria-label="Breadcrumb" className="text-xs kr-muted mb-9">
-              <Link href="/">Beranda</Link> /{" "}
-              <Link href="/products">Produk</Link> / {product.name}
+            <nav aria-label="Breadcrumb" className="kr-fade-in text-[13px] text-muted">
+              <Link href="/products" className="hover:text-ink hover:underline">Produk</Link> /{" "}
+              {product.category} / <span aria-current="page">{product.name}</span>
             </nav>
-            <div className="grid md:grid-cols-2 gap-8 lg:gap-14">
-              <div>
-                <div className="relative aspect-square rounded-lg overflow-hidden bg-[#74131C]">
-                  <ProductImage name={product.name} priority />
-                </div>
-                <p className="kr-eyebrow mt-5">
-                  {product.name} / {product.category}
-                </p>
+            <div className="grid gap-6 md:grid-cols-2 md:gap-14">
+              <div className="kr-fade-up relative h-[260px] overflow-hidden rounded-[28px] shadow-card md:h-[520px] md:rounded-[36px]">
+                <ProductImage name={product.name} category={product.category} priority iconSize={96} sizes="(min-width:768px) 560px, 100vw" />
               </div>
-              <div className="min-w-0">
-                <span className="inline-block bg-primary/5 text-primary rounded px-3 py-1 text-xs mb-5">
-                  {product.category}
-                </span>
-                <h1 className="kr-heading mb-5">{product.name}</h1>
-                <p className="kr-muted text-sm leading-7 mb-6 whitespace-pre-line">
+              <div className="kr-fade-up flex min-w-0 flex-col gap-4 md:gap-5" style={{ animationDelay: "100ms" }}>
+                <div className="flex flex-wrap gap-2">
+                  <Badge>{product.category}</Badge>
+                  {!soldOut && <Badge color="secondary">Stok tersedia</Badge>}
+                </div>
+                <h1 className="text-4xl font-bold tracking-[-1.5px] text-ink md:text-[56px] md:leading-[1.1] md:tracking-[-2.5px]">
+                  {product.name}
+                </h1>
+                <div className="flex items-center gap-2 text-[13px] font-medium text-muted md:text-sm">
+                  {rating != null && <RatingStars rating={rating} />}
+                  <span>
+                    {rating == null
+                      ? "Belum ada rating"
+                      : `${rating.toFixed(1).replace(".", ",")} dari 5 · ${count} ulasan`}
+                  </span>
+                </div>
+                <p className="whitespace-pre-line text-[15px] text-muted md:text-base md:leading-normal">
                   {product.description}
                 </p>
-                {selected && (
-                  <div className="mb-7">
-                    <p className="text-xs kr-muted mb-2">Harga pilihan</p>
-                    <p className="text-3xl font-medium">
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        maximumFractionDigits: 0,
-                      }).format(selected.price)}
-                    </p>
-                  </div>
-                )}
-                <h2 className="text-sm font-medium mb-4">Pilih varian</h2>
+                <p className="text-[13px] font-semibold text-ink">Pilih varian</p>
                 <VariantSelector
                   variants={product.variants}
                   selected={selected}
                   onSelect={setSelected}
                 />
-                <ButtonPrimary
-                  className="w-full mt-6"
-                  disabled={!selected || selected.stock === 0}
-                  onClick={() => {
-                    if (selected)
-                      router.push(
-                        `/checkout?variant_id=${selected.id}&product_id=${product.id}`,
-                      );
-                  }}
-                >
-                  <ShoppingCart size={16} />
-                  {!selected || selected.stock === 0
-                    ? "Stok Habis"
-                    : "Beli Sekarang"}
-                </ButtonPrimary>
-                <p className="text-xs kr-muted mt-4">
-                  Periksa syarat penggunaan sebelum membeli.
+                <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-[24px] bg-surface p-4 shadow-card md:static md:justify-start md:gap-5 md:rounded-none md:bg-transparent md:p-0 md:pt-4 md:shadow-none">
+                  <div>
+                    <p className="text-xs font-semibold text-muted md:sr-only">Total</p>
+                    <p className="font-display text-2xl font-bold tracking-[-0.8px] text-ink md:text-4xl md:tracking-[-1.5px]">
+                      {price ?? "-"}
+                    </p>
+                  </div>
+                  <ButtonPrimary
+                    disabled={soldOut}
+                    onClick={() => {
+                      if (selected)
+                        router.push(
+                          `/checkout?variant_id=${selected.id}&product_id=${product.id}`,
+                        );
+                    }}
+                  >
+                    {soldOut ? "Stok habis" : "Beli sekarang"}
+                  </ButtonPrimary>
+                </div>
+                <p className="text-[13px] text-muted">
+                  Bayar via QRIS atau saldo. Periksa syarat penggunaan sebelum membeli.
                 </p>
               </div>
             </div>
             {(selected?.terms || selected?.delivery_terms) && (
-              <section className="mt-12 rounded-lg bg-[var(--kr-soft)] p-6 md:p-8 space-y-8">
+              <Reveal as="section" className="space-y-8 rounded-[28px] bg-surface p-5 shadow-card md:p-7">
                 {selected.terms && (
                   <div>
-                    <p className="kr-eyebrow mb-3">Sebelum mulai</p>
-                    <h2 className="flex items-center gap-3 text-2xl font-medium mb-6">
-                      <ScrollText size={21} />
+                    <h2 className="mb-4 flex items-center gap-3 text-xl font-semibold text-ink">
+                      <ScrollText size={20} aria-hidden="true" />
                       Syarat penggunaan akun
                     </h2>
                     <Terms text={selected.terms} />
@@ -181,43 +198,32 @@ function ProductDetailContent({ id }: { id: string }) {
                 )}
                 {selected.delivery_terms && (
                   <div>
-                    <h2 className="flex items-center gap-3 text-xl mb-5">
-                      <Truck size={20} />
+                    <h2 className="mb-4 flex items-center gap-3 text-xl font-semibold text-ink">
+                      <Truck size={20} aria-hidden="true" />
                       Info pengiriman
                     </h2>
                     <Terms text={selected.delivery_terms} />
                   </div>
                 )}
-              </section>
+              </Reveal>
             )}
-            <section className="mt-14 mb-6">
-              <p className="kr-eyebrow mb-4">Testimoni produk</p>
-              <div className="flex flex-wrap justify-between gap-5 items-center mb-7">
-                <h2 className="text-[28px] font-medium tracking-tight">
-                  Pengalaman pembeli
-                </h2>
-                <div className="flex items-center gap-3 text-xs kr-muted">
-                  {rating != null && <RatingStars rating={rating} />}
-                  <span>
-                    {rating == null
-                      ? "Belum ada rating"
-                      : rating.toFixed(1) + " dari 5"}
-                  </span>
-                  <span>{count} ulasan</span>
-                </div>
-              </div>
+            <section className="flex flex-col gap-5">
+              <h2 className="text-[28px] font-bold tracking-[-1px] text-ink md:text-[32px]">
+                Ulasan pembeli
+              </h2>
               {reviews.length ? (
-                <div className="grid md:grid-cols-2 gap-5">
+                <Reveal stagger={0.06} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                   {reviews.map((r) => (
-                    <article key={r.id} className="glass rounded-lg p-6">
+                    <RevealItem key={r.id}>
+                    <article className="kr-lift h-full rounded-[24px] bg-surface p-5 shadow-card hover:shadow-card-hover">
                       <div className="flex justify-between gap-4">
                         <div>
-                          <p className="text-sm font-medium">{r.userName}</p>
+                          <p className="text-sm font-semibold text-ink">{r.userName}</p>
                           <div className="mt-2">
                             <RatingStars rating={r.rating} />
                           </div>
                         </div>
-                        <time className="text-xs kr-muted">
+                        <time className="text-xs text-muted">
                           {new Date(r.createdAt).toLocaleDateString("id-ID", {
                             day: "numeric",
                             month: "short",
@@ -225,31 +231,28 @@ function ProductDetailContent({ id }: { id: string }) {
                           })}
                         </time>
                       </div>
-                      <p className="text-sm leading-7 kr-muted mt-5">
-                        {r.testimonial}
-                      </p>
+                      <p className="mt-4 text-sm text-muted">{r.testimonial}</p>
                     </article>
+                    </RevealItem>
                   ))}
-                </div>
+                </Reveal>
               ) : (
-                <div className="glass rounded-lg p-10 text-center">
-                  <MessageSquare
-                    size={28}
-                    className="mx-auto mb-4 text-foreground/40"
-                  />
-                  <p className="font-medium">Belum ada rating</p>
-                  <p className="text-sm kr-muted mt-3">
-                    Testimoni muncul setelah pembeli menyelesaikan transaksi dan
-                    mengirim review.
+                <Reveal className="flex flex-col items-center gap-3 rounded-[28px] bg-surface p-7 text-center shadow-card">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-pill text-ink">
+                    <MessageSquare size={24} aria-hidden="true" />
+                  </span>
+                  <h3 className="text-xl font-semibold text-ink">Belum ada ulasan</h3>
+                  <p className="text-sm text-muted">
+                    Ulasan muncul setelah pembeli menyelesaikan transaksi dan mengirim review.
                   </p>
-                </div>
+                </Reveal>
               )}
             </section>
           </>
         )}
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 export default function ProductDetailPage() {

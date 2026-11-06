@@ -1,36 +1,30 @@
 import Link from "next/link";
-import Image from "next/image";
+import Reveal from "@/components/ui/Reveal";
 export default function Footer() {
   return (
-    <footer className="kr-footer mt-auto">
-      <div className="kr-container">
-        <div className="kr-footer-top">
-          <Link href="/">
-            <Image
-              src="/logo_website.png"
-              alt="KampusRebahan"
-              width={184}
-              height={46}
-              className="kr-logo"
-            />
+    <footer className="mt-auto border-t border-hairline pt-6">
+      <Reveal y={8} className="flex flex-col gap-3 text-[13px] text-muted md:flex-row md:items-center md:justify-between">
+        <p>© {new Date().getFullYear()} KampusRebahan. Semua hak dilindungi.</p>
+        <nav
+          className="flex flex-wrap gap-x-6 gap-y-2 font-medium"
+          aria-label="Navigasi footer"
+        >
+          <Link href="/terms" className="transition-colors duration-150 hover:text-ink hover:underline">
+            Syarat
           </Link>
-          <nav
-            className="flex flex-wrap gap-x-7 gap-y-4 text-xs kr-muted"
-            aria-label="Navigasi footer"
+          <Link href="/privacy" className="transition-colors duration-150 hover:text-ink hover:underline">
+            Privasi
+          </Link>
+          <a
+            href="https://wa.me/6285180642043"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors duration-150 hover:text-ink hover:underline"
           >
-            <Link href="/">Beranda</Link>
-            <Link href="/products">Produk</Link>
-            <Link href="/terms">Syarat &amp; Ketentuan</Link>
-            <Link href="/privacy">Kebijakan Privasi</Link>
-          </nav>
-        </div>
-        <div className="kr-footer-bottom">
-          <p>
-            © {new Date().getFullYear()} KampusRebahan. All rights reserved.
-          </p>
-          <p>Akun digital premium, harga terjangkau.</p>
-        </div>
-      </div>
+            WhatsApp
+          </a>
+        </nav>
+      </Reveal>
     </footer>
   );
 }

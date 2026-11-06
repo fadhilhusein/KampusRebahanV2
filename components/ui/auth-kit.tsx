@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import type { InputHTMLAttributes, ReactNode } from "react";
 import {
   AlertCircle,
@@ -9,48 +8,54 @@ import {
   EyeOff,
   Info,
   Loader2,
-  Lock,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
-import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 interface AuthFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: ReactNode;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   labelExtra?: ReactNode;
   trailing?: ReactNode;
+  error?: ReactNode;
 }
 export function AuthField({
   id,
   label,
-  icon: Icon,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  icon: _icon,
   labelExtra,
   trailing,
+  error,
   className = "",
   ...props
 }: AuthFieldProps) {
+  const errorId = `${id}-error`;
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <label htmlFor={id} className="text-[13px] font-medium">
+        <label htmlFor={id} className="text-[13px] font-semibold text-ink">
           {label}
         </label>
         {labelExtra}
       </div>
       <div className="relative">
-        <Icon
-          size={16}
-          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40"
-        />
         <input
-          id={id}
-          className={`w-full rounded-md border border-foreground/20 bg-surface py-3 pl-11 pr-11 text-[14px] min-h-[50px] ${className}`}
           {...props}
+          id={id}
+          className={`kr-field ${trailing ? "pr-12" : ""} ${className}`}
+          aria-invalid={error ? true : props["aria-invalid"]}
+          aria-describedby={error ? errorId : props["aria-describedby"]}
         />
         {trailing}
       </div>
+      {error && (
+        <p id={errorId} className="kr-fade-in mt-2 text-xs font-medium text-danger">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -63,16 +68,15 @@ export function AuthPasswordField(props: AuthPasswordFieldProps) {
   return (
     <AuthField
       {...props}
-      icon={Lock}
       type={visible ? "text" : "password"}
       trailing={
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-label={visible ? "Sembunyikan password" : "Tampilkan password"}
-          className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-foreground/50"
+          className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-muted hover:text-ink"
         >
-          {visible ? <EyeOff size={17} /> : <Eye size={17} />}
+          {visible ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       }
     />
@@ -80,17 +84,17 @@ export function AuthPasswordField(props: AuthPasswordFieldProps) {
 }
 const noticeStyles = {
   error: {
-    box: "border-primary/30 bg-primary/5 text-primary",
+    box: "bg-danger-bg text-danger",
     icon: AlertCircle,
     role: "alert",
   },
   success: {
-    box: "kr-notice-success",
+    box: "bg-success-bg text-success",
     icon: CheckCircle2,
     role: "status",
   },
   info: {
-    box: "border-foreground/15 bg-foreground/5 text-foreground/70",
+    box: "bg-pill text-muted",
     icon: Info,
     role: "status",
   },
@@ -106,9 +110,9 @@ export function AuthNotice({
   return (
     <div
       role={role}
-      className={`flex items-start gap-2 rounded-md border p-4 text-[13px] ${box}`}
+      className={`kr-fade-in flex items-start gap-2 rounded-2xl p-4 text-[13px] font-medium ${box}`}
     >
-      <Icon size={16} className="mt-0.5 shrink-0" />
+      <Icon size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
       <span>{children}</span>
     </div>
   );
@@ -138,52 +142,47 @@ export function AuthSubmit({
 export function AuthCard({
   title,
   subtitle,
+  footer,
   children,
 }: {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   subtitle: ReactNode;
+  /** teks/link di bawah kartu */
+  footer?: ReactNode;
   children: ReactNode;
 }) {
   return (
-    <div className="kr-auth-card">
-      <div className="mb-8">
-        <p className="kr-eyebrow mb-4">KampusRebahan</p>
-        <h1 className="text-[34px] leading-tight tracking-tight font-medium mb-4">
+    <div className="flex w-full flex-col items-center gap-6">
+      {/* key: animasi diputar ulang saat judul berganti (langkah lupa password) */}
+      <div key={title} className="kr-fade-up flex flex-col items-center gap-2.5 text-center">
+        <h1 className="text-4xl font-bold tracking-[-1.5px] md:text-[64px] md:leading-[1.05] md:tracking-[-3px]">
           {title}
         </h1>
-        <p className="kr-muted text-sm leading-6">{subtitle}</p>
+        <p className="max-w-[420px] text-base text-muted">{subtitle}</p>
       </div>
-      {children}
+      <div
+        className="kr-fade-up flex w-full max-w-[420px] flex-col gap-[18px] rounded-[28px] bg-surface p-5 shadow-card md:rounded-[32px] md:p-8"
+        style={{ animationDelay: "80ms" }}
+      >
+        {children}
+      </div>
+      {footer && (
+        <div className="kr-fade-up text-center text-sm text-muted" style={{ animationDelay: "160ms" }}>
+          {footer}
+        </div>
+      )}
     </div>
   );
 }
+/** Kerangka halaman auth: navbar di dalam kontainer halaman, konten di tengah vertikal, tanpa footer (SPEC 3.9). */
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <>
-      <main className="kr-auth-shell">
-        <aside className="kr-auth-visual">
-          <p className="kr-eyebrow">Akses sesuai kebutuhanmu</p>
-          <h2>
-            Satu akun.
-            <br />
-            Banyak kemungkinan.
-          </h2>
-          <p className="kr-muted text-sm">
-            Hiburan, kreativitas, dan produktivitas
-            <br />
-            dalam satu tempat.
-          </p>
-          <Image
-            src="/landing/access-final.png"
-            alt="Kartu akses digital KampusRebahan"
-            width={530}
-            height={400}
-          />
-        </aside>
+    <div className="kr-page min-h-0 flex-1">
+      <Navbar />
+      <main className="flex flex-1 flex-col items-center justify-center py-10 md:py-12">
         {children}
       </main>
-      <Footer />
-    </>
+    </div>
   );
 }

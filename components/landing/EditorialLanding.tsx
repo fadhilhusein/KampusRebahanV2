@@ -1,285 +1,204 @@
-import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  ShoppingBag,
-  CreditCard,
-  KeyRound,
-} from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
+import HeroGallery from "@/components/landing/HeroGallery";
+import Reveal, { RevealItem } from "@/components/ui/Reveal";
+import ProductImage from "@/components/product/ProductImage";
+import { buttonClass } from "@/components/ui/ButtonPrimary";
+import RecentPurchaseBanner from "@/components/landing/RecentPurchaseBanner";
 import type { Product } from "@/lib/types";
+
+const rupiah = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+});
+
+const steps = [
+  {
+    title: "Pilih produk dan varian",
+    text: "Cari akun yang dibutuhkan, pilih durasi.",
+    short: "Cari akun, pilih durasi.",
+  },
+  {
+    title: "Bayar QRIS atau saldo",
+    text: "Scan QR dari e-wallet atau bank apa pun.",
+    short: "Scan dari e-wallet atau bank.",
+  },
+  {
+    title: "Terima kredensial",
+    text: "Email dan password tampil otomatis setelah lunas.",
+    short: "Tampil otomatis setelah lunas.",
+  },
+];
+
+function minPrice(p: Product) {
+  return p.variants.length ? Math.min(...p.variants.map((v) => v.price)) : null;
+}
 
 export default function EditorialLanding({
   products,
 }: {
   products: Product[];
 }) {
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const best = products.slice(0, 4);
+
   return (
-    <>
-      <section className="kr-hero">
-        <div className="kr-container">
-          <div className="kr-hero-copy">
-            <p className="kr-eyebrow">Akses digital, harga mahasiswa</p>
-            <h1>
-              Premium untuk harimu.
-              <br />
-              Tetap ramah di kantong.
-            </h1>
-            <p>
-              Netflix, Spotify, Disney+, dan puluhan layanan digital premium
-              lainnya. Temukan akses untuk hiburan, belajar, dan berkarya dalam
-              satu tempat.
-            </p>
-            <div className="kr-hero-actions">
-              <Link className="kr-link" href="/products">
-                Lihat Semua Produk <ArrowRight size={16} />
-              </Link>
-              <Link className="kr-link kr-link-outline" href="/auth/signup">
-                Buat Akun
-              </Link>
-            </div>
-          </div>
-        </div>
-        <div className="kr-spectrum" aria-hidden="true" />
-        <div className="kr-hero-base">
-          <div className="kr-container">
-            <div className="kr-hero-meta">
-              <div>
-                <p>PILIHAN PRODUK DIGITAL</p>
-                <strong>
-                  {products.length
-                    ? products.length + " layanan, satu tempat."
-                    : "Pilihan untuk keseharianmu."}
-                </strong>
-              </div>
-              <div>
-                <p>AKSES SESUAI KEBUTUHAN</p>
-                <strong>Pilih paket yang pas.</strong>
-              </div>
-            </div>
-            <div className="kr-hero-categories">
-              {(categories.length
-                ? categories
-                : [
-                    "Streaming",
-                    "Music",
-                    "Productivity",
-                    "Education",
-                    "Utility",
-                    "Domain",
-                  ]
-              ).map((c) => (
-                <span key={c}>{c.toUpperCase()}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-        <Image
-          className="kr-hero-image"
-          src="/landing/hero-final.png"
-          width={644}
-          height={720}
-          alt="Panel akses digital di atas podium"
-          priority
-        />
+    <div className="flex flex-col gap-8 md:gap-12">
+      <section className="flex flex-col items-center gap-2 text-center">
+        <Reveal
+          as="h1"
+          onMount
+          y={24}
+          className="max-w-[900px] text-[42px] font-bold leading-none tracking-[-2px] text-ink md:text-[84px] md:leading-[0.98] md:tracking-[-4px]"
+        >
+          Akun digital premium,
+          <br />
+          harga mahasiswa.
+        </Reveal>
+
+        <HeroGallery products={products} />
+
+        <Reveal
+          as="p"
+          onMount
+          delay={0.25}
+          className="max-w-[480px] text-[15px] text-muted md:text-base md:leading-normal"
+        >
+          <span className="md:hidden">
+            Bayar dengan QRIS atau saldo, kredensial langsung dikirim ke dashboard.
+          </span>
+          <span className="hidden md:inline">
+            Beli akun Netflix, Spotify, Canva, dan ratusan layanan lain. Bayar dengan
+            QRIS atau saldo, kredensial langsung dikirim ke dashboard.
+          </span>
+        </Reveal>
+        <Reveal
+          onMount
+          delay={0.35}
+          className="flex w-full flex-col gap-2.5 pt-4 md:w-auto md:flex-row md:gap-3 md:pt-6"
+        >
+          <Link href="/products" className={`kr-press ${buttonClass("primary")}`}>
+            Lihat produk
+          </Link>
+          <Link href="/#cara-beli" className={`kr-press ${buttonClass("secondary")}`}>
+            Cara beli
+          </Link>
+        </Reveal>
       </section>
-      <section className="kr-container kr-intro">
-        <div>
-          <p className="kr-eyebrow">Rebahan tetap produktif</p>
-          <Image
-            src="/landing/access-final.png"
-            width={550}
-            height={350}
-            alt="Kartu akses digital dengan platform merah"
-          />
-        </div>
-        <div>
-          <h2 className="kr-heading">
-            Lebih banyak pilihan.
-            <br />
-            Lebih ringan di kantong.
+
+      <section aria-labelledby="terlaris" className="flex flex-col gap-5 md:gap-7">
+        <Reveal className="flex items-center justify-between gap-4">
+          <h2
+            id="terlaris"
+            className="text-[28px] font-bold tracking-[-1px] text-ink md:text-[44px] md:tracking-[-1.5px]"
+          >
+            Produk terlaris
           </h2>
-          <p>
-            Dari tontonan favorit sampai alat bantu berkarya, pilih layanan
-            digital yang sesuai kebutuhanmu. KampusRebahan menghadirkan pilihan
-            premium dengan harga yang tetap bersahabat untuk mahasiswa.
-          </p>
-          <Link href="/products" className="kr-link kr-link-dark">
-            Jelajahi Koleksi <ArrowUpRight size={16} />
+          <Link href="/products" className={`kr-press max-md:hidden ${buttonClass("secondary")}`}>
+            Semua produk
           </Link>
-        </div>
-      </section>
-      <div className="kr-spectrum" aria-hidden="true" />
-      <section className="kr-container kr-products" id="produk">
-        <div className="kr-section-head">
-          <div>
-            <p className="kr-eyebrow">Pilih akses favoritmu</p>
-            <h2 className="kr-heading">Produk pilihan untuk harimu.</h2>
-          </div>
-          <Link href="/products" className="kr-link kr-link-outline">
-            Lihat Semua Produk <ArrowUpRight size={16} />
-          </Link>
-        </div>
-        {products.length ? (
-          <div className="kr-product-grid">
-            {products.slice(0, 4).map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+        </Reveal>
+        {best.length ? (
+          <>
+            <Reveal stagger={0.08} className="hidden gap-6 md:grid md:grid-cols-3 lg:grid-cols-4">
+              {best.map((p, i) => (
+                <RevealItem key={p.id} y={24} className={i === 3 ? "md:max-lg:hidden" : ""}>
+                  <div className="kr-lift h-full">
+                    <ProductCard product={p} />
+                  </div>
+                </RevealItem>
+              ))}
+            </Reveal>
+            <Reveal as="ul" stagger={0.06} className="flex flex-col gap-3 md:hidden">
+              {best.map((p) => {
+                const price = minPrice(p);
+                const inStock = p.variants.some((v) => v.stock > 0);
+                const href = `/products/${p.id}`;
+                return (
+                  <RevealItem
+                    as="li"
+                    key={p.id}
+                    className="relative flex items-center gap-3.5 rounded-[22px] bg-surface p-2.5 shadow-card"
+                  >
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl">
+                      <ProductImage name={p.name} category={p.category} sizes="64px" iconSize={28} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        href={href}
+                        className="block truncate text-sm font-semibold text-ink after:absolute after:inset-0 after:rounded-[22px]"
+                      >
+                        {p.name}
+                      </Link>
+                      <p className="text-[13px] text-muted">
+                        {price == null ? "Belum tersedia" : rupiah.format(price)}
+                      </p>
+                    </div>
+                    {inStock ? (
+                      <Link href={href} className={`kr-press relative z-10 min-h-11 ${buttonClass("primary", "sm")}`}>
+                        Beli
+                      </Link>
+                    ) : (
+                      <span className="rounded-full bg-pill px-4 py-2 text-[13px] font-semibold text-muted">
+                        Stok habis
+                      </span>
+                    )}
+                  </RevealItem>
+                );
+              })}
+            </Reveal>
+            <Link href="/products" className={`kr-press md:hidden ${buttonClass("secondary")}`}>
+              Semua produk
+            </Link>
+          </>
         ) : (
-          <div className="glass rounded-lg p-8">
-            <p className="kr-muted">Katalog belum dapat dimuat.</p>
-            <Link href="/products" className="mt-4 kr-link">
-              Buka Katalog
+          <div className="rounded-[28px] bg-surface p-7 text-center shadow-card">
+            <p className="text-muted">Katalog belum dapat dimuat.</p>
+            <Link href="/products" className={`mt-4 ${buttonClass("primary")}`}>
+              Buka katalog
             </Link>
           </div>
         )}
-        <div className="mt-8 flex flex-wrap gap-3">
-          {categories.map((c) => (
-            <Link
-              key={c}
-              href={"/products?category=" + encodeURIComponent(c)}
-              className="kr-link kr-link-outline"
-            >
-              {c}
-              <span className="kr-muted text-xs">
-                {products.filter((p) => p.category === c).length}
-              </span>
-            </Link>
-          ))}
-        </div>
       </section>
-      <section className="kr-services" aria-label="Pilihan layanan">
-        <article className="kr-service">
-          <div className="kr-service-copy">
-            <div>
-              <p className="kr-eyebrow mb-5">Waktu santai</p>
-              <h2 className="kr-heading">
-                Tontonan dan musik.
-                <br />
-                Teman rebahan terbaik.
-              </h2>
-              <p className="mt-6">
-                Temukan layanan streaming untuk film, serial, dan musik yang
-                ingin kamu nikmati.
-              </p>
-            </div>
-            <ul>
-              {[
-                "Film dan serial favorit",
-                "Musik untuk setiap suasana",
-                "Pilihan paket sesuai kebutuhan",
-              ].map((t) => (
-                <li key={t} className="flex gap-3 items-center">
-                  <Check size={15} className="text-primary" />
-                  {t}
-                </li>
-              ))}
-            </ul>
-            <Link
-              className="kr-link kr-link-dark"
-              href="/products?category=Streaming"
-            >
-              Lihat Layanan Streaming <ArrowRight size={16} />
-            </Link>
-          </div>
-          <Image
-            src="/landing/entertainment-final.png"
-            width={590}
-            height={480}
-            alt="Ruang kaca dengan simbol pemutar video"
-          />
-        </article>
-        <article className="kr-service kr-service-reverse">
-          <Image
-            src="/landing/productivity-final.png"
-            width={590}
-            height={480}
-            alt="Ruang kaca berisi alat kreativitas"
-          />
-          <div className="kr-service-copy">
-            <div>
-              <p className="kr-eyebrow mb-5">Belajar dan berkarya</p>
-              <h2 className="kr-heading">
-                Untuk ide
-                <br />
-                yang terus jalan.
-              </h2>
-              <p className="mt-6">
-                Dukung tugas, proyek kreatif, dan pekerjaan harian dengan alat
-                bantu digital pilihanmu.
-              </p>
-            </div>
-            <ul>
-              {[
-                "Desain dan editing",
-                "Alat bantu produktivitas",
-                "Layanan AI untuk berkarya",
-              ].map((t) => (
-                <li key={t} className="flex gap-3 items-center">
-                  <Check size={15} className="text-primary" />
-                  {t}
-                </li>
-              ))}
-            </ul>
-            <Link
-              className="kr-link kr-link-dark"
-              href="/products?category=Productivity"
-            >
-              Lihat Layanan Produktivitas <ArrowRight size={16} />
-            </Link>
-          </div>
-        </article>
-      </section>
-      <section className="kr-container kr-steps" id="cara-beli">
-        <p className="kr-eyebrow">Cara pembelian</p>
-        <h2 className="kr-heading mt-4">Dari pilih, sampai siap dipakai.</h2>
-        <div className="kr-step-grid">
-          {[
-            {
-              Icon: ShoppingBag,
-              title: "Pilih produk",
-              text: "Temukan layanan dan varian yang sesuai kebutuhan. Periksa stok dan ketentuannya.",
-            },
-            {
-              Icon: CreditCard,
-              title: "Selesaikan pembayaran",
-              text: "Periksa pesanan, lalu bayar dengan metode yang tersedia saat checkout.",
-            },
-            {
-              Icon: KeyRound,
-              title: "Buka aksesmu",
-              text: "Pantau status pesanan dan lihat informasi akses setelah pesanan selesai diproses.",
-            },
-          ].map(({ Icon, title, text }, i) => (
-            <article className="kr-step" key={title}>
-              <div className="flex items-center justify-between">
-                <span>0{i + 1}</span>
-                <Icon size={20} className="text-primary" />
-              </div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-      <section className="kr-closing">
-        <div className="max-w-[1312px] mx-auto">
-          <p className="kr-eyebrow !text-[#FFADB5]">Akses untuk keseharianmu</p>
-          <h2 className="kr-heading">
-            Saatnya pilih aksesmu.
+
+      <section
+        id="cara-beli"
+        className="flex scroll-mt-6 flex-col gap-6 md:flex-row md:gap-16 md:pt-10"
+      >
+        <Reveal className="md:w-[420px] md:shrink-0">
+          <p className="text-xs font-semibold uppercase tracking-[1.2px] text-muted">Cara beli</p>
+          <h2 className="mt-2 text-[28px] font-bold tracking-[-1px] text-ink md:text-[44px] md:tracking-[-1.5px]">
+            Tiga langkah,
             <br />
-            Bikin harimu lebih premium.
+            kurang dari 2 menit.
           </h2>
-          <p>Pilih layanan digital sesuai kebutuhan dan budget kamu.</p>
-          <Link href="/products" className="kr-link">
-            Temukan Produkmu <ArrowRight size={16} />
-          </Link>
-        </div>
+          <p className="mt-3 max-w-[400px] text-base text-muted max-md:hidden">
+            Dari pilih akun sampai kredensial siap dipakai, semuanya dari satu tempat.
+          </p>
+        </Reveal>
+        <Reveal as="ol" stagger={0.1} delay={0.1} className="flex-1">
+          {steps.map((s, i) => (
+            <RevealItem
+              as="li"
+              key={s.title}
+              className="flex items-center gap-4 border-b border-hairline py-5 md:gap-6 md:py-6"
+            >
+              <span className="w-10 shrink-0 font-display text-[28px] font-bold text-muted md:w-12 md:text-[40px]">
+                {i + 1}
+              </span>
+              <div>
+                <h3 className="text-[15px] font-semibold text-ink md:text-xl">{s.title}</h3>
+                <p className="text-[13px] text-muted md:text-sm">
+                  <span className="md:hidden">{s.short}</span>
+                  <span className="hidden md:inline">{s.text}</span>
+                </p>
+              </div>
+            </RevealItem>
+          ))}
+        </Reveal>
       </section>
-    </>
+
+      <RecentPurchaseBanner />
+    </div>
   );
 }

@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import BalanceHistoryTable from "@/components/dashboard/BalanceHistoryTable";
 import type { BalanceTransaction } from "@/components/dashboard/BalanceHistoryTable";
+import CountUp from "@/components/dashboard/CountUp";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import Reveal, { RevealItem } from "@/components/ui/Reveal";
 import ButtonPrimary from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
-import { Wallet, Zap, History } from "lucide-react";
+import { Zap } from "lucide-react";
 
 const TOPUP_MIN_AMOUNT = 10000;
 const TOPUP_MAX_AMOUNT = 500000;
-
-const cardClass = "rounded-2xl border border-foreground/20 bg-surface";
+const PRESET_AMOUNTS = [10000, 25000, 50000, 100000];
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -76,32 +78,41 @@ export default function BalancePage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <h1 className="mb-8 text-[28px] font-bold leading-tight tracking-tight text-foreground">Saldo Akun</h1>
+    <div className="flex flex-col gap-5 md:gap-7">
+      <DashboardHeader title="Saldo" subtitle="Isi saldo dan lihat riwayat mutasi." />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="kr-balance-card flex flex-col items-start justify-center p-8 rounded-lg">
-          <div className="mb-2 flex items-center justify-center gap-2">
-            <Wallet size={14} className="text-primary" />
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-foreground/60">Saldo Saat Ini</div>
-          </div>
+      <Reveal onMount stagger={0.06} className="flex flex-col gap-5 md:gap-6 lg:flex-row">
+        <RevealItem className="flex flex-col justify-center gap-2 rounded-[28px] bg-ink p-5 text-on-ink shadow-card md:p-7 lg:w-[420px] lg:shrink-0">
+          <span className="text-sm font-medium text-on-ink-muted">Saldo aktif</span>
           {loading ? (
-            <Skeleton className="mt-1 h-10 w-40" radius="rounded-lg" />
+            <Skeleton className="kr-shimmer h-10 w-40 md:h-14 md:w-56" radius="rounded-lg" />
           ) : (
-            <div className="text-[36px] font-bold text-foreground">{formatPrice(balance)}</div>
+            <span className="font-display text-4xl font-bold leading-none [overflow-wrap:anywhere] md:text-[56px]">
+              <CountUp value={balance} format={formatPrice} />
+            </span>
           )}
-        </div>
+        </RevealItem>
 
-        <div className={`${cardClass} p-6`}>
-          <div className="mb-4 flex items-center gap-2">
-            <Zap size={14} className="text-primary" />
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-foreground/60">Top Up Saldo</div>
-          </div>
-          <form onSubmit={handleTopup} className="space-y-4">
+        <RevealItem className="min-w-0 flex-1 rounded-[28px] bg-surface p-5 shadow-card md:p-7">
+          <h2 className="mb-4 text-xl font-semibold">Isi saldo</h2>
+          <form onSubmit={handleTopup} className="flex flex-col gap-4">
+            <div role="group" aria-label="Nominal cepat" className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+              {PRESET_AMOUNTS.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={amount === value}
+                  onClick={() => setAmount(value)}
+                  className="kr-chip kr-press px-2"
+                >
+                  {formatPrice(value)}
+                </button>
+              ))}
+            </div>
             <div>
-              <label htmlFor="topup-amount" className="mb-2 block text-[13px] font-semibold text-foreground/80">
-                Nominal{" "}
-                <span className="font-normal text-foreground/40">
+              <label htmlFor="topup-amount" className="mb-2 block text-[13px] font-semibold">
+                Nominal lain{" "}
+                <span className="font-normal text-muted">
                   (Rp{TOPUP_MIN_AMOUNT.toLocaleString("id-ID")} – Rp{TOPUP_MAX_AMOUNT.toLocaleString("id-ID")})
                 </span>
               </label>
@@ -113,31 +124,32 @@ export default function BalancePage() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value === "" ? "" : Number(e.target.value))}
                 placeholder="50000"
-                className="w-full rounded-xl border border-foreground/15 bg-background px-4 py-3 text-[14px] font-medium text-foreground transition-colors placeholder:text-foreground/30 focus:border-primary/40 focus:outline-none"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "topup-error" : undefined}
+                className="kr-field"
               />
             </div>
 
             {error && (
-              <div role="alert" className="rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-[13px] font-medium text-primary">
+              <div id="topup-error" role="alert" className="rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">
                 {error}
               </div>
             )}
 
-            <ButtonPrimary type="submit" disabled={topupLoading} className="flex w-full items-center justify-center gap-2 py-3 text-[14px]">
-              <Zap size={16} />
-              {topupLoading ? "Memproses..." : "Top Up via QRIS"}
+            <ButtonPrimary type="submit" disabled={topupLoading} className="kr-press w-full">
+              <Zap size={16} aria-hidden="true" />
+              {topupLoading ? "Memproses..." : "Isi saldo via QRIS"}
             </ButtonPrimary>
           </form>
-        </div>
-      </div>
+        </RevealItem>
+      </Reveal>
 
-      <div className="mt-10">
-        <div className="mb-4 flex items-center gap-2">
-          <History size={14} className="text-primary" />
-          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-foreground/60">Riwayat Saldo</h2>
-        </div>
-        {loading ? <Skeleton className="h-48 w-full" radius="rounded-2xl" /> : <BalanceHistoryTable transactions={transactions} />}
-      </div>
+      <h2 className="text-xl font-semibold md:text-2xl">Riwayat saldo</h2>
+      {loading ? (
+        <Skeleton className="kr-shimmer h-48 w-full" radius="rounded-[24px]" />
+      ) : (
+        <BalanceHistoryTable transactions={transactions} />
+      )}
     </div>
   );
 }

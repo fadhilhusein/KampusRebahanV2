@@ -6,10 +6,10 @@ interface GradientBorderProps {
   radius?: string;
 }
 
-// Name kept for backward compat across the codebase; border is now solid, not a gradient.
-export default function GradientBorder({ children, className = "", radius = "rounded-lg" }: GradientBorderProps) {
+// Nama dipertahankan agar import di halaman tidak berubah; isinya kartu surface biasa.
+export default function GradientBorder({ children, className = "", radius = "rounded-[28px]" }: GradientBorderProps) {
   return (
-    <div className={`relative border border-foreground/15 bg-surface ${radius} ${className}`}>
+    <div className={`relative bg-surface shadow-card ${radius} ${className}`}>
       {children}
     </div>
   );

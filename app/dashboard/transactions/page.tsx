@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { History, Inbox } from "lucide-react";
+import { Inbox } from "lucide-react";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import TransactionsTable from "@/components/dashboard/TransactionsTable";
-import { TransactionSkeleton } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/Skeleton";
 import type { Transaction } from "@/lib/types";
 
 export default function TransactionsPage() {
@@ -23,27 +24,23 @@ export default function TransactionsPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8">
-        <h1 className="mb-1 flex items-center gap-2.5 text-[28px] font-bold leading-tight tracking-tight text-foreground">
-          <History size={26} className="text-primary" />
-          Riwayat Transaksi
-        </h1>
-        <p className="text-[14px] text-foreground/50">
-          {loading ? "Memuat..." : `${transactions.length} transaksi`}
-        </p>
-      </div>
+    <div className="flex flex-col gap-5 md:gap-7">
+      <DashboardHeader title="Transaksi" subtitle={loading ? "Memuat..." : `${transactions.length} transaksi`} />
 
       {loading ? (
-        <TransactionSkeleton />
+        <div className="space-y-3" role="status" aria-label="Memuat transaksi">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="kr-shimmer h-20 w-full" radius="rounded-[20px]" />
+          ))}
+        </div>
       ) : error ? (
-        <div className="rounded-2xl border border-primary/30 bg-primary/10 px-6 py-4 text-[14px] font-medium text-primary">
+        <div role="alert" className="kr-fade-in rounded-[22px] bg-danger-bg px-6 py-4 text-sm font-medium text-danger">
           {error}
         </div>
       ) : transactions.length === 0 ? (
-        <div className="py-24 text-center">
-          <Inbox size={40} className="mx-auto mb-3 text-foreground/20" />
-          <p className="text-[16px] font-medium text-foreground/40">Belum ada transaksi.</p>
+        <div className="kr-fade-up flex flex-col items-center gap-3 rounded-[28px] bg-surface py-16 text-center shadow-card">
+          <Inbox size={40} aria-hidden="true" className="text-line" />
+          <p className="text-base font-medium text-muted">Belum ada transaksi.</p>
         </div>
       ) : (
         <TransactionsTable transactions={transactions} />

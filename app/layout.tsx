@@ -4,10 +4,10 @@ import { ThemeProvider } from "next-themes";
 import { ToastProvider } from "@/components/ui/ToastContext";
 import NextAuthSessionProvider from "@/components/ui/SessionProvider";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
-import { Poppins } from "next/font/google";
-import "./brand.css";
+import { Inter, Inter_Tight } from "next/font/google";
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", variable: "--font-poppins" });
+const interTight = Inter_Tight({ subsets: ["latin"], weight: ["600", "700", "800"], display: "swap", variable: "--font-inter-tight" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: {
@@ -46,8 +46,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${poppins.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+    <html lang="id" className={`${interTight.variable} ${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-card text-ink font-sans">
         <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false} storageKey="kr-theme">
           <NextAuthSessionProvider>
             <ToastProvider>{children}</ToastProvider>

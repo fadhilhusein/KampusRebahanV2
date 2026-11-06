@@ -37,7 +37,7 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
         id: "date",
         accessorFn: (txn) => new Date(txn.createdAt).getTime(),
         header: ({ column }) => <SortHeader column={column} label="Tanggal" />,
-        cell: ({ row }) => <span className="whitespace-nowrap text-foreground/60">{formatDate(row.original.createdAt)}</span>,
+        cell: ({ row }) => <span className="whitespace-nowrap">{formatDate(row.original.createdAt)}</span>,
       },
       {
         id: "type",
@@ -49,13 +49,13 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
           const Icon = info?.icon ?? Settings2;
           const isCredit = txn.amount >= 0;
           return (
-            <span className="inline-flex items-center gap-2.5 font-semibold text-foreground">
+            <span className="inline-flex items-center gap-2.5 font-semibold text-ink">
               <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                  isCredit ? "bg-secondary/15 text-secondary" : "bg-primary/15 text-primary"
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                  isCredit ? "bg-success-bg text-success" : "bg-pill text-ink"
                 }`}
               >
-                <Icon size={15} />
+                <Icon size={15} aria-hidden="true" />
               </span>
               {info?.label ?? txn.type}
             </span>
@@ -67,7 +67,7 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
         accessorFn: (txn) => txn.note ?? "",
         header: "Keterangan",
         cell: ({ row }) => (
-          <span className="block max-w-[280px] truncate text-foreground/60">{row.original.note || "—"}</span>
+          <span className="block max-w-[280px] truncate">{row.original.note || "—"}</span>
         ),
       },
       {
@@ -77,7 +77,7 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
         cell: ({ row }) => {
           const { amount } = row.original;
           return (
-            <div className={`whitespace-nowrap text-right font-bold ${amount >= 0 ? "text-secondary" : "text-primary"}`}>
+            <div className={`whitespace-nowrap text-right font-bold ${amount >= 0 ? "text-success" : "text-ink"}`}>
               {amount >= 0 ? "+" : ""}
               {formatPrice(amount)}
             </div>
@@ -89,7 +89,7 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
         accessorFn: (txn) => txn.balanceAfter,
         header: () => <div className="text-right">Saldo Akhir</div>,
         cell: ({ row }) => (
-          <div className="whitespace-nowrap text-right font-medium text-foreground/70">{formatPrice(row.original.balanceAfter)}</div>
+          <div className="whitespace-nowrap text-right font-medium">{formatPrice(row.original.balanceAfter)}</div>
         ),
       },
     ],
@@ -104,6 +104,21 @@ export default function BalanceHistoryTable({ transactions }: { transactions: Ba
       initialSorting={[{ id: "date", desc: true }]}
       rowNoun="mutasi"
       emptyMessage="Belum ada mutasi saldo."
+      mobileRow={(txn) => {
+        const info = typeInfo[txn.type];
+        return (
+          <div className="flex items-center justify-between gap-3 rounded-[22px] bg-surface p-4 shadow-card">
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold text-ink">{txn.note || info?.label || txn.type}</div>
+              <div className="mt-0.5 text-xs text-muted">{formatDate(txn.createdAt)}</div>
+            </div>
+            <div className={`shrink-0 text-sm font-bold ${txn.amount >= 0 ? "text-success" : "text-ink"}`}>
+              {txn.amount >= 0 ? "+" : ""}
+              {formatPrice(txn.amount)}
+            </div>
+          </div>
+        );
+      }}
     />
   );
 }

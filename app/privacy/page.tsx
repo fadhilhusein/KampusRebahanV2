@@ -9,30 +9,29 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <>
+    <div className="kr-page">
       <Navbar />
-      <main className="flex-1 pt-24 pb-16 px-8">
-        <div className="max-w-[1280px] mx-auto">
-          <p className="kr-eyebrow mb-4">Informasi layanan</p>
-          <h1 className="text-[36px] font-semibold text-foreground tracking-tight mb-2">
+      <main className="flex-1 py-10 md:py-16">
+        <div className="mx-auto flex max-w-[720px] flex-col items-center gap-7 text-center">
+          <h1 className="kr-fade-up text-4xl font-bold tracking-[-1.5px] text-ink md:text-[64px] md:tracking-[-3px]">
             Kebijakan Privasi
           </h1>
-          <p className="text-[13px] text-foreground/30 mb-10">Terakhir diperbarui: Mei 2026</p>
+          <p className="kr-fade-up text-[13px] text-muted" style={{ animationDelay: "60ms" }}>Terakhir diperbarui: Mei 2026</p>
 
-          <LegalArticle headings={["Informasi yang Kami Kumpulkan","Penggunaan Informasi","Keamanan Data","Berbagi Data dengan Pihak Ketiga","Penyimpanan Data","Cookie & Sesi","Hak Anda","Perubahan Kebijakan","Kontak"]}>
+          <div className="kr-fade-up w-full text-left" style={{ animationDelay: "120ms" }}><LegalArticle headings={["Informasi yang Kami Kumpulkan","Penggunaan Informasi","Keamanan Data","Berbagi Data dengan Pihak Ketiga","Penyimpanan Data","Cookie & Sesi","Hak Anda","Perubahan Kebijakan","Kontak"]}>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">1. Informasi yang Kami Kumpulkan</h2>
+              <h2>1. Informasi yang Kami Kumpulkan</h2>
               <p>Kami mengumpulkan informasi berikut saat Anda menggunakan layanan KampusRebahan:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
-                <li><strong className="text-foreground/80">Data Akun:</strong> Nama, alamat email, dan password terenkripsi saat registrasi.</li>
-                <li><strong className="text-foreground/80">Data Transaksi:</strong> Riwayat order, nominal pembayaran, dan referensi transfer.</li>
-                <li><strong className="text-foreground/80">Data Teknis:</strong> Informasi perangkat dan browser untuk keamanan sesi.</li>
+                <li><strong>Data Akun:</strong> Nama, alamat email, dan password terenkripsi saat registrasi.</li>
+                <li><strong>Data Transaksi:</strong> Riwayat order, nominal pembayaran, dan referensi transfer.</li>
+                <li><strong>Data Teknis:</strong> Informasi perangkat dan browser untuk keamanan sesi.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">2. Penggunaan Informasi</h2>
+              <h2>2. Penggunaan Informasi</h2>
               <p>Informasi yang kami kumpulkan digunakan untuk:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>Memproses dan memverifikasi pesanan Anda.</li>
@@ -43,7 +42,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">3. Keamanan Data</h2>
+              <h2>3. Keamanan Data</h2>
               <p>Kami menerapkan langkah-langkah keamanan berikut:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>Password disimpan dalam bentuk hash menggunakan bcrypt — kami tidak dapat melihat password Anda.</li>
@@ -54,26 +53,26 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">4. Berbagi Data dengan Pihak Ketiga</h2>
+              <h2>4. Berbagi Data dengan Pihak Ketiga</h2>
               <p>Kami tidak menjual atau menyewakan data pribadi Anda kepada pihak ketiga. Data hanya dibagikan kepada:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
-                <li><strong className="text-foreground/80">Mitra penyedia produk</strong> (hanya data yang diperlukan untuk fulfillment order).</li>
-                <li><strong className="text-foreground/80">Penyedia infrastruktur</strong> (database cloud) dengan standar keamanan tinggi.</li>
+                <li><strong>Mitra penyedia produk</strong> (hanya data yang diperlukan untuk fulfillment order).</li>
+                <li><strong>Penyedia infrastruktur</strong> (database cloud) dengan standar keamanan tinggi.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">5. Penyimpanan Data</h2>
+              <h2>5. Penyimpanan Data</h2>
               <p>Data akun dan transaksi disimpan selama akun Anda aktif. Anda dapat meminta penghapusan akun dengan menghubungi kami. Data transaksi dapat disimpan lebih lama untuk keperluan audit internal.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">6. Cookie & Sesi</h2>
+              <h2>6. Cookie & Sesi</h2>
               <p>Kami menggunakan cookie sesi untuk menjaga status login Anda. Cookie ini tidak digunakan untuk pelacakan iklan dan akan dihapus saat Anda logout atau cookie kedaluwarsa.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">7. Hak Anda</h2>
+              <h2>7. Hak Anda</h2>
               <p>Anda memiliki hak untuk:</p>
               <ul className="list-disc list-inside space-y-2 mt-2">
                 <li>Mengakses data pribadi yang kami simpan tentang Anda.</li>
@@ -84,19 +83,19 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">8. Perubahan Kebijakan</h2>
+              <h2>8. Perubahan Kebijakan</h2>
               <p>Kebijakan privasi ini dapat diperbarui sewaktu-waktu. Perubahan signifikan akan diberitahukan melalui halaman ini. Penggunaan layanan setelah perubahan berarti Anda menerima kebijakan yang diperbarui.</p>
             </section>
 
             <section>
-              <h2 className="text-[16px] font-semibold text-foreground mb-3">9. Kontak</h2>
+              <h2>9. Kontak</h2>
               <p>Pertanyaan mengenai kebijakan privasi dapat disampaikan melalui email atau media sosial resmi KampusRebahan.</p>
             </section>
 
-          </LegalArticle>
+          </LegalArticle></div>
         </div>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
