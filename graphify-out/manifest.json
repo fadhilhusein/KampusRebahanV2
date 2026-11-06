@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "components/layout/Navbar.tsx": {
-    "mtime": 1793948188.8637037,
-    "seen": 1793948233.473045,
-    "ast_hash": "735da8772c428b5c6b0fac45d27843a9",
+    "mtime": 1793952167.8585894,
+    "seen": 1793952225.6991231,
+    "ast_hash": "55d20f0aeffe2624fa67b3bc0bd7c900",
     "semantic_hash": ""
   },
   "components/payment/Countdown.tsx": {
@@ -1305,6 +1305,18 @@
     "mtime": 1793944789.1538901,
     "seen": 1793945005.8167565,
     "ast_hash": "472a79125312b18984993ac82d6d9241",
+    "semantic_hash": ""
+  },
+  "public/avatars/female.png": {
+    "mtime": 1793952037.7200658,
+    "seen": 1793952225.6991231,
+    "ast_hash": "f350bea4416c75d46abd74d6dd3f3d0a",
+    "semantic_hash": ""
+  },
+  "public/avatars/male.png": {
+    "mtime": 1793952037.7220733,
+    "seen": 1793952225.6991231,
+    "ast_hash": "e37989449ec7cb670bcfcedfb47fae55",
     "semantic_hash": ""
   },
   "package-lock.json": {

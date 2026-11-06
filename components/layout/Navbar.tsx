@@ -12,6 +12,13 @@ const WHATSAPP_URL = "https://wa.me/6285180642043";
 const iconBtn =
   "kr-press flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface text-ink shadow-soft transition-colors hover:bg-pill";
 
+// shortcut: no gender/avatar field on User, so pick one of two avatars from the email; add a profile choice when needed
+function avatarFor(key: string) {
+  let h = 0;
+  for (const c of key) h = (h * 31 + c.charCodeAt(0)) | 0;
+  return (h & 1) === 0 ? "/avatars/female.png" : "/avatars/male.png";
+}
+
 // Logo PNG berlatar transparan dengan teks gelap: di dark mode diberi latar putih agar terbaca.
 function Logo() {
   return (
@@ -166,13 +173,19 @@ export default function Navbar() {
             <div className="relative hidden md:block" ref={dropdownRef}>
               <button
                 type="button"
-                className={iconBtn}
+                className={`${iconBtn} overflow-hidden`}
                 onClick={() => setDropdownOpen((v) => !v)}
                 aria-label="Menu akun"
                 aria-expanded={dropdownOpen}
                 aria-controls="account-menu"
               >
-                <User size={18} />
+                <Image
+                  src={avatarFor(session.user?.email ?? session.user?.name ?? "")}
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="size-full object-cover"
+                />
               </button>
               {dropdownOpen && (
                 <div
@@ -246,7 +259,14 @@ export default function Navbar() {
           <div className="my-2 border-t border-hairline" />
           {status === "authenticated" ? (
             <>
-              <p className="px-3 pt-1 text-[13px] text-muted">
+              <p className="flex items-center gap-3 px-3 pt-1 text-[13px] text-muted">
+                <Image
+                  src={avatarFor(session.user?.email ?? session.user?.name ?? "")}
+                  alt=""
+                  width={36}
+                  height={36}
+                  className="size-9 rounded-full border border-hairline"
+                />
                 Saldo {balance == null ? "—" : rupiah.format(balance)}
               </p>
               <Link href="/dashboard" onClick={close} className={itemClass}>
