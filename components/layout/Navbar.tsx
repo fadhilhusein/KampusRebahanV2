@@ -35,6 +35,11 @@ export default function Navbar() {
     [balance, setBalance] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const pendingRef = useRef<HTMLElement | null>(null);
+  const [pill, setPill] = useState<{ x: number; w: number } | null>(null),
+    [hover, setHover] = useState<{ x: number; w: number; show: boolean } | null>(null);
   useEffect(() => {
     if (status !== "authenticated") return;
     let active = true;
@@ -75,6 +80,20 @@ export default function Navbar() {
   ];
   const active = (href: string) =>
     !href.includes("#") && !href.startsWith("http") && pathname.startsWith(href);
+  const activeIndex = links.findIndex((l) => active(l.href));
+  useEffect(() => {
+    const measure = () => {
+      const el = pendingRef.current ?? itemRefs.current[activeIndex];
+      setPill(el ? { x: el.offsetLeft, w: el.offsetWidth } : null);
+    };
+    measure();
+    // re-measure when fonts load or the nav resizes, so the pill stays aligned
+    const ro = new ResizeObserver(measure);
+    if (navRef.current) ro.observe(navRef.current);
+    return () => ro.disconnect();
+  }, [activeIndex]);
+  const showHover = (el: HTMLElement) =>
+    setHover({ x: el.offsetLeft, w: el.offsetWidth, show: true });
   const rupiah = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -85,7 +104,7 @@ export default function Navbar() {
       ? { target: "_blank", rel: "noopener noreferrer" }
       : { "aria-current": active(l.href) ? ("page" as const) : undefined };
   const itemClass =
-    "flex min-h-11 items-center gap-2 rounded-2xl px-3 text-sm font-medium text-ink hover:bg-pill";
+    "flex min-h-11 items-center gap-2 rounded-2xl px-3 text-sm font-medium text-ink transition-colors hover:bg-pill aria-[current=page]:bg-pill aria-[current=page]:font-semibold";
   return (
     <header
       ref={headerRef}
@@ -99,15 +118,42 @@ export default function Navbar() {
           <Logo />
         </Link>
         <nav
-          className="hidden items-center gap-4 whitespace-nowrap rounded-full bg-surface px-5 py-3 shadow-soft md:flex lg:gap-7 lg:px-7"
+          ref={navRef}
+          className="relative hidden items-center gap-1 whitespace-nowrap rounded-full bg-surface p-1.5 shadow-soft md:flex"
           aria-label="Navigasi utama"
+          onMouseLeave={() => setHover((h) => h && { ...h, show: false })}
         >
-          {links.map((l) => (
+          <span
+            aria-hidden="true"
+            className={`absolute inset-y-1.5 left-0 rounded-full bg-pill transition-[transform,width,opacity] duration-[350ms] ease-[var(--kr-ease)] ${hover?.show ? "opacity-100" : "opacity-0"}`}
+            style={hover ? { width: hover.w, transform: `translateX(${hover.x}px)` } : undefined}
+          />
+          {pill && (
+            <span
+              aria-hidden="true"
+              className="absolute inset-y-1.5 left-0 rounded-full bg-ink transition-[transform,width] duration-[350ms] ease-[var(--kr-ease)]"
+              style={{ width: pill.w, transform: `translateX(${pill.x}px)` }}
+            />
+          )}
+          {links.map((l, i) => (
             <Link
               key={l.label}
+              ref={(el) => {
+                itemRefs.current[i] = el;
+              }}
               href={l.href}
-              onClick={close}
-              className="text-sm font-medium text-ink hover:underline aria-[current=page]:font-semibold"
+              onClick={(e) => {
+                // each page mounts its own Navbar, so slide now while the next page loads
+                if (!l.external && !l.href.includes("#")) {
+                  const el = e.currentTarget;
+                  pendingRef.current = el;
+                  setPill({ x: el.offsetLeft, w: el.offsetWidth });
+                }
+                close();
+              }}
+              onMouseEnter={(e) => showHover(e.currentTarget)}
+              onFocus={(e) => showHover(e.currentTarget)}
+              className="relative z-10 rounded-full px-[18px] py-2.5 text-sm font-medium text-ink transition-colors duration-300 aria-[current=page]:font-semibold aria-[current=page]:text-on-ink"
               {...linkProps(l)}
             >
               {l.label}

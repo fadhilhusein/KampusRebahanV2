@@ -31,7 +31,9 @@
       "PowerShell(git status --short | Where-Object { $_ -notmatch '^ ?[MD] ' })",
       "PowerShell(npx tsc --noEmit -p . 2>&1)",
       "PowerShell(git add -A)",
-      "PowerShell(git reset -q -- graphify-out/.graphify_build_state.json graphify-out/.graphify_labels.json.sig graphify-out/.graphify_labels.pending.json graphify-out/2026-11-06)"
+      "PowerShell(git reset -q -- graphify-out/.graphify_build_state.json graphify-out/.graphify_labels.json.sig graphify-out/.graphify_labels.pending.json graphify-out/2026-11-06)",
+      "PowerShell(git push origin master 2>&1)",
+      "PowerShell(graphify update .)"
     ]
   }
 }

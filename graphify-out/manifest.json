@@ -6,9 +6,9 @@
     "semantic_hash": "de095783b03f7ff790c7bff22628f306"
   },
   ".claude/settings.local.json": {
-    "mtime": 1793938380.1810758,
-    "seen": 1793943498.9117377,
-    "ast_hash": "9c7bbfbe812ed99f43d9f6d718a7d60b",
+    "mtime": 1793947215.2015476,
+    "seen": 1793947220.8453505,
+    "ast_hash": "83ca45abbf55eac23cd189c245772801",
     "semantic_hash": ""
   },
   "app/api/admin/confirm/route.ts": {
@@ -324,9 +324,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/DashboardFrame.tsx": {
-    "mtime": 1793942984.7217517,
-    "seen": 1793943498.9117377,
-    "ast_hash": "95aa874a77f8df697de59a75fb4acc9f",
+    "mtime": 1793947121.4579895,
+    "seen": 1793947220.8453505,
+    "ast_hash": "f4964ed7d19265539571667a7de9c260",
     "semantic_hash": ""
   },
   "components/dashboard/DataTable.tsx": {
@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "components/layout/Navbar.tsx": {
-    "mtime": 1793944297.968501,
-    "seen": 1793944609.9849358,
-    "ast_hash": "d64cf9195f949e58efb97d9eea31c9e5",
+    "mtime": 1793948188.8637037,
+    "seen": 1793948233.473045,
+    "ast_hash": "735da8772c428b5c6b0fac45d27843a9",
     "semantic_hash": ""
   },
   "components/payment/Countdown.tsx": {

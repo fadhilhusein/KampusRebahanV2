@@ -17,7 +17,7 @@ export function useDashboardUser() {
 export default function DashboardFrame({ user, children }: { user: SidebarUser; children: React.ReactNode }) {
   return (
     <DashboardUserContext.Provider value={user}>
-      <div className="kr-page">
+      <div className="kr-page lg:max-w-[1600px] lg:px-10 xl:px-14">
         <Navbar />
         <main className="flex w-full min-w-0 flex-1 flex-col gap-6 py-8 md:gap-10 md:py-10">{children}</main>
         <Footer />
