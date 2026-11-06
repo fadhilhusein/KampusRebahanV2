@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/apxga/.local/bin/graphify.EXE hook-guard search",
+            "command": "D:/uv/bin/graphify.exe hook-guard search",
             "timeout": 10
           }
         ]
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/apxga/.local/bin/graphify.EXE hook-guard read",
+            "command": "D:/uv/bin/graphify.exe hook-guard read",
             "timeout": 10
           }
         ]
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/apxga/.local/bin/graphify.EXE hook-guard compact",
+            "command": "D:/uv/bin/graphify.exe hook-guard compact",
             "timeout": 10
           }
         ]
