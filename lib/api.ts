@@ -36,9 +36,16 @@ async function post<T>(
   return res.json() as Promise<T>;
 }
 
+// Supplier products we don't sell (e.g. the supplier's "API Testing" item). Filtered here so
+// listings, product pages and order creation all ignore them.
+const HIDDEN_PRODUCT_IDS = new Set(["945f105a-1b14-11f1-bf18-bc241112a182"]);
+
 export const warungApi = {
-  getProducts: () =>
-    post<ProductsResponse>("/products"),
+  getProducts: async () => {
+    const res = await post<ProductsResponse>("/products");
+    if (res.success) res.data = res.data.filter((p) => !HIDDEN_PRODUCT_IDS.has(p.id));
+    return res;
+  },
 
   getBalance: () =>
     post<BalanceResponse>("/balance"),
