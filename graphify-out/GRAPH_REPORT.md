@@ -1,17 +1,17 @@
 # Graph Report - KampusRebahanV2  (2026-11-07)
 
 ## Corpus Check
-- 135 files · ~50,192 words
+- 154 files · ~58,099 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 2, .ico 2, .css 1)
 
 ## Summary
-- 648 nodes · 1644 edges · 39 communities (34 shown, 5 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 42 edges (avg confidence: 0.86)
+- 742 nodes · 1912 edges · 38 communities (33 shown, 5 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 42 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cafc121e`
+- Built from commit: `fade569d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,23 +19,23 @@
 - prisma.ts
 - Balance & History Tables
 - 2. Komponen
-- types.ts
+- AdminPopupSettings.tsx
 - order/[orderId]/page.tsx
 - Docs, Audit & Design Notes
 - Password Reset UI Kit
-- prisma
-- react
+- types.ts
+- lucide-react
 - Dev Dependencies
-- [topupId]/page.tsx
-- settings/route.ts
+- Reveal.tsx
+- referral.ts
 - loyalty.ts
 - Runtime Dependencies
 - next
 - TypeScript Config
 - app/layout.tsx
-- Skeleton
-- lucide-react
-- Order (Prisma model)
+- balance/page.tsx
+- dashboard/page.tsx
+- forgot-password/route.ts
 - ESLint Config
 - transactions/[orderId]/page.tsx
 - Route Protection Middleware
@@ -43,42 +43,41 @@
 - NPM Scripts
 - fulfillOrder
 - admin/page.tsx
-- balance/page.tsx
+- [topupId]/page.tsx
 - PostCSS Config
 - NextAuth Handlers
-- pg
-- auth.ts
+- prisma
+- DashboardFrame.tsx
 - @types/bcryptjs@^2.4.6
-- react
+- affiliate/page.tsx
 - reviews/route.ts
-- ThemeToggle.tsx
-- recent-purchases/route.ts
-- next-themes
-- nodemailer
+- @prisma/adapter-pg
+- next
+- qrcode
 
 ## God Nodes (most connected - your core abstractions)
-1. `next` - 57 edges
-2. `react` - 43 edges
-3. `lucide-react` - 36 edges
-4. `auth` - 32 edges
-5. `Navbar()` - 29 edges
-6. `buttonClass()` - 28 edges
-7. `prisma` - 28 edges
-8. `Skeleton()` - 24 edges
-9. `Footer()` - 22 edges
-10. `requireAdmin()` - 21 edges
+1. `next` - 64 edges
+2. `react` - 48 edges
+3. `lucide-react` - 39 edges
+4. `buttonClass()` - 35 edges
+5. `auth` - 34 edges
+6. `prisma` - 34 edges
+7. `Skeleton()` - 30 edges
+8. `requireAdmin()` - 27 edges
+9. `Navbar()` - 26 edges
+10. `cn()` - 19 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Missing Error State on Products Page` --conceptually_related_to--> `getProductsWithStats()`  [AMBIGUOUS]
   anti-slop/audit-001-2026-09-20.md → lib/products.ts
+- `3.5 Pembayaran QRIS → `/order/[orderId]` (status pending)` --references--> `GatewayQr()`  [INFERRED]
+  design/SPEC.md → components/payment/GatewayQr.tsx
 - `3.11 Legal` --references--> `LegalArticle()`  [INFERRED]
   design/SPEC.md → components/layout/LegalArticle.tsx
 - `User (Prisma model)` --shares_data_with--> `POST()`  [INFERRED]
   prisma/schema.prisma → app/api/auth/register/route.ts
-- `3.1 Landing → `/` (`app/page.tsx`)` --references--> `copy()`  [INFERRED]
-  design/SPEC.md → app/order/[orderId]/page.tsx
-- `3.5 Pembayaran QRIS → `/order/[orderId]` (status pending)` --references--> `GatewayQr()`  [INFERRED]
-  design/SPEC.md → components/payment/GatewayQr.tsx
+- `Setting (Prisma model)` --shares_data_with--> `getMarkupPercent()`  [INFERRED]
+  prisma/schema.prisma → lib/settings.ts
 
 ## Import Cycles
 - None detected.
@@ -88,27 +87,27 @@
 - **Order Payment & Fulfillment Lifecycle** — prisma_schema_order, prisma_schema_orderstatus, app_api_order_route_post, app_api_admin_confirm_route_post, app_api_admin_reject_route_post, lib_fulfillorder_fulfillorder, lib_orderstatus_statuslabel [INFERRED 0.85]
 - **Password Reset Flow** — prisma_schema_passwordresettoken, prisma_schema_user, app_api_auth_forgot_password_route_post, app_api_auth_reset_password_route_post [INFERRED 0.85]
 
-## Communities (39 total, 5 thin omitted)
+## Communities (38 total, 5 thin omitted)
 
 ### Community 0 - "prisma.ts"
-Cohesion: 0.15
-Nodes (8): POST(), POST(), POST(), sendResetCodeEmail(), transporter, globalForPrisma, PasswordResetToken (Prisma model), bcryptjs
+Cohesion: 0.16
+Nodes (12): GET(), GET(), GET(), GET(), PATCH(), GET(), auth, authConfig (+4 more)
 
 ### Community 1 - "Balance & History Tables"
-Cohesion: 0.09
-Nodes (44): DashboardHomePage(), formatDate(), formatPrice(), TransactionsPage(), BalanceHistoryTable(), BalanceTransaction, formatDate(), formatPrice() (+36 more)
+Cohesion: 0.08
+Nodes (42): TransactionsPage(), BalanceHistoryTable(), BalanceTransaction, formatDate(), formatPrice(), typeInfo, DataTable(), DataTableProps (+34 more)
 
 ### Community 2 - "2. Komponen"
-Cohesion: 0.08
-Nodes (23): 1.1 Warna (hanya light; dark mode BELUM didesain), 1.2 Tipografi, 1.3 Radius, 1.4 Bayangan, 1.5 Spacing dan layout, 1.6 Navbar, 1. Design tokens, 2. Komponen (+15 more)
+Cohesion: 0.05
+Nodes (38): copy(), 1.1 Warna (hanya light; dark mode BELUM didesain), 1.2 Tipografi, 1.3 Radius, 1.4 Bayangan, 1.5 Spacing dan layout, 1.6 Navbar, 1. Design tokens (+30 more)
 
-### Community 3 - "types.ts"
-Cohesion: 0.06
-Nodes (47): GET(), HomePage(), revalidate, CredentialVisual(), EditorialLanding(), minPrice(), PayVisual(), PickVisual() (+39 more)
+### Community 3 - "AdminPopupSettings.tsx"
+Cohesion: 0.10
+Nodes (27): GET(), POST(), GET(), HomePage(), revalidate, AdminPopupSettings(), formatSaved(), CardProps (+19 more)
 
 ### Community 4 - "order/[orderId]/page.tsx"
-Cohesion: 0.09
-Nodes (27): CopyButton(), copy(), formatDate(), formatPrice(), Order, OrderDetailPage(), OrderSummary(), PaymentInstructions() (+19 more)
+Cohesion: 0.29
+Nodes (9): CopyButton(), formatDate(), formatPrice(), Order, OrderDetailPage(), OrderSummary(), PaymentInstructions(), statusInfo (+1 more)
 
 ### Community 5 - "Docs, Audit & Design Notes"
 Cohesion: 0.10
@@ -118,65 +117,65 @@ Nodes (22): antislop Audit 001 (2026-09-20), WCAG Contrast Failures (text/placeh
 Cohesion: 0.15
 Nodes (16): ForgotPasswordPage(), AuthCard(), AuthField(), AuthFieldProps, AuthNotice(), AuthPasswordField(), AuthPasswordFieldProps, AuthShell() (+8 more)
 
-### Community 7 - "prisma"
-Cohesion: 0.18
-Nodes (13): GET(), POST(), bayarGg, QRIS_GATEWAY_MAX_AMOUNT, TOPUP_MIN_AMOUNT, verifyBayarGgWebhookSignature(), creditTopUp(), CreditTopUpResult (+5 more)
+### Community 7 - "types.ts"
+Cohesion: 0.09
+Nodes (25): POST(), warungApi, bayarGg, QRIS_GATEWAY_MAX_AMOUNT, TOPUP_MIN_AMOUNT, FulfillOrderResult, AccountDetail, ApiResponse (+17 more)
 
-### Community 8 - "react"
-Cohesion: 0.10
-Nodes (31): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, NotFound(), PaymentCancelContent(), PaymentCancelPage(), StatusIcon() (+23 more)
+### Community 8 - "lucide-react"
+Cohesion: 0.05
+Nodes (65): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, NotFound(), PaymentCancelContent(), PaymentCancelPage(), StatusIcon() (+57 more)
 
 ### Community 9 - "Dev Dependencies"
 Cohesion: 0.12
 Nodes (22): devDependencies, tailwindcss@^4, @tailwindcss/postcss@^4, @types/node@^20, @types/nodemailer@^8.0.1, @types/qrcode@^1.5.6, @types/react@^19, @types/react-dom@^19 (+14 more)
 
-### Community 10 - "[topupId]/page.tsx"
-Cohesion: 0.17
-Nodes (15): formatPrice(), TopUp, TopUpPaymentPage(), Countdown(), EASE, item, Props, Reveal() (+7 more)
+### Community 10 - "Reveal.tsx"
+Cohesion: 0.16
+Nodes (12): fetchLoyalty(), formatPrice(), LoyaltyCard(), LoyaltyResult, EASE, item, Props, Toast (+4 more)
 
-### Community 11 - "settings/route.ts"
-Cohesion: 0.33
-Nodes (13): GET(), POST(), POST(), GET(), getMarkupPercent(), isBankTransferEnabled(), isQrisBridgeEnabled(), isQrisGatewayEnabled() (+5 more)
+### Community 11 - "referral.ts"
+Cohesion: 0.07
+Nodes (52): POST(), REFUND_ELIGIBLE_STATUSES, GET(), POST(), POST(), POST(), GET(), POST() (+44 more)
 
 ### Community 12 - "loyalty.ts"
 Cohesion: 0.19
 Nodes (13): CouponUnavailableError, POST(), GET(), findCoupon(), generateCouponCode(), getLoyaltyState(), isUniqueViolation(), LOYALTY_REWARD (+5 more)
 
 ### Community 13 - "Runtime Dependencies"
-Cohesion: 0.09
-Nodes (22): dependencies, @auth/prisma-adapter@^2.11.2, bcryptjs@^3.0.3, lucide-react@^1.3.0, motion@^12.37.0, next@16.2.6, next-auth@^5.0.0-beta.31, @prisma/client@^7.8.0 (+14 more)
+Cohesion: 0.10
+Nodes (20): dependencies, @auth/prisma-adapter@^2.11.2, bcryptjs@^3.0.3, lucide-react@^1.3.0, motion@^12.37.0, next@16.2.6, pg@^8.20.0, @prisma/client@^7.8.0 (+12 more)
 
 ### Community 14 - "next"
-Cohesion: 0.16
-Nodes (17): GET(), REFUND_ELIGIBLE_STATUSES, GET(), GET(), GET(), GET(), GET(), GET() (+9 more)
+Cohesion: 0.28
+Nodes (9): POST(), GET(), GET(), POST(), GET(), GET(), AdminLayout(), requireAdmin() (+1 more)
 
 ### Community 15 - "TypeScript Config"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
 ### Community 16 - "app/layout.tsx"
-Cohesion: 0.25
-Nodes (7): inter, interTight, metadata, RootLayout(), NextAuthSessionProvider(), ToastProvider(), WhatsAppButton()
+Cohesion: 0.13
+Nodes (16): inter, interTight, metadata, RootLayout(), RefCapture(), NextAuthSessionProvider(), clientSnapshot(), serverSnapshot() (+8 more)
 
-### Community 17 - "Skeleton"
-Cohesion: 0.20
-Nodes (10): StatCard(), fetchLoyalty(), formatPrice(), LoyaltyCard(), LoyaltyResult, ButtonPrimary(), ProductDetailSkeleton(), Skeleton() (+2 more)
+### Community 17 - "balance/page.tsx"
+Cohesion: 0.33
+Nodes (9): Stat(), BalancePage(), handleTopup(), formatPrice(), PRESET_AMOUNTS, CountUp(), Reveal(), RevealItem() (+1 more)
 
-### Community 18 - "lucide-react"
-Cohesion: 0.24
-Nodes (11): ProductDetailContent(), ProductDetailPage(), Terms(), rupiah, typeIcon(), VariantSelector(), RatingStars(), Kartu varian (`VariantSelector`, komponen .pen "VariantCard") (+3 more)
+### Community 18 - "dashboard/page.tsx"
+Cohesion: 0.21
+Nodes (11): DashboardHomePage(), formatDate(), formatPrice(), StatCard(), useDashboardUser(), baseTabs, DashboardHeader(), Tab (+3 more)
 
-### Community 19 - "Order (Prisma model)"
-Cohesion: 0.23
-Nodes (13): POST(), POST(), BalanceTopUp (Prisma model), BalanceTransaction (Prisma model), BalanceTxnType (Prisma enum), Coupon (Prisma model), CouponStatus (Prisma enum), Order (Prisma model) (+5 more)
+### Community 19 - "forgot-password/route.ts"
+Cohesion: 0.28
+Nodes (7): POST(), POST(), sendResetCodeEmail(), transporter, nodemailer@^7.0.13, PasswordResetToken (Prisma model), nodemailer
 
 ### Community 20 - "ESLint Config"
 Cohesion: 0.33
 Nodes (5): eslintConfig, eslint@^9, eslint-config-next@16.2.6, eslint, eslint-config-next
 
 ### Community 21 - "transactions/[orderId]/page.tsx"
-Cohesion: 0.18
-Nodes (16): AccountDetailsPanel(), AccountGroup, Credential, CredentialRow(), formatDate(), formatPrice(), isPasswordField(), parseAccountDetails() (+8 more)
+Cohesion: 0.16
+Nodes (17): AccountDetailsPanel(), AccountGroup, Credential, CredentialRow(), formatDate(), formatPrice(), isPasswordField(), parseAccountDetails() (+9 more)
 
 ### Community 22 - "Route Protection Middleware"
 Cohesion: 0.40
@@ -191,65 +190,61 @@ Cohesion: 0.40
 Nodes (5): scripts, build, dev, lint, start
 
 ### Community 25 - "fulfillOrder"
-Cohesion: 0.29
-Nodes (8): POST(), POST(), fulfillOrder(), FulfillOrderResult, call(), paymentBridge, sign(), verifyBridgeWebhookSignature()
+Cohesion: 0.24
+Nodes (9): POST(), call(), paymentBridge, sign(), verifyBridgeWebhookSignature(), BridgeCreatePaymentPayload, BridgePaymentData, BridgeResponse (+1 more)
 
 ### Community 26 - "admin/page.tsx"
 Cohesion: 0.14
 Nodes (20): AdminOrder, AdminPage(), formatDate(), formatPrice(), OrderActions(), OrderCard, OrderCardProps, OrderDetails() (+12 more)
 
-### Community 27 - "balance/page.tsx"
+### Community 27 - "[topupId]/page.tsx"
 Cohesion: 0.27
-Nodes (10): BalancePage(), handleTopup(), formatPrice(), PRESET_AMOUNTS, CountUp(), useDashboardUser(), baseTabs, DashboardHeader() (+2 more)
+Nodes (7): formatPrice(), TopUp, TopUpPaymentPage(), Countdown(), GatewayQr(), GradientBorderProps, react
 
-### Community 30 - "pg"
-Cohesion: 0.33
-Nodes (4): pg@^8.20.0, @prisma/adapter-pg@^7.8.0, pg, @prisma/adapter-pg
+### Community 30 - "prisma"
+Cohesion: 0.36
+Nodes (7): GET(), POST(), verifyBayarGgWebhookSignature(), creditTopUp(), CreditTopUpResult, prisma, BayarGgWebhookPayload
 
-### Community 31 - "auth.ts"
-Cohesion: 0.24
-Nodes (6): GET(), authConfig, handlers, signIn, signOut, warungApi
+### Community 31 - "DashboardFrame.tsx"
+Cohesion: 0.38
+Nodes (5): DashboardLayout(), metadata, DashboardFrame(), DashboardUserContext, SidebarUser
 
-### Community 33 - "react"
-Cohesion: 0.20
-Nodes (4): logos, GradientBorderProps, iconMap, react
+### Community 33 - "affiliate/page.tsx"
+Cohesion: 0.16
+Nodes (16): AffiliateData, AffiliatePage(), formatDate(), formatPrice(), METHODS, AdminPayouts(), process(), formatDate() (+8 more)
 
 ### Community 34 - "reviews/route.ts"
 Cohesion: 0.80
 Nodes (4): GET(), getSessionUserId(), mapReview(), POST()
 
-### Community 35 - "ThemeToggle.tsx"
-Cohesion: 0.70
-Nodes (4): clientSnapshot(), serverSnapshot(), subscribe(), ThemeToggle()
-
-### Community 36 - "recent-purchases/route.ts"
-Cohesion: 0.83
-Nodes (3): formatRelativeTime(), GET(), getDisplayName()
+### Community 36 - "next"
+Cohesion: 0.19
+Nodes (7): formatRelativeTime(), GET(), getDisplayName(), WebhookPayload, nextConfig, bcryptjs, next
 
 ## Ambiguous Edges - Review These
 - `getProductsWithStats()` → `Missing Error State on Products Page`  [AMBIGUOUS]
   anti-slop/audit-001-2026-09-20.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **14 isolated node(s):** `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `TopUpStatus (Prisma enum)`, `Setting (Prisma model)` (+9 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 197 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **14 isolated node(s):** `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `Setting (Prisma model)`, `TopUpStatus (Prisma enum)` (+9 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 214 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `next` connect `next` to `prisma.ts`, `Balance & History Tables`, `types.ts`, `order/[orderId]/page.tsx`, `Password Reset UI Kit`, `prisma`, `react`, `Dev Dependencies`, `[topupId]/page.tsx`, `settings/route.ts`, `loyalty.ts`, `Runtime Dependencies`, `app/layout.tsx`, `Skeleton`, `lucide-react`, `transactions/[orderId]/page.tsx`, `Route Protection Middleware`, `fulfillOrder`, `admin/page.tsx`, `balance/page.tsx`, `auth.ts`, `reviews/route.ts`, `recent-purchases/route.ts`?**
-  _High betweenness centrality (0.329) - this node is a cross-community bridge._
+- **Why does `next` connect `next` to `prisma.ts`, `Balance & History Tables`, `AdminPopupSettings.tsx`, `order/[orderId]/page.tsx`, `Password Reset UI Kit`, `types.ts`, `lucide-react`, `Dev Dependencies`, `Reveal.tsx`, `referral.ts`, `loyalty.ts`, `Runtime Dependencies`, `next`, `app/layout.tsx`, `balance/page.tsx`, `dashboard/page.tsx`, `forgot-password/route.ts`, `transactions/[orderId]/page.tsx`, `Route Protection Middleware`, `fulfillOrder`, `admin/page.tsx`, `[topupId]/page.tsx`, `prisma`, `DashboardFrame.tsx`, `reviews/route.ts`?**
+  _High betweenness centrality (0.353) - this node is a cross-community bridge._
 - **What connects `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)` to the rest of the system?**
   _14 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Balance & History Tables` be split into smaller, more focused modules?**
-  _Cohesion score 0.08649912331969609 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `react` to `Balance & History Tables`, `types.ts`, `order/[orderId]/page.tsx`, `ThemeToggle.tsx`, `Password Reset UI Kit`, `react`, `Dev Dependencies`, `[topupId]/page.tsx`, `Runtime Dependencies`, `Skeleton`, `lucide-react`, `transactions/[orderId]/page.tsx`, `admin/page.tsx`, `balance/page.tsx`?**
-  _High betweenness centrality (0.116) - this node is a cross-community bridge._
+  _Cohesion score 0.08350168350168351 - nodes in this community are weakly interconnected._
+- **Why does `react` connect `[topupId]/page.tsx` to `affiliate/page.tsx`, `Balance & History Tables`, `AdminPopupSettings.tsx`, `order/[orderId]/page.tsx`, `Password Reset UI Kit`, `lucide-react`, `Dev Dependencies`, `Reveal.tsx`, `Runtime Dependencies`, `app/layout.tsx`, `balance/page.tsx`, `dashboard/page.tsx`, `transactions/[orderId]/page.tsx`, `admin/page.tsx`, `DashboardFrame.tsx`?**
+  _High betweenness centrality (0.114) - this node is a cross-community bridge._
 - **Should `2. Komponen` be split into smaller, more focused modules?**
-  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
-- **Why does `lucide-react` connect `lucide-react` to `Balance & History Tables`, `react`, `types.ts`, `order/[orderId]/page.tsx`, `ThemeToggle.tsx`, `Password Reset UI Kit`, `react`, `Dev Dependencies`, `[topupId]/page.tsx`, `Runtime Dependencies`, `app/layout.tsx`, `Skeleton`, `transactions/[orderId]/page.tsx`, `admin/page.tsx`, `balance/page.tsx`?**
-  _High betweenness centrality (0.077) - this node is a cross-community bridge._
+  _Cohesion score 0.05398110661268556 - nodes in this community are weakly interconnected._
+- **Why does `lucide-react` connect `lucide-react` to `affiliate/page.tsx`, `Balance & History Tables`, `AdminPopupSettings.tsx`, `order/[orderId]/page.tsx`, `Password Reset UI Kit`, `Dev Dependencies`, `Reveal.tsx`, `Runtime Dependencies`, `app/layout.tsx`, `balance/page.tsx`, `dashboard/page.tsx`, `transactions/[orderId]/page.tsx`, `admin/page.tsx`, `[topupId]/page.tsx`?**
+  _High betweenness centrality (0.073) - this node is a cross-community bridge._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._
