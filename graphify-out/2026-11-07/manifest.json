@@ -42,22 +42,22 @@
     "semantic_hash": "b29faf274231ff68f5f0c5a7aeaa1d8c"
   },
   "app/api/auth/forgot-password/route.ts": {
-    "mtime": 1793837281.1494982,
-    "seen": 1793935814.168319,
-    "ast_hash": "cb646b6100ebecaec81af9ee57fedbd5",
-    "semantic_hash": "cb646b6100ebecaec81af9ee57fedbd5"
+    "mtime": 1794061077.7602324,
+    "seen": 1794061283.6091292,
+    "ast_hash": "2fb27bb42b979037e6cfd33661d577db",
+    "semantic_hash": ""
   },
   "app/api/auth/register/route.ts": {
-    "mtime": 1784605444.7316103,
-    "seen": 1793935814.168319,
-    "ast_hash": "8b6c2277eb1d11474c8a9e82ea0916b9",
-    "semantic_hash": "8b6c2277eb1d11474c8a9e82ea0916b9"
+    "mtime": 1794061077.7591536,
+    "seen": 1794061283.6091292,
+    "ast_hash": "70020e11c39ca6f648c1a3a881168bb5",
+    "semantic_hash": ""
   },
   "app/api/auth/reset-password/route.ts": {
-    "mtime": 1793837281.1494982,
-    "seen": 1793935814.168319,
-    "ast_hash": "cfd4d61e2d858e429cdf60385d9e67f7",
-    "semantic_hash": "cfd4d61e2d858e429cdf60385d9e67f7"
+    "mtime": 1794061077.7602324,
+    "seen": 1794061283.6091292,
+    "ast_hash": "45acdc5df9f1230ccadfdc8cb94325fc",
+    "semantic_hash": ""
   },
   "app/api/balance/route.ts": {
     "mtime": 1794031965.1370609,
@@ -78,10 +78,10 @@
     "semantic_hash": "3f1a0e2b02a1de89af43e3c3459b7743"
   },
   "app/api/balance/topup/route.ts": {
-    "mtime": 1793837281.151498,
-    "seen": 1793935814.168319,
-    "ast_hash": "64d65b834f363515ba4ca30fe4f1d98d",
-    "semantic_hash": "64d65b834f363515ba4ca30fe4f1d98d"
+    "mtime": 1794061098.7562208,
+    "seen": 1794061283.61013,
+    "ast_hash": "6c6c5c60f6e4c677e943c59fcd97cd1b",
+    "semantic_hash": ""
   },
   "app/api/balance/transactions/route.ts": {
     "mtime": 1794031965.0554807,
@@ -90,10 +90,10 @@
     "semantic_hash": ""
   },
   "app/api/loyalty/redeem/route.ts": {
-    "mtime": 1793837281.1524975,
-    "seen": 1793935814.168319,
-    "ast_hash": "6487a15b9103e7286039423271d0dea1",
-    "semantic_hash": "6487a15b9103e7286039423271d0dea1"
+    "mtime": 1794061099.374647,
+    "seen": 1794061283.6111286,
+    "ast_hash": "6f2988d9f6b38d9aa6fac7ceaf92fc6f",
+    "semantic_hash": ""
   },
   "app/api/loyalty/route.ts": {
     "mtime": 1794047415.1104467,
@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "app/api/order/route.ts": {
-    "mtime": 1794031934.7872334,
-    "seen": 1794032236.7672272,
-    "ast_hash": "0515dd44f19429229c597886f489bc9c",
+    "mtime": 1794061098.5687976,
+    "seen": 1794061283.6111286,
+    "ast_hash": "3a81a6a0f20244a0b1ce2161afe39144",
     "semantic_hash": ""
   },
   "app/api/products/route.ts": {
@@ -138,10 +138,10 @@
     "semantic_hash": "575debead92dbb7f0112af5fb1db9885"
   },
   "app/api/reviews/route.ts": {
-    "mtime": 1784605444.7395642,
-    "seen": 1793935814.168319,
-    "ast_hash": "12250c6cd2d98916ee2f661bed80cdc1",
-    "semantic_hash": "12250c6cd2d98916ee2f661bed80cdc1"
+    "mtime": 1794061099.1225362,
+    "seen": 1794061283.612589,
+    "ast_hash": "d3978fa418dec261687d6c8e703e5b3e",
+    "semantic_hash": ""
   },
   "app/api/settings/public/route.ts": {
     "mtime": 1793839227.065452,
@@ -312,10 +312,10 @@
     "semantic_hash": "54655df0bb4ae2eccb587b1216612f9f"
   },
   "auth.ts": {
-    "mtime": 1784605444.7645245,
-    "seen": 1793935814.168319,
-    "ast_hash": "b7aab0c402881f63812b09579380c281",
-    "semantic_hash": "b7aab0c402881f63812b09579380c281"
+    "mtime": 1794061055.8601384,
+    "seen": 1794061283.6217036,
+    "ast_hash": "9d1cb1596e7b2b1f4a55c188ee83909e",
+    "semantic_hash": ""
   },
   "components/dashboard/BalanceHistoryTable.tsx": {
     "mtime": 1793943117.3415785,
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "components/ui/modern-login-signup.tsx": {
-    "mtime": 1793944838.9218252,
-    "seen": 1793945005.8167565,
-    "ast_hash": "431911974d71f051682b36a5c1cfa781",
+    "mtime": 1794061055.9903734,
+    "seen": 1794061283.6343975,
+    "ast_hash": "7c014ad30b98c639e21bac8eea61428a",
     "semantic_hash": ""
   },
   "components/ui/wave-1.tsx": {
@@ -1416,9 +1416,9 @@
     "semantic_hash": ""
   },
   "app/api/referral/payout/route.ts": {
-    "mtime": 1794031994.0339856,
-    "seen": 1794032236.7682316,
-    "ast_hash": "25e17d0d2c5ff82d07b3763632f6b268",
+    "mtime": 1794061098.9586637,
+    "seen": 1794061283.612589,
+    "ast_hash": "1d26d13476dd64c7b17978a776c60887",
     "semantic_hash": ""
   },
   "app/api/referral/route.ts": {
@@ -1428,9 +1428,9 @@
     "semantic_hash": ""
   },
   "app/api/referral/track/route.ts": {
-    "mtime": 1794031993.8958154,
-    "seen": 1794032236.7682316,
-    "ast_hash": "384e1c6e95ac124b090eb992b063f167",
+    "mtime": 1794061077.761231,
+    "seen": 1794061283.612589,
+    "ast_hash": "db1db83cee0a000f55bb441b0752b128",
     "semantic_hash": ""
   },
   "app/dashboard/affiliate/page.tsx": {
@@ -1653,6 +1653,18 @@
     "mtime": 1794051411.6965885,
     "seen": 1794060622.0087414,
     "ast_hash": "0323f7da264a77e795ae37794008c89e",
+    "semantic_hash": ""
+  },
+  "lib/rateLimit.ts": {
+    "mtime": 1794061043.9115093,
+    "seen": 1794061283.6417394,
+    "ast_hash": "c9006dab92356dba48b0b9f7ee601960",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20261107180000_add_rate_limit/migration.sql": {
+    "mtime": 1794061027.6894412,
+    "seen": 1794061333.9098377,
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "package-lock.json": {

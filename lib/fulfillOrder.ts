@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { warungApi } from "@/lib/api";
 import type { OrderPayload } from "@/lib/types";
 import { creditCommission } from "@/lib/referral";
+import { sendPaidOrderEmail } from "@/lib/mailer";
+import type { Order } from "@/lib/generated/prisma";
 
 export interface FulfillOrderResult {
   success: boolean;
@@ -11,13 +13,17 @@ export interface FulfillOrderResult {
 
 export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult> {
   // Atomically claim the order so a webhook and a status-poll racing each other
-  // can't both call warungApi.createOrder for the same order. AWAITING_RETRY is
-  // included so an admin retry (e.g. after topping up Warung Rebahan balance)
-  // uses the same compare-and-swap guard.
-  const claimed = await prisma.order.updateMany({
-    where: { id: orderId, status: { in: ["PENDING_PAYMENT", "PAID", "AWAITING_RETRY"] } },
+  // can't both call warungApi.createOrder for the same order. The first claim (payment just
+  // landed) is told apart from an admin retry of AWAITING_RETRY, which uses the same
+  // compare-and-swap guard, so the owner gets exactly one "paid" email per order.
+  const firstClaim = await prisma.order.updateMany({
+    where: { id: orderId, status: { in: ["PENDING_PAYMENT", "PAID"] } },
     data: { status: "PROCESSING" },
   });
+  const claimed =
+    firstClaim.count > 0
+      ? firstClaim
+      : await prisma.order.updateMany({ where: { id: orderId, status: "AWAITING_RETRY" }, data: { status: "PROCESSING" } });
 
   if (claimed.count === 0) {
     const order = await prisma.order.findUnique({ where: { id: orderId } });
@@ -25,9 +31,31 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
     return { success: false, message: `Order status: ${order.status}. Tidak bisa dikonfirmasi.` };
   }
 
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
+  const order = await prisma.order.findUnique({ where: { id: orderId }, include: { user: { select: { name: true, email: true } } } });
   if (!order) return { success: false, message: "Order tidak ditemukan." };
 
+  const result = await processClaimedOrder(order);
+
+  // Free coupon rewards aren't purchases, so they don't alert the owner.
+  if (firstClaim.count > 0 && order.paymentMethod !== "COUPON") {
+    await sendPaidOrderEmail({
+      id: order.id,
+      productName: order.productName,
+      variantName: order.variantName,
+      quantity: order.quantity,
+      sellPrice: order.sellPrice,
+      costPrice: order.costPrice,
+      paymentMethod: order.paymentMethod,
+      buyer: order.user.name ? `${order.user.name} (${order.user.email})` : order.user.email,
+      status: result.success ? "Diteruskan ke supplier" : "Gagal ke supplier, perlu retry admin",
+      note: result.success ? undefined : result.message,
+    });
+  }
+  return result;
+}
+
+async function processClaimedOrder(order: Order): Promise<FulfillOrderResult> {
+  const orderId = order.id;
   try {
     const payload: OrderPayload = {
       variant_id: order.variantId,
