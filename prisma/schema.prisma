@@ -265,3 +265,12 @@ enum CouponStatus {
   // Refund dropped the total below the threshold; reactivated if the customer qualifies again.
   REVOKED
 }
+
+// Fixed-window request counters for rate limiting (lib/rateLimit.ts). Rows expire by resetAt.
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+
+  @@index([resetAt])
+}

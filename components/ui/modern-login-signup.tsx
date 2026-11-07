@@ -55,7 +55,11 @@ function SignInSignUpCard({ mode }: { mode: AuthMode }) {
       if (isSignIn) {
         const res = await signIn("credentials", { email, password, redirect: false });
         if (res?.error) {
-          setError("Email atau password salah.");
+          setError(
+            res.code === "rate_limited"
+              ? "Terlalu banyak percobaan login. Coba lagi dalam 15 menit."
+              : "Email atau password salah."
+          );
         } else {
           router.push(callbackUrl);
           router.refresh();

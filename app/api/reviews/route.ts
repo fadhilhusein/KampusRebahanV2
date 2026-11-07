@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 function mapReview(review: {
   id: string;
@@ -105,6 +106,9 @@ export async function POST(req: NextRequest) {
     if (!sessionUser) {
       return NextResponse.json({ success: false, message: "Login diperlukan." }, { status: 401 });
     }
+
+    const limited = await rateLimit(`review:user:${sessionUser.id}`, 10, 3600);
+    if (!limited.ok) return tooManyRequests(limited.retryAfter);
 
     const body = await req.json();
     const orderId = typeof body.orderId === "string" ? body.orderId : "";

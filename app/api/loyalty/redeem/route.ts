@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { warungApi } from "@/lib/api";
 import { fulfillOrder } from "@/lib/fulfillOrder";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { LOYALTY_REWARD, LOYALTY_REWARD_VARIANT_ID } from "@/lib/loyalty";
 
 class CouponUnavailableError extends Error {}
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
     }
+
+    const limited = await rateLimit(`redeem:user:${userId}`, 5, 600);
+    if (!limited.ok) return tooManyRequests(limited.retryAfter);
 
     const body = await req.json().catch(() => ({}));
     const emailInvite = typeof body?.emailInvite === "string" ? body.emailInvite.trim() : "";

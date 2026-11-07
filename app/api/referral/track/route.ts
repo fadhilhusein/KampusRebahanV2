@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { prisma } from "@/lib/prisma";
 import { REF_COOKIE, REF_COOKIE_MAX_AGE } from "@/lib/referral";
 
 // Stores the last-clicked referral code for 30 days; checkout reads it from the cookie.
 export async function POST(req: NextRequest) {
+  const limited = await rateLimit(`reftrack:ip:${clientIp(req.headers)}`, 30, 600);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+
   const { code } = await req.json().catch(() => ({}));
   if (typeof code !== "string" || !/^[A-Za-z0-9]{4,16}$/.test(code)) {
     return NextResponse.json({ success: false, message: "Kode tidak valid." }, { status: 400 });

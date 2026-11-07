@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { PAYOUT_METHODS, debitWallet, getSessionUserId } from "@/lib/referral";
 import { getReferralMinPayout } from "@/lib/settings";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   const userId = await getSessionUserId();
   if (!userId) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+
+  const limited = await rateLimit(`payout:user:${userId}`, 3, 3600);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
 
   const body = await req.json().catch(() => ({}));
   const amount = Number(body.amount);

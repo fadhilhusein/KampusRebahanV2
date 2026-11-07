@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: NextRequest) {
+  const limited = await rateLimit(`register:ip:${clientIp(req.headers)}`, 5, 3600);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+
   try {
     const { name, email, password } = await req.json();
 

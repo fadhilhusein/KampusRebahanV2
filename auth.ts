@@ -3,6 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/auth.config";
+import { CredentialsSignin } from "next-auth";
+import { clientIp, rateLimitAll } from "@/lib/rateLimit";
+
+class RateLimited extends CredentialsSignin {
+  code = "rate_limited";
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -14,8 +20,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        // Brute-force guard: per account and per IP.
+        const email = String(credentials.email).toLowerCase();
+        const limited = await rateLimitAll([
+          [`login:email:${email}`, 10, 15 * 60],
+          [`login:ip:${clientIp(request.headers)}`, 30, 15 * 60],
+        ]);
+        if (!limited.ok) throw new RateLimited();
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },

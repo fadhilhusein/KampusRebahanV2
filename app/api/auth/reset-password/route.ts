@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { createHash } from "crypto";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -6,6 +7,9 @@ import { prisma } from "@/lib/prisma";
 const MAX_ATTEMPTS = 5;
 
 export async function POST(req: NextRequest) {
+  const limited = await rateLimit(`reset:ip:${clientIp(req.headers)}`, 10, 900);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+
   try {
     const { email, code, newPassword } = await req.json();
 

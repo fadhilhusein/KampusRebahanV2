@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { createHash, randomInt } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendResetCodeEmail } from "@/lib/mailer";
@@ -10,6 +11,9 @@ const CODE_TTL_MS = 10 * 60 * 1000;
 const GENERIC_MESSAGE = "Jika email terdaftar, kode reset telah dikirim.";
 
 export async function POST(req: NextRequest) {
+  const limited = await rateLimit(`forgot:ip:${clientIp(req.headers)}`, 5, 900);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+
   try {
     const { email } = await req.json();
 

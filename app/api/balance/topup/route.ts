@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { bayarGg, TOPUP_MIN_AMOUNT, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
 
 export async function POST(req: NextRequest) {
@@ -18,6 +19,9 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
     }
+
+    const limited = await rateLimit(`topup:user:${userId}`, 5, 600);
+    if (!limited.ok) return tooManyRequests(limited.retryAfter);
 
     const body = await req.json();
     const amount = Number(body.amount);
