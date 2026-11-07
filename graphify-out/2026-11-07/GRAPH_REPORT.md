@@ -1,7 +1,7 @@
 # Graph Report - KampusRebahanV2  (2026-11-07)
 
 ## Corpus Check
-- 153 files · ~57,868 words
+- 154 files · ~58,099 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 2, .ico 2, .css 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e222442`
+- Built from commit: `fade569d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -60,8 +60,8 @@
 2. `react` - 48 edges
 3. `lucide-react` - 39 edges
 4. `buttonClass()` - 35 edges
-5. `prisma` - 34 edges
-6. `auth` - 34 edges
+5. `auth` - 34 edges
+6. `prisma` - 34 edges
 7. `Skeleton()` - 30 edges
 8. `requireAdmin()` - 27 edges
 9. `Navbar()` - 26 edges
@@ -74,10 +74,10 @@
   design/SPEC.md → components/payment/GatewayQr.tsx
 - `3.11 Legal` --references--> `LegalArticle()`  [INFERRED]
   design/SPEC.md → components/layout/LegalArticle.tsx
-- `3.1 Landing → `/` (`app/page.tsx`)` --references--> `copy()`  [INFERRED]
-  design/SPEC.md → app/order/[orderId]/page.tsx
-- `3.6 Detail Pesanan → `/order/[orderId]` (status selesai)` --references--> `copy()`  [INFERRED]
-  design/SPEC.md → app/order/[orderId]/page.tsx
+- `User (Prisma model)` --shares_data_with--> `POST()`  [INFERRED]
+  prisma/schema.prisma → app/api/auth/register/route.ts
+- `Setting (Prisma model)` --shares_data_with--> `getMarkupPercent()`  [INFERRED]
+  prisma/schema.prisma → lib/settings.ts
 
 ## Import Cycles
 - None detected.
@@ -226,7 +226,7 @@ Nodes (7): formatRelativeTime(), GET(), getDisplayName(), WebhookPayload, nextCo
   anti-slop/audit-001-2026-09-20.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **14 isolated node(s):** `{ GET, POST }`, `Setting (Prisma model)`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `TopUpStatus (Prisma enum)` (+9 more)
+- **14 isolated node(s):** `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `Setting (Prisma model)`, `TopUpStatus (Prisma enum)` (+9 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 214 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -235,7 +235,7 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `next` to `prisma.ts`, `Balance & History Tables`, `AdminPopupSettings.tsx`, `order/[orderId]/page.tsx`, `Password Reset UI Kit`, `types.ts`, `lucide-react`, `Dev Dependencies`, `Reveal.tsx`, `referral.ts`, `loyalty.ts`, `Runtime Dependencies`, `next`, `app/layout.tsx`, `balance/page.tsx`, `dashboard/page.tsx`, `forgot-password/route.ts`, `transactions/[orderId]/page.tsx`, `Route Protection Middleware`, `fulfillOrder`, `admin/page.tsx`, `[topupId]/page.tsx`, `prisma`, `DashboardFrame.tsx`, `reviews/route.ts`?**
   _High betweenness centrality (0.353) - this node is a cross-community bridge._
-- **What connects `{ GET, POST }`, `Setting (Prisma model)`, `BalanceTxnType (Prisma enum)` to the rest of the system?**
+- **What connects `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)` to the rest of the system?**
   _14 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Balance & History Tables` be split into smaller, more focused modules?**
   _Cohesion score 0.08350168350168351 - nodes in this community are weakly interconnected._
