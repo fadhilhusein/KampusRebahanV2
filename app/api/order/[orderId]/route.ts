@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { requireAdmin } from "@/lib/adminAuth";
+import { syncSupplierOrders } from "@/lib/supplierSync";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
   const session = await auth();
@@ -9,6 +10,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ ord
   if (!email) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
   const { orderId } = await params;
+  await syncSupplierOrders({ orderId });
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { user: { select: { email: true, name: true } } },

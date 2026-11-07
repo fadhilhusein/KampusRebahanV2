@@ -193,9 +193,12 @@ export default function LoyaltyCard() {
                   />
                 </div>
                 <p className="mt-2 text-xs font-medium text-muted">
-                  {coupon ? "Target tercapai." : `Kurang ${formatPrice(state.remaining)} lagi untuk membuka kupon.`}
-                </p>
-              </div>
+                  {coupon
+                    ? "Target tercapai."
+                    : state.unlockAt
+                      ? `Target tercapai. Kupon terbuka ${new Date(state.unlockAt).toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}, 2×24 jam setelah pesanan diterima.`
+                      : `Kurang ${formatPrice(state.remaining)} lagi untuk membuka kupon. Dihitung dari pesanan yang sudah diterima.`}
+                </p>              </div>
 
               {coupon && (
                 <div className="mt-5 border-t border-hairline pt-5">

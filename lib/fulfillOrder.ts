@@ -39,10 +39,14 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
 
     if (apiResult.success) {
       const apiOrderId = apiResult.data?.order_id;
+      // Accepted is not delivered: stay PROCESSING until the supplier reports "completed"
+      // (webhook or syncSupplierOrders), so rewards and commissions wait for real delivery.
+      const delivered = apiResult.data?.status?.toLowerCase() === "completed";
       await prisma.order.update({
         where: { id: orderId },
         data: {
-          status: "COMPLETED",
+          status: delivered ? "COMPLETED" : "PROCESSING",
+          completedAt: delivered ? new Date() : null,
           apiOrderId,
           apiResponse: apiResult.data as object,
         },
@@ -56,9 +60,13 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
         });
       }
 
-      await creditCommission(orderId);
+      if (delivered) await creditCommission(orderId);
 
-      return { success: true, message: "Order dikonfirmasi dan akun dikirim.", apiOrderId };
+      return {
+        success: true,
+        message: delivered ? "Order dikonfirmasi dan akun dikirim." : "Order diteruskan ke supplier, akun dikirim setelah supplier menyelesaikannya.",
+        apiOrderId,
+      };
     } else {
       // Payment was already received — don't dead-end the order as FAILED.
       // AWAITING_RETRY keeps it customer-invisible ("diproses") while surfacing
