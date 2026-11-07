@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { getMarkupPercent, isBankTransferEnabled, isQrisGatewayEnabled, isQrisBridgeEnabled } from "@/lib/settings";
 import { fulfillOrder } from "@/lib/fulfillOrder";
 import { REF_COOKIE, debitWallet, resolveReferrer } from "@/lib/referral";
+import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +24,10 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
     }
+
+    // Each order may create a supplier order and a payment invoice; cap bursts per account.
+    const limited = await rateLimit(`order:user:${userId}`, 10, 600);
+    if (!limited.ok) return tooManyRequests(limited.retryAfter);
 
     const body = await req.json();
     const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER", emailInvite } = body;
