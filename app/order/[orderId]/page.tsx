@@ -198,7 +198,7 @@ function OrderSummary({ order }: { order: Order }) {
     ["Produk", order.productName],
     ["Varian", `${order.variantName} · ${order.duration} · ${order.type}`],
     ["Jumlah", String(order.quantity)],
-    ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS_BRIDGE: "QRIS Instan (Bridge)", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
+    ["Metode", { QRIS_GATEWAY: "QRIS Otomatis (Bayar.gg)", QRIS_BRIDGE: "QRIS Instan (Bridge)", QRIS: "QRIS", BALANCE: "Saldo", REFERRAL_BALANCE: "Saldo Referensi", COUPON: "Kupon Loyalitas" }[order.paymentMethod] ?? "Transfer Bank"],
     ["Tanggal", formatDate(order.createdAt)],
   ];
   if (order.paymentRef) rows.push(["Ref Transfer", order.paymentRef]);

@@ -13,6 +13,9 @@ export async function GET() {
 
   if (!userId) return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
 
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { balance: true } });
-  return NextResponse.json({ success: true, data: { balance: user?.balance ?? 0 } });
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { balance: true, referralBalance: true } });
+  return NextResponse.json({
+    success: true,
+    data: { balance: user?.balance ?? 0, referralBalance: user?.referralBalance ?? 0 },
+  });
 }

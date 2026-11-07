@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { getMarkupPercent, isBankTransferEnabled, isQrisGatewayEnabled, isQrisBridgeEnabled } from "@/lib/settings";
 import { fulfillOrder } from "@/lib/fulfillOrder";
+import { REF_COOKIE, debitWallet, resolveReferrer } from "@/lib/referral";
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { variantId, productId, paymentRef, paymentNote, paymentMethod = "BANK_TRANSFER", emailInvite } = body;
 
-    if (!["BANK_TRANSFER", "QRIS_GATEWAY", "QRIS_BRIDGE", "BALANCE"].includes(paymentMethod)) {
+    if (!["BANK_TRANSFER", "QRIS_GATEWAY", "QRIS_BRIDGE", "BALANCE", "REFERRAL_BALANCE"].includes(paymentMethod)) {
       return NextResponse.json({ success: false, message: "Metode pembayaran tidak valid." }, { status: 400 });
     }
 
@@ -122,27 +123,25 @@ export async function POST(req: NextRequest) {
       paymentNote: paymentNote?.trim() || null,
       emailInvite: emailInvite?.trim() || null,
       paymentMethod,
+      referrerId: await resolveReferrer(req.cookies.get(REF_COOKIE)?.value, userId),
     };
 
-    if (paymentMethod === "BALANCE") {
+    if (paymentMethod === "BALANCE" || paymentMethod === "REFERRAL_BALANCE") {
+      const wallet = paymentMethod === "BALANCE" ? "MAIN" : "REFERRAL";
       // Debit, order and ledger entry commit together, so a failure can't leave
       // the balance debited without an order.
       const order = await prisma.$transaction(async (tx) => {
-        // Atomic check-and-debit: only succeeds if balance is still sufficient.
-        const debited = await tx.user.updateMany({
-          where: { id: userId, balance: { gte: totalSellPrice } },
-          data: { balance: { decrement: totalSellPrice } },
-        });
-        if (debited.count === 0) return null;
+        const balanceAfter = await debitWallet(tx, userId, wallet, totalSellPrice);
+        if (balanceAfter === null) return null;
 
         const created = await tx.order.create({ data: { ...orderData, status: "PAID" } });
-        const updatedUser = await tx.user.findUnique({ where: { id: userId }, select: { balance: true } });
         await tx.balanceTransaction.create({
           data: {
             userId,
+            wallet,
             type: "PURCHASE",
             amount: -totalSellPrice,
-            balanceAfter: updatedUser?.balance ?? 0,
+            balanceAfter,
             orderId: created.id,
           },
         });
@@ -150,7 +149,8 @@ export async function POST(req: NextRequest) {
       });
 
       if (!order) {
-        return NextResponse.json({ success: false, message: "Saldo tidak mencukupi." }, { status: 400 });
+        const label = wallet === "MAIN" ? "Saldo" : "Saldo referensi";
+        return NextResponse.json({ success: false, message: `${label} tidak mencukupi.` }, { status: 400 });
       }
 
       await fulfillOrder(order.id);

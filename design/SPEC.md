@@ -288,6 +288,25 @@ Navbar, header (H1 56 / 34 + subjudul 16 / 14 `muted`, gap 6), baris tab (§2), 
 ### 3.12 404 → `app/not-found.tsx`
 Rata tengah vertikal (gap 20): "404" 200/700 -10px lh .9 (mobile 120), H2 40 (mobile 26) "Halaman tidak ditemukan", teks 16 `muted` "Alamat yang kamu buka tidak ada atau sudah dipindahkan.", primer "Kembali ke beranda".
 
+### 3.13 Popup informasi (landing) + kontrolnya di Admin
+Frame .pen: "Landing · Popup Informasi Desktop/Mobile" dan "Admin · Popup Informasi Desktop/Mobile" (baris paling bawah kanvas).
+
+**Popup di `/`**
+- Scrim `#111113` 65%. Desktop: kartu di tengah, lebar 500, radius 28, `surface`, shadow 0/24/64 `#11121340`. Mobile (<768): bottom sheet selebar layar, radius atas 28, grabber 40×4 putih 60%.
+- Banner (opsional) tinggi 200 (mobile 176). Isinya gambar upload admin. Tanpa gambar, banner tidak dirender dan popup mulai dari body.
+- Di atas banner: chip tipe (pill putih, ikon + label 12/600 warna `accent`) di kiri atas, tombol tutup 40×40 bulat putih 90% di kanan atas. Tanpa banner, chip dan tombol tutup pindah ke baris atas body.
+- Body padding 24/28/28 (mobile 20/20/32), gap 20: judul Inter Tight 24/700 -0.6 (mobile 22), isi 15 `muted` lh 1.5 (mobile 14). Lalu tombol: primer selebar sisa (teks + link dari admin, disembunyikan kalau kosong) dan sekunder "Nanti saja". Di mobile keduanya ditumpuk penuh. Terakhir checkbox "Jangan tampilkan lagi" 13 `muted`.
+- Tipe menentukan ikon dan warna chip: Info `info` / `accent`, Promo `sparkles` / `accent`, Peringatan `triangle-alert` / `warn`.
+- Tutup lewat tombol X, "Nanti saja", klik scrim, atau Esc. Fokus terkunci di dalam popup, `role="dialog"` `aria-modal`.
+- Frekuensi: "Sekali per pengunjung" (simpan id + versi popup di localStorage; muncul lagi kalau isi diubah) atau "Setiap kunjungan" (sessionStorage). Hanya tayang dalam periode mulai–selesai kalau diisi.
+
+**Kartu "Popup informasi" di `/dashboard/admin`** (di bawah baris Pesanan + Pengaturan toko, selebar penuh)
+- Kartu `surface` radius 28, padding 28, gap 32: kiri form (fill), kanan "Pratinjau langsung" lebar 440 (bg `card`, radius 22, padding 20). Mobile: form saja, padding 18, semua baris ditumpuk. Tombol "Pratinjau" membuka popup asli.
+- Header: judul 20/600 + deskripsi 13 `muted`, switch "Aktif" (44×26, `success` saat aktif) di kanan (mobile di bawah teks).
+- Field berurutan: Tipe (segmented pill: Info / Promo / Peringatan), Judul (input), Isi pesan (textarea tinggi 96, counter `n/240`), Banner opsional (baris file: thumb 64×44, nama + ukuran, "Ganti", hapus ikon `trash-2` `danger`), Teks tombol + Link tombol (2 kolom), Tampilkan (select) + Periode tayang (2 kolom).
+- Footer form: "Disimpan 7 Nov, 14.20" 13 `muted`, sekunder "Pratinjau", primer "Simpan popup".
+- Pratinjau: toggle perangkat (monitor / smartphone), stage scrim radius 16 berisi popup versi kecil, catatan 12 `muted` di bawah.
+
 ---
 
 ## 4. Aset

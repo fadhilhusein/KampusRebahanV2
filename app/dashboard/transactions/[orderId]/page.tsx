@@ -344,7 +344,7 @@ export default function TransactionDetailPage() {
       : false);
 
   const paymentLabel =
-    { QRIS_GATEWAY: "QRIS", QRIS_BRIDGE: "QRIS", QRIS: "QRIS", BALANCE: "Saldo", COUPON: "Kupon" }[tx?.paymentMethod ?? ""] ??
+    { QRIS_GATEWAY: "QRIS", QRIS_BRIDGE: "QRIS", QRIS: "QRIS", BALANCE: "Saldo", REFERRAL_BALANCE: "Saldo Referensi", COUPON: "Kupon" }[tx?.paymentMethod ?? ""] ??
     "Transfer";
 
   return (

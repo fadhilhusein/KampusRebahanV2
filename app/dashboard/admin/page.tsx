@@ -3,12 +3,14 @@
 import { memo, useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, CheckCircle2, ChevronDown, Gift, Landmark, QrCode, RotateCw, Wallet, Zap } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronDown, Gift, Landmark, QrCode, RotateCw, Share2, Wallet, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import { AdminPayouts, AffiliateSettingsForm } from "@/components/dashboard/AdminAffiliate";
+import AdminPopupSettings from "@/components/dashboard/AdminPopupSettings";
 import Reveal, { RevealItem, EASE } from "@/components/ui/Reveal";
 
 function formatPrice(price: number) {
@@ -49,6 +51,7 @@ const paymentMethodInfo: Record<string, { label: string; icon: LucideIcon }> = {
   QRIS: { label: "QRIS (manual)", icon: QrCode },
   BANK_TRANSFER: { label: "Transfer Bank", icon: Landmark },
   BALANCE: { label: "Saldo", icon: Wallet },
+  REFERRAL_BALANCE: { label: "Saldo Referensi", icon: Share2 },
   COUPON: { label: "Kupon Loyalitas", icon: Gift },
 };
 
@@ -648,8 +651,13 @@ export default function AdminPage() {
             loading={qrisBridgeToggleLoading}
             onToggle={toggleQrisBridge}
           />
+          <AffiliateSettingsForm />
         </aside>
       </div>
+
+      <AdminPopupSettings />
+
+      <AdminPayouts />
     </div>
   );
 }

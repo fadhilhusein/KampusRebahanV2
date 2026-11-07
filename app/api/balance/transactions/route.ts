@@ -14,7 +14,7 @@ export async function GET() {
   if (!userId) return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
 
   const transactions = await prisma.balanceTransaction.findMany({
-    where: { userId },
+    where: { userId, wallet: "MAIN" },
     orderBy: { createdAt: "desc" },
     take: 50,
   });

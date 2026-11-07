@@ -9,7 +9,7 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
-import { QrCode, Landmark, Wallet } from "lucide-react";
+import { Gift, QrCode, Landmark, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ProductImage from "@/components/product/ProductImage";
 
@@ -25,7 +25,7 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-type PaymentMethod = "BANK_TRANSFER" | "QRIS_GATEWAY" | "QRIS_BRIDGE" | "BALANCE";
+type PaymentMethod = "BANK_TRANSFER" | "QRIS_GATEWAY" | "QRIS_BRIDGE" | "BALANCE" | "REFERRAL_BALANCE";
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -44,6 +44,7 @@ function CheckoutContent() {
   const [qrisGatewayEnabled, setQrisGatewayEnabled] = useState(true);
   const [qrisBridgeEnabled, setQrisBridgeEnabled] = useState(true);
   const [balance, setBalance] = useState(0);
+  const [referralBalance, setReferralBalance] = useState(0);
   const [paymentNote, setPaymentNote] = useState("");
   const [emailInvite, setEmailInvite] = useState("");
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,11 @@ function CheckoutContent() {
       });
     fetch("/api/balance")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setBalance(d.data.balance); })
+      .then((d) => {
+        if (!d.success) return;
+        setBalance(d.data.balance);
+        setReferralBalance(d.data.referralBalance ?? 0);
+      })
       .catch(() => {});
   }, []);
 
@@ -86,6 +91,7 @@ function CheckoutContent() {
   const outOfStock = stock === 0;
   const qrisGatewayDisabled = totalSell > QRIS_GATEWAY_MAX_AMOUNT;
   const balanceInsufficient = totalSell > balance;
+  const referralInsufficient = totalSell > referralBalance;
   const isInvite = variant?.type === "Invite";
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
@@ -97,6 +103,7 @@ function CheckoutContent() {
     QRIS_BRIDGE: qrisBridgeEnabled,
     BANK_TRANSFER: bankTransferEnabled,
     BALANCE: true,
+    REFERRAL_BALANCE: true,
   };
   const methodFallbackOrder = ["QRIS_GATEWAY", "QRIS_BRIDGE", "BANK_TRANSFER", "BALANCE"] as const;
   const paymentMethod = methodAvailable[selectedPaymentMethod]
@@ -169,6 +176,16 @@ function CheckoutContent() {
     { id: "QRIS_BRIDGE", show: qrisBridgeEnabled, disabled: false, Icon: QrCode, title: "QRIS Instan", sub: "Bayar lewat halaman QRIS" },
     { id: "BANK_TRANSFER", show: bankTransferEnabled, disabled: false, Icon: Landmark, title: "Transfer Bank", sub: "Transfer sesuai nominal unik" },
     { id: "BALANCE", show: true, disabled: balanceInsufficient, Icon: Wallet, title: "Saldo", sub: `${formatPrice(balance)} tersedia` },
+    {
+      id: "REFERRAL_BALANCE",
+      show: referralBalance > 0,
+      disabled: referralInsufficient,
+      Icon: Gift,
+      title: "Saldo Referensi",
+      sub: referralInsufficient
+        ? `${formatPrice(referralBalance)} · kurang ${formatPrice(totalSell - referralBalance)}`
+        : `${formatPrice(referralBalance)} tersedia`,
+    },
   ];
 
   return (
@@ -221,6 +238,11 @@ function CheckoutContent() {
               {paymentMethod === "BALANCE" && balanceInsufficient && (
                 <p className="text-xs font-medium text-danger">
                   Saldo tidak cukup. <Link href="/dashboard/balance" className="font-semibold underline underline-offset-2">Top up saldo</Link>
+                </p>
+              )}
+              {referralBalance > 0 && referralInsufficient && (
+                <p className="rounded-[14px] bg-warn-bg px-3.5 py-2.5 text-[13px] font-medium text-warn">
+                  Saldo referensi tidak cukup untuk pesanan ini. Pilih metode lain.
                 </p>
               )}
               {noMethodUsable && (
@@ -320,7 +342,7 @@ function CheckoutContent() {
             )}
             <ButtonPrimary
               type="submit"
-              disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || noMethodUsable}
+              disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (paymentMethod === "REFERRAL_BALANCE" && referralInsufficient) || noMethodUsable}
               className="w-full"
             >
               {loading ? "Memproses..." : outOfStock ? "Stok habis" : `Bayar ${formatPrice(totalSell)}`}

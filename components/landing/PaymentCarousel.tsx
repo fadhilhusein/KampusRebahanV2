@@ -18,7 +18,8 @@ export default function PaymentCarousel() {
 
   function measure() {
     const el = track.current;
-    if (!el) return;
+    // Not laid out yet (hidden or before first paint): width 0 would make count Infinity.
+    if (!el || el.clientWidth === 0) return;
     const count = Math.max(1, Math.ceil(el.scrollWidth / el.clientWidth));
     const max = el.scrollWidth - el.clientWidth;
     const index = max <= 0 ? 0 : Math.round((el.scrollLeft / max) * (count - 1));
@@ -26,9 +27,13 @@ export default function PaymentCarousel() {
   }
 
   useEffect(() => {
+    const el = track.current;
+    if (!el) return;
     measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    // Fires on first layout and on every size change, including ones without a window resize.
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   function go(dir: 1 | -1) {
