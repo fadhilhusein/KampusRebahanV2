@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/adminAuth";
+import { creditWallet, reverseCommission } from "@/lib/referral";
 
 const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"] as const;
 
@@ -24,21 +25,22 @@ export async function POST(req: NextRequest) {
       });
       if (claimed.count === 0) return false;
 
-      const updatedUser = await tx.user.update({
-        where: { id: order.userId },
-        data: { balance: { increment: order.sellPrice } },
-      });
+      // Money paid from the referral wallet goes back there; everything else to the main balance.
+      const wallet = order.paymentMethod === "REFERRAL_BALANCE" ? "REFERRAL" : "MAIN";
+      const balanceAfter = await creditWallet(tx, order.userId, wallet, order.sellPrice);
 
       await tx.balanceTransaction.create({
         data: {
           userId: order.userId,
+          wallet,
           type: "REFUND",
           amount: order.sellPrice,
-          balanceAfter: updatedUser.balance,
+          balanceAfter,
           orderId: order.id,
           note: reason ?? null,
         },
       });
+      await reverseCommission(tx, order.id);
       return true;
     }));
 
@@ -46,9 +48,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, message: "Order ditolak dan saldo dikembalikan." });
   }
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: "REJECTED", paymentNote: reason ?? order.paymentNote },
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: orderId },
+      data: { status: "REJECTED", paymentNote: reason ?? order.paymentNote },
+    });
+    await reverseCommission(tx, orderId);
   });
 
   return NextResponse.json({ success: true, message: "Order ditolak." });

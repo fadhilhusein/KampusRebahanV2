@@ -36,6 +36,7 @@ const paymentLabels: Record<string, string> = {
   QRIS: "QRIS",
   BANK_TRANSFER: "Transfer Bank",
   BALANCE: "Saldo",
+  REFERRAL_BALANCE: "Saldo Referensi",
   COUPON: "Kupon",
 };
 

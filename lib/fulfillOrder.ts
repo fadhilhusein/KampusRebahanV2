@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { warungApi } from "@/lib/api";
 import type { OrderPayload } from "@/lib/types";
+import { creditCommission } from "@/lib/referral";
 
 export interface FulfillOrderResult {
   success: boolean;
@@ -54,6 +55,8 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
           update: {},
         });
       }
+
+      await creditCommission(orderId);
 
       return { success: true, message: "Order dikonfirmasi dan akun dikirim.", apiOrderId };
     } else {

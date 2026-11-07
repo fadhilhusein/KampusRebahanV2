@@ -49,6 +49,23 @@ export async function setQrisGatewayEnabled(enabled: boolean): Promise<void> {
   });
 }
 
+async function getNumberSetting(key: string, fallback: number): Promise<number> {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key } });
+    if (row && !isNaN(Number(row.value))) return Number(row.value);
+  } catch {}
+  return fallback;
+}
+
+async function setSetting(key: string, value: string): Promise<void> {
+  await prisma.setting.upsert({ where: { key }, update: { value }, create: { key, value } });
+}
+
+export const getReferralCommissionPercent = () => getNumberSetting("referral_commission_percent", 5);
+export const setReferralCommissionPercent = (v: number) => setSetting("referral_commission_percent", String(v));
+export const getReferralMinPayout = () => getNumberSetting("referral_min_payout", 50000);
+export const setReferralMinPayout = (v: number) => setSetting("referral_min_payout", String(v));
+
 export async function isQrisBridgeEnabled(): Promise<boolean> {
   try {
     const row = await prisma.setting.findUnique({ where: { key: "qris_bridge_enabled" } });

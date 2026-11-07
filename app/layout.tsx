@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { ToastProvider } from "@/components/ui/ToastContext";
 import NextAuthSessionProvider from "@/components/ui/SessionProvider";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import RefCapture from "@/components/referral/RefCapture";
 import { Inter, Inter_Tight } from "next/font/google";
 
 const interTight = Inter_Tight({ subsets: ["latin"], weight: ["600", "700", "800"], display: "swap", variable: "--font-inter-tight" });
@@ -52,6 +53,7 @@ export default function RootLayout({
           <NextAuthSessionProvider>
             <ToastProvider>{children}</ToastProvider>
             <WhatsAppButton />
+            <RefCapture />
           </NextAuthSessionProvider>
         </ThemeProvider>
       </body>

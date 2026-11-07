@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Receipt, Shield, Wallet, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Receipt, Share2, Shield, Wallet, type LucideIcon } from "lucide-react";
 import { useDashboardUser } from "@/components/dashboard/DashboardFrame";
 
 type Tab = { href: string; label: string; icon: LucideIcon; exact?: boolean };
@@ -11,6 +11,7 @@ const baseTabs: Tab[] = [
   { href: "/dashboard", label: "Ringkasan", icon: LayoutGrid, exact: true },
   { href: "/dashboard/balance", label: "Saldo", icon: Wallet },
   { href: "/dashboard/transactions", label: "Transaksi", icon: Receipt },
+  { href: "/dashboard/affiliate", label: "Afiliasi", icon: Share2 },
 ];
 
 export default function DashboardHeader({

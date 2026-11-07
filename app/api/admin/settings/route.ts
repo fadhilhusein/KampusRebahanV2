@@ -9,17 +9,23 @@ import {
   setQrisGatewayEnabled,
   isQrisBridgeEnabled,
   setQrisBridgeEnabled,
+  getReferralCommissionPercent,
+  setReferralCommissionPercent,
+  getReferralMinPayout,
+  setReferralMinPayout,
 } from "@/lib/settings";
 
 export async function GET() {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
 
-  const [markup, bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled] = await Promise.all([
+  const [markup, bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled, referralPercent, referralMinPayout] = await Promise.all([
     getMarkupPercent(),
     isBankTransferEnabled(),
     isQrisGatewayEnabled(),
     isQrisBridgeEnabled(),
+    getReferralCommissionPercent(),
+    getReferralMinPayout(),
   ]);
 
   return NextResponse.json({
@@ -29,6 +35,8 @@ export async function GET() {
       bank_transfer_enabled: bankTransferEnabled,
       qris_gateway_enabled: qrisGatewayEnabled,
       qris_bridge_enabled: qrisBridgeEnabled,
+      referral_commission_percent: referralPercent,
+      referral_min_payout: referralMinPayout,
     },
   });
 }
@@ -48,6 +56,19 @@ export async function POST(req: NextRequest) {
 
     await setMarkupPercent(value);
     return NextResponse.json({ success: true, message: `Markup diupdate ke ${value}%` });
+  }
+
+  if (body.referral_commission_percent !== undefined || body.referral_min_payout !== undefined) {
+    const percent = Number(body.referral_commission_percent);
+    const minPayout = Number(body.referral_min_payout);
+    if (isNaN(percent) || percent < 0 || percent > 50) {
+      return NextResponse.json({ success: false, message: "Komisi afiliasi tidak valid (0–50%)." }, { status: 400 });
+    }
+    if (!Number.isInteger(minPayout) || minPayout < 10000 || minPayout > 10_000_000) {
+      return NextResponse.json({ success: false, message: "Minimum pencairan tidak valid (Rp10.000–Rp10.000.000)." }, { status: 400 });
+    }
+    await Promise.all([setReferralCommissionPercent(percent), setReferralMinPayout(minPayout)]);
+    return NextResponse.json({ success: true, message: `Komisi afiliasi ${percent}%, minimum pencairan Rp${minPayout.toLocaleString("id-ID")}.` });
   }
 
   if (body.bank_transfer_enabled !== undefined) {

@@ -23,6 +23,13 @@ model User {
   topUps      BalanceTopUp[]
   balanceTxns BalanceTransaction[]
   coupons     Coupon[]
+
+  referralCode    String?              @unique
+  referralBalance Int                  @default(0)
+  referralClicks  Int                  @default(0)
+  referredOrders  Order[]              @relation("OrderReferrer")
+  commissions     ReferralCommission[]
+  payouts         PayoutRequest[]
 }
 
 model Order {
@@ -57,9 +64,13 @@ model Order {
   bridgeExpiresAt  DateTime?
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   review           ProductReview?
+  referrerId       String?
+  referrer         User?          @relation("OrderReferrer", fields: [referrerId], references: [id], onDelete: SetNull)
+  commission       ReferralCommission?
 
   @@index([userId])
   @@index([status])
+  @@index([referrerId])
 }
 
 model Setting {
@@ -155,6 +166,7 @@ model BalanceTransaction {
   topUpId      String?
   orderId      String?
   note         String?
+  wallet       Wallet         @default(MAIN)
   createdAt    DateTime       @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -168,6 +180,60 @@ enum BalanceTxnType {
   PURCHASE
   REFUND
   ADJUSTMENT
+  COMMISSION
+  COMMISSION_REVERSAL
+  PAYOUT
+  PAYOUT_REVERSAL
+}
+
+// MAIN = User.balance, REFERRAL = User.referralBalance
+enum Wallet {
+  MAIN
+  REFERRAL
+}
+
+model ReferralCommission {
+  id         String           @id @default(cuid())
+  orderId    String           @unique
+  referrerId String
+  amount     Int
+  status     CommissionStatus @default(CREDITED)
+  createdAt  DateTime         @default(now())
+  reversedAt DateTime?
+
+  order    Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  referrer User  @relation(fields: [referrerId], references: [id], onDelete: Cascade)
+
+  @@index([referrerId])
+}
+
+enum CommissionStatus {
+  CREDITED
+  REVERSED
+}
+
+model PayoutRequest {
+  id            String       @id @default(cuid())
+  userId        String
+  amount        Int
+  method        String
+  accountNumber String
+  accountName   String
+  status        PayoutStatus @default(PENDING)
+  adminNote     String?
+  processedAt   DateTime?
+  createdAt     DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  REJECTED
 }
 
 model Coupon {
