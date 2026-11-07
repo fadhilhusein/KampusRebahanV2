@@ -48,6 +48,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ or
   const { action } = body;
 
   if (action === "confirm_payment") {
+    // Only manual bank transfers are self-reported (then verified by admin). QRIS orders are
+    // marked paid by the gateway alone, so a customer must not flip them to PAID.
+    if (order.paymentMethod !== "BANK_TRANSFER") {
+      return NextResponse.json(
+        { success: false, message: "Pembayaran QRIS dikonfirmasi otomatis oleh sistem." },
+        { status: 400 }
+      );
+    }
     if (order.status !== "PENDING_PAYMENT") {
       return NextResponse.json({ success: false, message: "Status order tidak valid." }, { status: 400 });
     }
