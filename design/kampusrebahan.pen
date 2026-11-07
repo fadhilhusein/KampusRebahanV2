@@ -1053,52 +1053,102 @@
                     },
                     "blur": 8
                   },
-                  "gap": 28,
-                  "padding": [
-                    12,
-                    28
-                  ],
+                  "gap": 4,
+                  "padding": 6,
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "text",
-                      "id": "bxiXw",
-                      "name": "Produk",
+                      "type": "frame",
+                      "id": "SdeGM",
+                      "name": "Item Produk",
                       "fill": "$ink",
-                      "content": "Produk",
-                      "fontFamily": "$font-body",
-                      "fontSize": 14,
-                      "fontWeight": "500"
+                      "cornerRadius": 999,
+                      "padding": [
+                        10,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SPaOr",
+                          "name": "Produk label",
+                          "fill": "#FFFFFF",
+                          "content": "Produk",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     {
-                      "type": "text",
-                      "id": "dsYu7",
-                      "name": "Cara beli",
-                      "fill": "$ink",
-                      "content": "Cara beli",
-                      "fontFamily": "$font-body",
-                      "fontSize": 14,
-                      "fontWeight": "500"
+                      "type": "frame",
+                      "id": "m4EWrR",
+                      "name": "Item Cara beli",
+                      "cornerRadius": 999,
+                      "padding": [
+                        10,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "o9yCD",
+                          "name": "Cara beli label",
+                          "fill": "$ink",
+                          "content": "Cara beli",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
                     },
                     {
-                      "type": "text",
-                      "id": "lGpX6",
-                      "name": "Riwayat",
-                      "fill": "$ink",
-                      "content": "Riwayat",
-                      "fontFamily": "$font-body",
-                      "fontSize": 14,
-                      "fontWeight": "500"
+                      "type": "frame",
+                      "id": "EpgJR",
+                      "name": "Item Riwayat",
+                      "cornerRadius": 999,
+                      "padding": [
+                        10,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "m0Taj",
+                          "name": "Riwayat label",
+                          "fill": "$ink",
+                          "content": "Riwayat",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
                     },
                     {
-                      "type": "text",
-                      "id": "R0fOfN",
-                      "name": "Bantuan",
-                      "fill": "$ink",
-                      "content": "Bantuan",
-                      "fontFamily": "$font-body",
-                      "fontSize": 14,
-                      "fontWeight": "500"
+                      "type": "frame",
+                      "id": "K1CZZ",
+                      "name": "Item Bantuan",
+                      "cornerRadius": 999,
+                      "padding": [
+                        10,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CKS2e",
+                          "name": "Bantuan label",
+                          "fill": "$ink",
+                          "content": "Bantuan",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
                     }
                   ]
                 },
@@ -2336,7 +2386,7 @@
       "type": "frame",
       "id": "uPVQO",
       "x": 0,
-      "y": 2581,
+      "y": 2859,
       "name": "Landing Desktop",
       "clip": true,
       "width": 1440,
@@ -3071,7 +3121,8 @@
               "id": "izkAV",
               "name": "How it works",
               "width": "fill_container",
-              "gap": 64,
+              "layout": "vertical",
+              "gap": 36,
               "padding": [
                 40,
                 0,
@@ -3081,41 +3132,51 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "Scu6j",
-                  "name": "Intro",
-                  "width": 420,
-                  "layout": "vertical",
-                  "gap": 16,
+                  "id": "V2Xle",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "gap": 48,
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
                   "children": [
                     {
-                      "type": "text",
-                      "id": "aFimu",
-                      "fill": "$muted",
-                      "content": "CARA BELI",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "600",
-                      "letterSpacing": 1.2
+                      "type": "frame",
+                      "id": "T7iFxx",
+                      "name": "Title",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sGDPs",
+                          "fill": "$muted",
+                          "content": "CARA BELI",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "600",
+                          "letterSpacing": 1.2
+                        },
+                        {
+                          "type": "text",
+                          "id": "w8H0M",
+                          "fill": "$ink",
+                          "content": "Tiga langkah, langsung pakai.",
+                          "lineHeight": 1.05,
+                          "fontFamily": "$font-head",
+                          "fontSize": 44,
+                          "fontWeight": "700",
+                          "letterSpacing": -1.5
+                        }
+                      ]
                     },
                     {
                       "type": "text",
-                      "id": "XeeBF",
-                      "fill": "$ink",
+                      "id": "FfO1T",
+                      "name": "Lead",
+                      "fill": "$muted",
                       "textGrowth": "fixed-width",
                       "width": 420,
-                      "content": "Tiga langkah,\nkurang dari 2 menit.",
-                      "fontFamily": "$font-head",
-                      "fontSize": 44,
-                      "fontWeight": "700",
-                      "letterSpacing": -1.5
-                    },
-                    {
-                      "type": "text",
-                      "id": "VUqei",
-                      "fill": "$muted",
-                      "textGrowth": "fixed-width",
-                      "width": 400,
-                      "content": "Bayar lewat QRIS atau saldo. Setelah lunas, kredensial muncul di halaman pesanan dan dashboard.",
+                      "content": "Tanpa chat admin. Pilih varian, scan QRIS, dan kredensial muncul sendiri di halaman pesanan.",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-body",
                       "fontSize": 16,
@@ -3125,61 +3186,352 @@
                 },
                 {
                   "type": "frame",
-                  "id": "gVlOv",
+                  "id": "eRgKV",
                   "name": "Steps",
                   "width": "fill_container",
-                  "layout": "vertical",
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "mS4HE",
+                      "id": "izrX1",
                       "name": "Step 1",
                       "width": "fill_container",
-                      "stroke": "$hairline",
-                      "strokeWidth": {
-                        "bottom": 1
+                      "fill": "$surface",
+                      "cornerRadius": 28,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#1112131A",
+                        "offset": {
+                          "x": 0,
+                          "y": 10
+                        },
+                        "blur": 30
                       },
-                      "gap": 24,
-                      "padding": [
-                        24,
-                        0
-                      ],
-                      "alignItems": "center",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 20,
                       "children": [
                         {
-                          "type": "text",
-                          "id": "geCER",
-                          "fill": "$muted",
-                          "textGrowth": "fixed-width",
-                          "width": 48,
-                          "content": "1",
-                          "fontFamily": "$font-head",
-                          "fontSize": 40,
-                          "fontWeight": "700",
-                          "letterSpacing": -1.5
+                          "type": "frame",
+                          "id": "BLSwj",
+                          "name": "Visual",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 220,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "radial",
+                            "enabled": true,
+                            "rotation": 0,
+                            "size": {
+                              "width": 1.4,
+                              "height": 1.4
+                            },
+                            "colors": [
+                              {
+                                "color": "#FFE7DC",
+                                "position": 0
+                              },
+                              {
+                                "color": "#F7F7F8",
+                                "position": 1
+                              }
+                            ],
+                            "center": {
+                              "y": 0.35
+                            }
+                          },
+                          "cornerRadius": 20,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "p8xjq",
+                              "x": 64,
+                              "y": 34,
+                              "name": "Mini product",
+                              "width": 230,
+                              "fill": "$surface",
+                              "cornerRadius": 18,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#1112131A",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 10
+                                },
+                                "blur": 30
+                              },
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 12,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "NUjiq",
+                                  "width": "fill_container",
+                                  "gap": 10,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "PgzqZ",
+                                      "width": 40,
+                                      "height": 40,
+                                      "fill": {
+                                        "type": "gradient",
+                                        "gradientType": "linear",
+                                        "enabled": true,
+                                        "rotation": 180,
+                                        "size": {
+                                          "height": 1
+                                        },
+                                        "colors": [
+                                          {
+                                            "color": "#FF8A5B",
+                                            "position": 0
+                                          },
+                                          {
+                                            "color": "#D6336C",
+                                            "position": 1
+                                          }
+                                        ]
+                                      },
+                                      "cornerRadius": 12,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "RFJoK",
+                                          "width": 20,
+                                          "height": 20,
+                                          "icon": "clapperboard",
+                                          "library": "lucide",
+                                          "fill": "#FFFFFF"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ZelFT",
+                                      "layout": "vertical",
+                                      "gap": 1,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "cdHCr",
+                                          "fill": "$ink",
+                                          "content": "Netflix Premium",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 13,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "opYrw",
+                                          "fill": "$muted",
+                                          "content": "3 varian",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 12,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "MJLEr",
+                                  "name": "Mini variant",
+                                  "width": "fill_container",
+                                  "fill": "$surface",
+                                  "cornerRadius": 12,
+                                  "stroke": "$hairline",
+                                  "strokeWidth": 1,
+                                  "gap": 8,
+                                  "padding": [
+                                    8,
+                                    10
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "D8Ii3H",
+                                      "width": 14,
+                                      "height": 14,
+                                      "cornerRadius": 999,
+                                      "stroke": "$line",
+                                      "strokeWidth": 2,
+                                      "justifyContent": "center",
+                                      "alignItems": "center"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "tOzOD",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Sharing",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "A5dcc",
+                                      "fill": "$ink",
+                                      "content": "Rp25.000",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "bhz4Z",
+                                  "name": "Mini variant",
+                                  "width": "fill_container",
+                                  "fill": "#F4F6FE",
+                                  "cornerRadius": 12,
+                                  "stroke": "$accent",
+                                  "strokeWidth": 1.5,
+                                  "gap": 8,
+                                  "padding": [
+                                    8,
+                                    10
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "Z1PH1T",
+                                      "width": 14,
+                                      "height": 14,
+                                      "cornerRadius": 999,
+                                      "stroke": "$accent",
+                                      "strokeWidth": 2,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "ellipse",
+                                          "id": "yUMTl",
+                                          "fill": "$accent",
+                                          "width": 6,
+                                          "height": 6
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "e9B45",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Bergaransi",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "pC3wm",
+                                      "fill": "$ink",
+                                      "content": "Rp32.000",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "700"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "icon",
+                              "id": "YUMYn",
+                              "x": 252,
+                              "y": 162,
+                              "name": "Cursor",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "mouse-pointer-2",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            }
+                          ]
                         },
                         {
                           "type": "frame",
-                          "id": "CVUnb",
+                          "id": "t3RXm4",
+                          "name": "Text",
                           "width": "fill_container",
                           "layout": "vertical",
-                          "gap": 4,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            4,
+                            4,
+                            4
+                          ],
                           "children": [
                             {
+                              "type": "frame",
+                              "id": "ookY6",
+                              "name": "Step pill",
+                              "fill": "$ink",
+                              "cornerRadius": 999,
+                              "gap": 6,
+                              "padding": [
+                                5,
+                                12,
+                                5,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "rZKRX",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "mouse-pointer-click",
+                                  "library": "lucide",
+                                  "fill": "#FFFFFF"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "x2GJ6C",
+                                  "fill": "#FFFFFF",
+                                  "content": "Langkah 1",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
                               "type": "text",
-                              "id": "HVKH8",
+                              "id": "pffxt",
                               "fill": "$ink",
                               "content": "Pilih produk dan varian",
                               "fontFamily": "$font-head",
-                              "fontSize": 20,
+                              "fontSize": 21,
                               "fontWeight": "600",
-                              "letterSpacing": -0.4
+                              "letterSpacing": -0.5
                             },
                             {
                               "type": "text",
-                              "id": "Gbhkl",
+                              "id": "ZEZio",
                               "fill": "$muted",
-                              "content": "Cari akun yang dibutuhkan, pilih durasi.",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Bandingkan durasi, tipe akun, dan garansi sebelum checkout.",
+                              "lineHeight": 1.5,
                               "fontFamily": "$font-body",
                               "fontSize": 14,
                               "fontWeight": "normal"
@@ -3190,54 +3542,314 @@
                     },
                     {
                       "type": "frame",
-                      "id": "v5gCvl",
+                      "id": "L3ISv",
+                      "name": "Connector",
+                      "width": 44,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "w66PB",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$surface",
+                          "cornerRadius": 999,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "P0fqB",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q0qMRf",
                       "name": "Step 2",
                       "width": "fill_container",
-                      "stroke": "$hairline",
-                      "strokeWidth": {
-                        "bottom": 1
+                      "fill": "$surface",
+                      "cornerRadius": 28,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#1112131A",
+                        "offset": {
+                          "x": 0,
+                          "y": 10
+                        },
+                        "blur": 30
                       },
-                      "gap": 24,
-                      "padding": [
-                        24,
-                        0
-                      ],
-                      "alignItems": "center",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 20,
                       "children": [
                         {
-                          "type": "text",
-                          "id": "tgVga",
-                          "fill": "$muted",
-                          "textGrowth": "fixed-width",
-                          "width": 48,
-                          "content": "2",
-                          "fontFamily": "$font-head",
-                          "fontSize": 40,
-                          "fontWeight": "700",
-                          "letterSpacing": -1.5
+                          "type": "frame",
+                          "id": "vywiA",
+                          "name": "Visual",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 220,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "radial",
+                            "enabled": true,
+                            "rotation": 0,
+                            "size": {
+                              "width": 1.4,
+                              "height": 1.4
+                            },
+                            "colors": [
+                              {
+                                "color": "#E3E9FF",
+                                "position": 0
+                              },
+                              {
+                                "color": "#F7F7F8",
+                                "position": 1
+                              }
+                            ],
+                            "center": {
+                              "y": 0.35
+                            }
+                          },
+                          "cornerRadius": 20,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "A4TzfF",
+                              "x": 104,
+                              "y": 26,
+                              "name": "Mini QR",
+                              "width": 150,
+                              "fill": "$surface",
+                              "cornerRadius": 18,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#1112131A",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 10
+                                },
+                                "blur": 30
+                              },
+                              "layout": "vertical",
+                              "gap": 8,
+                              "padding": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "LfOxN",
+                                  "width": 96,
+                                  "height": 96,
+                                  "cornerRadius": 12,
+                                  "stroke": "$ink",
+                                  "strokeWidth": 1.5,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "pGNot",
+                                      "width": 70,
+                                      "height": 70,
+                                      "icon": "qr-code",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "f6AkG",
+                                  "fill": "$ink",
+                                  "content": "Rp32.000",
+                                  "fontFamily": "$font-head",
+                                  "fontSize": 16,
+                                  "fontWeight": "700",
+                                  "letterSpacing": -0.4
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Agomg",
+                                  "gap": 4,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "cY6Qv",
+                                      "width": 12,
+                                      "height": 12,
+                                      "icon": "timer",
+                                      "library": "lucide",
+                                      "fill": "$warn"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "e6Vc2",
+                                      "fill": "$warn",
+                                      "content": "14:32",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "janrM",
+                              "type": "ref",
+                              "ref": "ewX7t",
+                              "name": "Badge",
+                              "x": 70,
+                              "y": 24,
+                              "rotation": 6.000000000000001,
+                              "descendants": {
+                                "q6fA6I": {
+                                  "content": "Menunggu bayar"
+                                }
+                              }
+                            },
+                            {
+                              "type": "frame",
+                              "id": "wh1ne",
+                              "x": 216,
+                              "y": 176,
+                              "name": "Paid chip",
+                              "rotation": -4,
+                              "fill": "$success",
+                              "cornerRadius": 999,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#11121314",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 2
+                                },
+                                "blur": 8
+                              },
+                              "gap": 5,
+                              "padding": [
+                                5,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "Sn6el",
+                                  "width": 12,
+                                  "height": 12,
+                                  "icon": "check",
+                                  "library": "lucide",
+                                  "fill": "#FFFFFF"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "e1L9OS",
+                                  "fill": "#FFFFFF",
+                                  "content": "Lunas",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
                         },
                         {
                           "type": "frame",
-                          "id": "ukkAw",
+                          "id": "bHhv6",
+                          "name": "Text",
                           "width": "fill_container",
                           "layout": "vertical",
-                          "gap": 4,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            4,
+                            4,
+                            4
+                          ],
                           "children": [
                             {
-                              "type": "text",
-                              "id": "v29u1o",
+                              "type": "frame",
+                              "id": "ar1f8",
+                              "name": "Step pill",
                               "fill": "$ink",
-                              "content": "Bayar QRIS atau saldo",
-                              "fontFamily": "$font-head",
-                              "fontSize": 20,
-                              "fontWeight": "600",
-                              "letterSpacing": -0.4
+                              "cornerRadius": 999,
+                              "gap": 6,
+                              "padding": [
+                                5,
+                                12,
+                                5,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "kjhrH",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "scan-line",
+                                  "library": "lucide",
+                                  "fill": "#FFFFFF"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "EWRLL",
+                                  "fill": "#FFFFFF",
+                                  "content": "Langkah 2",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                }
+                              ]
                             },
                             {
                               "type": "text",
-                              "id": "Ylmay",
+                              "id": "FEnzV",
+                              "fill": "$ink",
+                              "content": "Bayar dengan QRIS atau saldo",
+                              "fontFamily": "$font-head",
+                              "fontSize": 21,
+                              "fontWeight": "600",
+                              "letterSpacing": -0.5
+                            },
+                            {
+                              "type": "text",
+                              "id": "p7Iaq2",
                               "fill": "$muted",
-                              "content": "Scan QR dari e-wallet atau bank apa pun.",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Scan dari e-wallet atau m-banking apa pun. Status terbaca otomatis.",
+                              "lineHeight": 1.5,
                               "fontFamily": "$font-body",
                               "fontSize": 14,
                               "fontWeight": "normal"
@@ -3248,59 +3860,778 @@
                     },
                     {
                       "type": "frame",
-                      "id": "i9QnK",
-                      "name": "Step 3",
-                      "width": "fill_container",
-                      "stroke": "$hairline",
-                      "strokeWidth": {
-                        "bottom": 1
-                      },
-                      "gap": 24,
-                      "padding": [
-                        24,
-                        0
-                      ],
+                      "id": "gAuah",
+                      "name": "Connector",
+                      "width": 44,
+                      "justifyContent": "center",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "kmMS0",
-                          "fill": "$muted",
-                          "textGrowth": "fixed-width",
-                          "width": 48,
-                          "content": "3",
-                          "fontFamily": "$font-head",
-                          "fontSize": 40,
-                          "fontWeight": "700",
-                          "letterSpacing": -1.5
+                          "type": "frame",
+                          "id": "rTbyZ",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "$surface",
+                          "cornerRadius": 999,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "EYgLL",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bqYkc",
+                      "name": "Step 3",
+                      "width": "fill_container",
+                      "fill": "$surface",
+                      "cornerRadius": 28,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#1112131A",
+                        "offset": {
+                          "x": 0,
+                          "y": 10
+                        },
+                        "blur": 30
+                      },
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "toudV",
+                          "name": "Visual",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 220,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "radial",
+                            "enabled": true,
+                            "rotation": 0,
+                            "size": {
+                              "width": 1.4,
+                              "height": 1.4
+                            },
+                            "colors": [
+                              {
+                                "color": "#DDF3E4",
+                                "position": 0
+                              },
+                              {
+                                "color": "#F7F7F8",
+                                "position": 1
+                              }
+                            ],
+                            "center": {
+                              "y": 0.35
+                            }
+                          },
+                          "cornerRadius": 20,
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "joXVb",
+                              "x": 59,
+                              "y": 40,
+                              "name": "Mini credential",
+                              "width": 240,
+                              "fill": "$surface",
+                              "cornerRadius": 18,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#1112131A",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 10
+                                },
+                                "blur": 30
+                              },
+                              "layout": "vertical",
+                              "gap": 8,
+                              "padding": 12,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "h0B6oM",
+                                  "name": "Email",
+                                  "width": "fill_container",
+                                  "fill": "$card",
+                                  "cornerRadius": 10,
+                                  "padding": [
+                                    8,
+                                    10
+                                  ],
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "lz88T",
+                                      "layout": "vertical",
+                                      "gap": 1,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "VRi9n",
+                                          "fill": "$muted",
+                                          "content": "Email",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "V36B0",
+                                          "fill": "$ink",
+                                          "content": "netflix.kr481@mail.com",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "icon",
+                                      "id": "kNzrg",
+                                      "width": 14,
+                                      "height": 14,
+                                      "icon": "copy",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "a3Qx1",
+                                  "name": "Password",
+                                  "width": "fill_container",
+                                  "fill": "$card",
+                                  "cornerRadius": 10,
+                                  "padding": [
+                                    8,
+                                    10
+                                  ],
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "ne3wU",
+                                      "layout": "vertical",
+                                      "gap": 1,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "d4FFF",
+                                          "fill": "$muted",
+                                          "content": "Password",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 12,
+                                          "fontWeight": "600"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "fXkpH",
+                                          "fill": "$ink",
+                                          "content": "••••••••••",
+                                          "fontFamily": "$font-body",
+                                          "fontSize": 12,
+                                          "fontWeight": "500"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "icon",
+                                      "id": "gJhXy",
+                                      "width": 14,
+                                      "height": 14,
+                                      "icon": "copy",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "qr30U",
+                              "type": "ref",
+                              "ref": "d5SuVN",
+                              "name": "Toast",
+                              "x": 69,
+                              "y": 160,
+                              "width": 230,
+                              "padding": [
+                                10,
+                                14
+                              ],
+                              "descendants": {
+                                "zcFaL": {
+                                  "content": "Kredensial terkirim",
+                                  "fontSize": 13
+                                }
+                              }
+                            }
+                          ]
                         },
                         {
                           "type": "frame",
-                          "id": "AWKGn",
+                          "id": "B10HBs",
+                          "name": "Text",
                           "width": "fill_container",
                           "layout": "vertical",
-                          "gap": 4,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            4,
+                            4,
+                            4
+                          ],
                           "children": [
                             {
+                              "type": "frame",
+                              "id": "jlSEh",
+                              "name": "Step pill",
+                              "fill": "$ink",
+                              "cornerRadius": 999,
+                              "gap": 6,
+                              "padding": [
+                                5,
+                                12,
+                                5,
+                                8
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "f9NHc",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "key-round",
+                                  "library": "lucide",
+                                  "fill": "#FFFFFF"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "RhtsC",
+                                  "fill": "#FFFFFF",
+                                  "content": "Langkah 3",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
                               "type": "text",
-                              "id": "JBTdG",
+                              "id": "f36dB",
                               "fill": "$ink",
                               "content": "Terima kredensial",
                               "fontFamily": "$font-head",
+                              "fontSize": 21,
+                              "fontWeight": "600",
+                              "letterSpacing": -0.5
+                            },
+                            {
+                              "type": "text",
+                              "id": "y0PGF",
+                              "fill": "$muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Email dan password tampil di halaman pesanan, salinan dikirim ke email.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-body",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "debJ0",
+                  "name": "Payment carousel",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yPPSO",
+                      "name": "Header",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "justifyContent": "space_between",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "pkLf1",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OK2wv",
+                              "fill": "$ink",
+                              "content": "Bisa bayar dari",
+                              "fontFamily": "$font-head",
                               "fontSize": 20,
                               "fontWeight": "600",
                               "letterSpacing": -0.4
                             },
                             {
                               "type": "text",
-                              "id": "VVQVR",
+                              "id": "JTz4q",
                               "fill": "$muted",
-                              "content": "Email dan password tampil otomatis setelah lunas.",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Satu QRIS untuk semua e-wallet dan m-banking, atau pakai saldo.",
                               "fontFamily": "$font-body",
                               "fontSize": 14,
                               "fontWeight": "normal"
                             }
                           ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Xcd42",
+                          "name": "Arrows",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "id": "ZY19I",
+                              "type": "ref",
+                              "ref": "i5plL",
+                              "name": "Prev",
+                              "descendants": {
+                                "pHyME": {
+                                  "icon": "chevron-left"
+                                }
+                              }
+                            },
+                            {
+                              "id": "R3JHy",
+                              "type": "ref",
+                              "ref": "i5plL",
+                              "name": "Next",
+                              "descendants": {
+                                "pHyME": {
+                                  "icon": "chevron-right"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "mOX8c",
+                      "name": "Viewport",
+                      "clip": true,
+                      "width": "fill_container",
+                      "gap": 12,
+                      "padding": [
+                        4,
+                        0,
+                        10,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Vyspl",
+                          "name": "Logo QRIS",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "paOo7",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 36,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/qris.png",
+                                "mode": "contain",
+                                "transform": [
+                                  5.556,
+                                  0,
+                                  0,
+                                  17.86,
+                                  -0.306,
+                                  -0.661
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "MeW3k",
+                          "name": "Logo GoPay",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "r4PqPX",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/gopay.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "s0ZMy",
+                          "name": "Logo OVO",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "FUIzn",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/ovo.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tNXrK",
+                          "name": "Logo DANA",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Rj1oS",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/dana.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "sYIVi",
+                          "name": "Logo ShopeePay",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "CqBf2",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 34,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/shopeepay.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tDFL8",
+                          "name": "Logo m-Banking",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Q2TPzG",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "landmark",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            },
+                            {
+                              "type": "text",
+                              "id": "dOqB0",
+                              "fill": "$ink",
+                              "content": "m-Banking",
+                              "fontFamily": "$font-head",
+                              "fontSize": 17,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.3
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ounYL",
+                          "name": "Logo Saldo",
+                          "width": 200,
+                          "height": 84,
+                          "fill": "$surface",
+                          "cornerRadius": 20,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 16,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "L8XcY5",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 36,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/logo_website.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "h0T5c",
+                          "layoutPosition": "absolute",
+                          "x": 1184,
+                          "y": 0,
+                          "name": "Fade right",
+                          "width": 96,
+                          "height": 98,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 90,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#F7F7F8",
+                                "position": 0
+                              },
+                              {
+                                "color": "#F7F7F800",
+                                "position": 1
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "b4QEs",
+                      "name": "Dots",
+                      "width": "fill_container",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "uVsLQ",
+                          "name": "Dot active",
+                          "fill": "$ink",
+                          "width": 20,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "Rg2rP",
+                          "name": "Dot",
+                          "fill": "$line",
+                          "width": 6,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "hY1Wn",
+                          "name": "Dot",
+                          "fill": "$line",
+                          "width": 6,
+                          "height": 6
                         }
                       ]
                     }
@@ -3427,7 +4758,7 @@
       "type": "frame",
       "id": "B9GqM",
       "x": 2110,
-      "y": 2581,
+      "y": 2859,
       "name": "Produk Desktop",
       "clip": true,
       "width": 1440,
@@ -4215,7 +5546,7 @@
       "type": "frame",
       "id": "aJqMB",
       "x": 3630,
-      "y": 2581,
+      "y": 2859,
       "name": "Produk Mobile",
       "clip": true,
       "width": 390,
@@ -4697,7 +6028,7 @@
       "type": "frame",
       "id": "qxwpL",
       "x": 4220,
-      "y": 2581,
+      "y": 2859,
       "name": "Detail Produk Desktop",
       "clip": true,
       "width": 1440,
@@ -5296,7 +6627,7 @@
       "type": "frame",
       "id": "kK2Cd",
       "x": 0,
-      "y": 4751,
+      "y": 5538,
       "name": "Checkout Desktop",
       "clip": true,
       "width": 1440,
@@ -5796,7 +7127,7 @@
       "type": "frame",
       "id": "VdvJq",
       "x": 1520,
-      "y": 4751,
+      "y": 5538,
       "name": "Checkout Mobile",
       "clip": true,
       "width": 390,
@@ -6324,7 +7655,7 @@
       "type": "frame",
       "id": "hsWPK",
       "x": 2110,
-      "y": 4751,
+      "y": 5538,
       "name": "Pembayaran QRIS Desktop",
       "clip": true,
       "width": 1440,
@@ -6772,7 +8103,7 @@
       "type": "frame",
       "id": "EZndb",
       "x": 3630,
-      "y": 4751,
+      "y": 5538,
       "name": "Pembayaran QRIS Mobile",
       "clip": true,
       "width": 390,
@@ -7053,7 +8384,7 @@
       "type": "frame",
       "id": "Gip7V",
       "x": 4220,
-      "y": 4751,
+      "y": 5538,
       "name": "Sukses Bayar Desktop",
       "clip": true,
       "width": 1440,
@@ -7271,7 +8602,7 @@
       "type": "frame",
       "id": "eSAY1",
       "x": 5740,
-      "y": 4751,
+      "y": 5538,
       "name": "Sukses Bayar Mobile",
       "clip": true,
       "width": 390,
@@ -7568,7 +8899,7 @@
       "type": "frame",
       "id": "AIG69",
       "x": 6330,
-      "y": 4751,
+      "y": 5538,
       "name": "Batal Bayar Desktop",
       "clip": true,
       "width": 1440,
@@ -7786,7 +9117,7 @@
       "type": "frame",
       "id": "y2frn",
       "x": 7850,
-      "y": 4751,
+      "y": 5538,
       "name": "Batal Bayar Mobile",
       "clip": true,
       "width": 390,
@@ -8083,7 +9414,7 @@
       "type": "frame",
       "id": "kT3hM",
       "x": 8440,
-      "y": 4751,
+      "y": 5538,
       "name": "Detail Pesanan Desktop",
       "clip": true,
       "width": 1440,
@@ -8652,7 +9983,7 @@
       "type": "frame",
       "id": "l8NtAk",
       "x": 9960,
-      "y": 4751,
+      "y": 5538,
       "name": "Detail Pesanan Mobile",
       "clip": true,
       "width": 390,
@@ -8984,7 +10315,7 @@
       "type": "frame",
       "id": "dX2fm",
       "x": 0,
-      "y": 6017,
+      "y": 6804,
       "name": "Masuk Desktop",
       "clip": true,
       "width": 1440,
@@ -9155,7 +10486,7 @@
       "type": "frame",
       "id": "kNur5",
       "x": 1520,
-      "y": 6017,
+      "y": 6804,
       "name": "Masuk Mobile",
       "clip": true,
       "width": 390,
@@ -9410,7 +10741,7 @@
       "type": "frame",
       "id": "kPofo",
       "x": 2110,
-      "y": 6017,
+      "y": 6804,
       "name": "Daftar Desktop",
       "clip": true,
       "width": 1440,
@@ -9604,7 +10935,7 @@
       "type": "frame",
       "id": "m8aLT",
       "x": 3630,
-      "y": 6017,
+      "y": 6804,
       "name": "Daftar Mobile",
       "clip": true,
       "width": 390,
@@ -9874,7 +11205,7 @@
       "type": "frame",
       "id": "y03qs4",
       "x": 4220,
-      "y": 6017,
+      "y": 6804,
       "name": "Lupa Password Desktop",
       "clip": true,
       "width": 1440,
@@ -10038,7 +11369,7 @@
       "type": "frame",
       "id": "XLAY6",
       "x": 5740,
-      "y": 6017,
+      "y": 6804,
       "name": "Lupa Password Mobile",
       "clip": true,
       "width": 390,
@@ -10278,7 +11609,7 @@
       "type": "frame",
       "id": "HW2iF",
       "x": 6330,
-      "y": 6017,
+      "y": 6804,
       "name": "Reset Password Desktop",
       "clip": true,
       "width": 1440,
@@ -10457,7 +11788,7 @@
       "type": "frame",
       "id": "EVP6L",
       "x": 7850,
-      "y": 6017,
+      "y": 6804,
       "name": "Reset Password Mobile",
       "clip": true,
       "width": 390,
@@ -10712,7 +12043,7 @@
       "type": "frame",
       "id": "Bpoc0",
       "x": 0,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Ringkasan Desktop",
       "clip": true,
       "width": 1440,
@@ -11230,7 +12561,8 @@
                           "width": 120,
                           "content": "12 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -11257,7 +12589,8 @@
                           "width": 110,
                           "content": "Rp25.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -11296,7 +12629,8 @@
                           "width": 120,
                           "content": "10 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -11323,7 +12657,8 @@
                           "width": 110,
                           "content": "Rp18.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -11362,7 +12697,8 @@
                           "width": 120,
                           "content": "08 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -11389,7 +12725,8 @@
                           "width": 110,
                           "content": "Rp12.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -11472,7 +12809,7 @@
       "type": "frame",
       "id": "g4qI1",
       "x": 1520,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Ringkasan Mobile",
       "clip": true,
       "width": 390,
@@ -12032,7 +13369,7 @@
       "type": "frame",
       "id": "CmDiw",
       "x": 2110,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Saldo Desktop",
       "clip": true,
       "width": 1440,
@@ -12525,7 +13862,8 @@
                           "width": 120,
                           "content": "12 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -12552,7 +13890,8 @@
                           "width": 120,
                           "content": "+Rp50.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -12591,7 +13930,8 @@
                           "width": 120,
                           "content": "12 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -12618,7 +13958,8 @@
                           "width": 120,
                           "content": "-Rp25.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -12657,7 +13998,8 @@
                           "width": 120,
                           "content": "09 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -12684,7 +14026,8 @@
                           "width": 120,
                           "content": "+Rp25.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -12767,7 +14110,7 @@
       "type": "frame",
       "id": "EA8HC",
       "x": 6330,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Transaksi Desktop",
       "clip": true,
       "width": 1440,
@@ -13207,7 +14550,8 @@
                           "width": "fill_container",
                           "content": "Netflix Premium",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -13217,7 +14561,8 @@
                           "width": 120,
                           "content": "12 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -13244,7 +14589,8 @@
                           "width": 110,
                           "content": "Rp25.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -13283,7 +14629,8 @@
                           "width": "fill_container",
                           "content": "Spotify Premium",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -13293,7 +14640,8 @@
                           "width": 120,
                           "content": "10 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -13320,7 +14668,8 @@
                           "width": 110,
                           "content": "Rp18.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -13359,7 +14708,8 @@
                           "width": "fill_container",
                           "content": "Canva Pro",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -13369,7 +14719,8 @@
                           "width": 120,
                           "content": "08 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -13396,7 +14747,8 @@
                           "width": 110,
                           "content": "Rp12.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -13435,7 +14787,8 @@
                           "width": "fill_container",
                           "content": "ChatGPT Plus",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -13445,7 +14798,8 @@
                           "width": 120,
                           "content": "03 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -13472,7 +14826,8 @@
                           "width": 110,
                           "content": "Rp45.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -13511,7 +14866,8 @@
                           "width": "fill_container",
                           "content": "VPN Premium",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -13521,7 +14877,8 @@
                           "width": 120,
                           "content": "01 Nov",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -13548,7 +14905,8 @@
                           "width": 110,
                           "content": "Rp15.000",
                           "fontFamily": "$font-body",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -13638,7 +14996,7 @@
       "type": "frame",
       "id": "E0urQ",
       "x": 7850,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Transaksi Mobile",
       "clip": true,
       "width": 390,
@@ -14144,7 +15502,7 @@
       "type": "frame",
       "id": "a6IvV",
       "x": 0,
-      "y": 8480,
+      "y": 9267,
       "name": "Syarat Layanan Desktop",
       "clip": true,
       "width": 1440,
@@ -14394,7 +15752,7 @@
       "type": "frame",
       "id": "BbCkK",
       "x": 1520,
-      "y": 8480,
+      "y": 9267,
       "name": "Syarat Layanan Mobile",
       "clip": true,
       "width": 390,
@@ -14719,7 +16077,7 @@
       "type": "frame",
       "id": "rtS1h",
       "x": 2110,
-      "y": 8480,
+      "y": 9267,
       "name": "Kebijakan Privasi Desktop",
       "clip": true,
       "width": 1440,
@@ -14969,7 +16327,7 @@
       "type": "frame",
       "id": "LAV9Z",
       "x": 3630,
-      "y": 8480,
+      "y": 9267,
       "name": "Kebijakan Privasi Mobile",
       "clip": true,
       "width": 390,
@@ -15294,7 +16652,7 @@
       "type": "frame",
       "id": "p1z0oO",
       "x": 4220,
-      "y": 8480,
+      "y": 9267,
       "name": "404 Desktop",
       "clip": true,
       "width": 1440,
@@ -15474,7 +16832,7 @@
       "type": "frame",
       "id": "H84iaI",
       "x": 5740,
-      "y": 8480,
+      "y": 9267,
       "name": "404 Mobile",
       "clip": true,
       "width": 390,
@@ -15729,7 +17087,7 @@
       "type": "frame",
       "id": "F7hRc1",
       "x": 10550,
-      "y": 7157,
+      "y": 7944,
       "name": "Admin Desktop",
       "clip": true,
       "width": 1440,
@@ -16686,7 +18044,7 @@
       "type": "frame",
       "id": "oMqdx",
       "x": 4220,
-      "y": 7157,
+      "y": 7944,
       "name": "Top Up QRIS Desktop",
       "clip": true,
       "width": 1440,
@@ -17187,7 +18545,7 @@
       "type": "frame",
       "id": "D8Hfk",
       "x": 5740,
-      "y": 7157,
+      "y": 7944,
       "name": "Top Up QRIS Mobile",
       "clip": true,
       "width": 390,
@@ -17741,7 +19099,7 @@
       "type": "frame",
       "id": "wZ6Iy",
       "x": 8440,
-      "y": 7157,
+      "y": 7944,
       "name": "Detail Transaksi Desktop",
       "clip": true,
       "width": 1440,
@@ -18418,7 +19776,7 @@
       "type": "frame",
       "id": "riox4",
       "x": 9960,
-      "y": 7157,
+      "y": 7944,
       "name": "Detail Transaksi Mobile",
       "clip": true,
       "width": 390,
@@ -19139,7 +20497,7 @@
       "type": "frame",
       "id": "mHSeM",
       "x": 1520,
-      "y": 2581,
+      "y": 2859,
       "name": "Landing Mobile",
       "clip": true,
       "width": 390,
@@ -19910,68 +21268,401 @@
               "name": "How it works",
               "width": "fill_container",
               "layout": "vertical",
+              "gap": 20,
+              "padding": [
+                8,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
-                  "type": "text",
-                  "id": "q2sZ1n",
-                  "fill": "$muted",
-                  "content": "CARA BELI",
-                  "fontFamily": "$font-body",
-                  "fontSize": 12,
-                  "fontWeight": "600",
-                  "letterSpacing": 1.2
+                  "type": "frame",
+                  "id": "qIzKz",
+                  "name": "Title",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "R7F5n",
+                      "fill": "$muted",
+                      "content": "CARA BELI",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "Y7XKl",
+                      "fill": "$ink",
+                      "content": "Tiga langkah,\nlangsung pakai.",
+                      "lineHeight": 1.05,
+                      "fontFamily": "$font-head",
+                      "fontSize": 30,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "LXSiM",
+                      "name": "Lead",
+                      "fill": "$muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tanpa chat admin. Pilih varian, scan QRIS, dan kredensial muncul sendiri di halaman pesanan.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 },
                 {
                   "type": "frame",
-                  "id": "mLxAy",
+                  "id": "N0WVkp",
                   "name": "Step 1",
                   "width": "fill_container",
-                  "stroke": "$hairline",
-                  "strokeWidth": {
-                    "bottom": 1
+                  "fill": "$surface",
+                  "cornerRadius": 26,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
                   },
-                  "gap": 16,
-                  "padding": [
-                    16,
-                    0
-                  ],
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 14,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "Jr1Cd",
-                      "fill": "$muted",
-                      "textGrowth": "fixed-width",
-                      "width": 28,
-                      "content": "1",
-                      "fontFamily": "$font-head",
-                      "fontSize": 28,
-                      "fontWeight": "700",
-                      "letterSpacing": -1.5
+                      "type": "frame",
+                      "id": "ppQYR",
+                      "name": "Visual",
+                      "clip": true,
+                      "width": "fill_container",
+                      "height": 170,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "radial",
+                        "enabled": true,
+                        "rotation": 0,
+                        "size": {
+                          "width": 1.4,
+                          "height": 1.4
+                        },
+                        "colors": [
+                          {
+                            "color": "#FFE7DC",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F7F7F8",
+                            "position": 1
+                          }
+                        ],
+                        "center": {
+                          "y": 0.35
+                        }
+                      },
+                      "cornerRadius": 18,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cBZ2M",
+                          "x": 44,
+                          "y": 16,
+                          "name": "Mini product",
+                          "width": 230,
+                          "fill": "$surface",
+                          "cornerRadius": 18,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#1112131A",
+                            "offset": {
+                              "x": 0,
+                              "y": 10
+                            },
+                            "blur": 30
+                          },
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "h0Kv0",
+                              "width": "fill_container",
+                              "gap": 10,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "e5b4h",
+                                  "width": 36,
+                                  "height": 36,
+                                  "fill": {
+                                    "type": "gradient",
+                                    "gradientType": "linear",
+                                    "enabled": true,
+                                    "rotation": 180,
+                                    "size": {
+                                      "height": 1
+                                    },
+                                    "colors": [
+                                      {
+                                        "color": "#FF8A5B",
+                                        "position": 0
+                                      },
+                                      {
+                                        "color": "#D6336C",
+                                        "position": 1
+                                      }
+                                    ]
+                                  },
+                                  "cornerRadius": 11,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "kyUu8",
+                                      "width": 18,
+                                      "height": 18,
+                                      "icon": "clapperboard",
+                                      "library": "lucide",
+                                      "fill": "#FFFFFF"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "AfafV",
+                                  "layout": "vertical",
+                                  "gap": 1,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "wGXmA",
+                                      "fill": "$ink",
+                                      "content": "Netflix Premium",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 13,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "fiWuw",
+                                      "fill": "$muted",
+                                      "content": "3 varian",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Tqtfg",
+                              "name": "Mini variant",
+                              "width": "fill_container",
+                              "fill": "$surface",
+                              "cornerRadius": 12,
+                              "stroke": "$hairline",
+                              "strokeWidth": 1,
+                              "gap": 8,
+                              "padding": [
+                                7,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "BMHwJ",
+                                  "width": 14,
+                                  "height": 14,
+                                  "cornerRadius": 999,
+                                  "stroke": "$line",
+                                  "strokeWidth": 2,
+                                  "justifyContent": "center",
+                                  "alignItems": "center"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "gTHrD",
+                                  "fill": "$ink",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Sharing",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "I5PtUa",
+                                  "fill": "$ink",
+                                  "content": "Rp25.000",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "b7qPy",
+                              "name": "Mini variant",
+                              "width": "fill_container",
+                              "fill": "#F4F6FE",
+                              "cornerRadius": 12,
+                              "stroke": "$accent",
+                              "strokeWidth": 1.5,
+                              "gap": 8,
+                              "padding": [
+                                7,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "l1lA89",
+                                  "width": 14,
+                                  "height": 14,
+                                  "cornerRadius": 999,
+                                  "stroke": "$accent",
+                                  "strokeWidth": 2,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "ellipse",
+                                      "id": "NTE3r",
+                                      "fill": "$accent",
+                                      "width": 6,
+                                      "height": 6
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "E3XQA",
+                                  "fill": "$ink",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Bergaransi",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "zZgeU",
+                                  "fill": "$ink",
+                                  "content": "Rp32.000",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon",
+                          "id": "ixToc",
+                          "x": 232,
+                          "y": 138,
+                          "name": "Cursor",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "mouse-pointer-2",
+                          "library": "lucide",
+                          "fill": "$ink"
+                        }
+                      ]
                     },
                     {
                       "type": "frame",
-                      "id": "Euc5V",
+                      "id": "epWy6",
+                      "name": "Text",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 2,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        4,
+                        4,
+                        4
+                      ],
                       "children": [
                         {
+                          "type": "frame",
+                          "id": "GSoJA",
+                          "name": "Step pill",
+                          "fill": "$ink",
+                          "cornerRadius": 999,
+                          "gap": 6,
+                          "padding": [
+                            5,
+                            12,
+                            5,
+                            8
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "N8mXyu",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "mouse-pointer-click",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            },
+                            {
+                              "type": "text",
+                              "id": "biqa0",
+                              "fill": "#FFFFFF",
+                              "content": "Langkah 1",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
                           "type": "text",
-                          "id": "kfsGF",
+                          "id": "Utd3k",
                           "fill": "$ink",
                           "content": "Pilih produk dan varian",
-                          "fontFamily": "$font-body",
-                          "fontSize": 15,
-                          "fontWeight": "600"
+                          "fontFamily": "$font-head",
+                          "fontSize": 19,
+                          "fontWeight": "600",
+                          "letterSpacing": -0.5
                         },
                         {
                           "type": "text",
-                          "id": "F2PUcb",
+                          "id": "mR8VJ",
                           "fill": "$muted",
-                          "content": "Cari akun, pilih durasi.",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Bandingkan durasi, tipe akun, dan garansi sebelum checkout.",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-body",
-                          "fontSize": 13,
+                          "fontSize": 14,
                           "fontWeight": "normal"
                         }
                       ]
@@ -19980,55 +21671,273 @@
                 },
                 {
                   "type": "frame",
-                  "id": "WVpyw",
+                  "id": "oD4G9",
                   "name": "Step 2",
                   "width": "fill_container",
-                  "stroke": "$hairline",
-                  "strokeWidth": {
-                    "bottom": 1
+                  "fill": "$surface",
+                  "cornerRadius": 26,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
                   },
-                  "gap": 16,
-                  "padding": [
-                    16,
-                    0
-                  ],
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 14,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "UCb4H",
-                      "fill": "$muted",
-                      "textGrowth": "fixed-width",
-                      "width": 28,
-                      "content": "2",
-                      "fontFamily": "$font-head",
-                      "fontSize": 28,
-                      "fontWeight": "700",
-                      "letterSpacing": -1.5
+                      "type": "frame",
+                      "id": "tPgBL",
+                      "name": "Visual",
+                      "clip": true,
+                      "width": "fill_container",
+                      "height": 170,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "radial",
+                        "enabled": true,
+                        "rotation": 0,
+                        "size": {
+                          "width": 1.4,
+                          "height": 1.4
+                        },
+                        "colors": [
+                          {
+                            "color": "#E3E9FF",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F7F7F8",
+                            "position": 1
+                          }
+                        ],
+                        "center": {
+                          "y": 0.35
+                        }
+                      },
+                      "cornerRadius": 18,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "u7fBtl",
+                          "x": 89,
+                          "y": 14,
+                          "name": "Mini QR",
+                          "width": 140,
+                          "fill": "$surface",
+                          "cornerRadius": 18,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#1112131A",
+                            "offset": {
+                              "x": 0,
+                              "y": 10
+                            },
+                            "blur": 30
+                          },
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": 10,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "NjHtz",
+                              "width": 86,
+                              "height": 86,
+                              "cornerRadius": 12,
+                              "stroke": "$ink",
+                              "strokeWidth": 1.5,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "V9X0H",
+                                  "width": 62,
+                                  "height": 62,
+                                  "icon": "qr-code",
+                                  "library": "lucide",
+                                  "fill": "$ink"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "Y58QM",
+                              "fill": "$ink",
+                              "content": "Rp32.000",
+                              "fontFamily": "$font-head",
+                              "fontSize": 15,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.4
+                            },
+                            {
+                              "type": "frame",
+                              "id": "welPe",
+                              "gap": 4,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "yMD2z",
+                                  "width": 12,
+                                  "height": 12,
+                                  "icon": "timer",
+                                  "library": "lucide",
+                                  "fill": "$warn"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Q1C9P",
+                                  "fill": "$warn",
+                                  "content": "14:32",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 12,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "FKHaK",
+                          "type": "ref",
+                          "ref": "ewX7t",
+                          "name": "Badge",
+                          "x": 49,
+                          "y": 12,
+                          "rotation": 6.000000000000001,
+                          "descendants": {
+                            "q6fA6I": {
+                              "content": "Menunggu bayar"
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DfArh",
+                          "x": 193,
+                          "y": 128,
+                          "name": "Paid chip",
+                          "rotation": -4,
+                          "fill": "$success",
+                          "cornerRadius": 999,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 5,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Zc9GH",
+                              "width": 12,
+                              "height": 12,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            },
+                            {
+                              "type": "text",
+                              "id": "WhMif",
+                              "fill": "#FFFFFF",
+                              "content": "Lunas",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
                     },
                     {
                       "type": "frame",
-                      "id": "p2OsE",
+                      "id": "EirAo",
+                      "name": "Text",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 2,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        4,
+                        4,
+                        4
+                      ],
                       "children": [
                         {
-                          "type": "text",
-                          "id": "AnMDP",
+                          "type": "frame",
+                          "id": "DQJCD",
+                          "name": "Step pill",
                           "fill": "$ink",
-                          "content": "Bayar QRIS atau saldo",
-                          "fontFamily": "$font-body",
-                          "fontSize": 15,
-                          "fontWeight": "600"
+                          "cornerRadius": 999,
+                          "gap": 6,
+                          "padding": [
+                            5,
+                            12,
+                            5,
+                            8
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "f798hC",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "scan-line",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            },
+                            {
+                              "type": "text",
+                              "id": "qSIYF",
+                              "fill": "#FFFFFF",
+                              "content": "Langkah 2",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
                         },
                         {
                           "type": "text",
-                          "id": "um60X",
+                          "id": "UdTno",
+                          "fill": "$ink",
+                          "content": "Bayar dengan QRIS atau saldo",
+                          "fontFamily": "$font-head",
+                          "fontSize": 19,
+                          "fontWeight": "600",
+                          "letterSpacing": -0.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "El6zd",
                           "fill": "$muted",
-                          "content": "Scan dari e-wallet atau bank.",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Scan dari e-wallet atau m-banking apa pun. Status terbaca otomatis.",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-body",
-                          "fontSize": 13,
+                          "fontSize": 14,
                           "fontWeight": "normal"
                         }
                       ]
@@ -20037,56 +21946,713 @@
                 },
                 {
                   "type": "frame",
-                  "id": "FPV7F",
+                  "id": "Z2vBF",
                   "name": "Step 3",
                   "width": "fill_container",
-                  "stroke": "$hairline",
-                  "strokeWidth": {
-                    "bottom": 1
+                  "fill": "$surface",
+                  "cornerRadius": 26,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
                   },
-                  "gap": 16,
-                  "padding": [
-                    16,
-                    0
-                  ],
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 14,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "s3Tbw",
-                      "fill": "$muted",
-                      "textGrowth": "fixed-width",
-                      "width": 28,
-                      "content": "3",
-                      "fontFamily": "$font-head",
-                      "fontSize": 28,
-                      "fontWeight": "700",
-                      "letterSpacing": -1.5
+                      "type": "frame",
+                      "id": "K3DKi3",
+                      "name": "Visual",
+                      "clip": true,
+                      "width": "fill_container",
+                      "height": 170,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "radial",
+                        "enabled": true,
+                        "rotation": 0,
+                        "size": {
+                          "width": 1.4,
+                          "height": 1.4
+                        },
+                        "colors": [
+                          {
+                            "color": "#DDF3E4",
+                            "position": 0
+                          },
+                          {
+                            "color": "#F7F7F8",
+                            "position": 1
+                          }
+                        ],
+                        "center": {
+                          "y": 0.35
+                        }
+                      },
+                      "cornerRadius": 18,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QghHX",
+                          "x": 39,
+                          "y": 10,
+                          "name": "Mini credential",
+                          "width": 240,
+                          "fill": "$surface",
+                          "cornerRadius": 18,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#1112131A",
+                            "offset": {
+                              "x": 0,
+                              "y": 10
+                            },
+                            "blur": 30
+                          },
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "cQDxs",
+                              "name": "Email",
+                              "width": "fill_container",
+                              "fill": "$card",
+                              "cornerRadius": 10,
+                              "padding": [
+                                8,
+                                10
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "Cg66l",
+                                  "layout": "vertical",
+                                  "gap": 1,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "jgmK4",
+                                      "fill": "$muted",
+                                      "content": "Email",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "spxeU",
+                                      "fill": "$ink",
+                                      "content": "netflix.kr481@mail.com",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "dVDBL",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "copy",
+                                  "library": "lucide",
+                                  "fill": "$ink"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "kaDo3",
+                              "name": "Password",
+                              "width": "fill_container",
+                              "fill": "$card",
+                              "cornerRadius": 10,
+                              "padding": [
+                                8,
+                                10
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "E4mEep",
+                                  "layout": "vertical",
+                                  "gap": 1,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "uehka",
+                                      "fill": "$muted",
+                                      "content": "Password",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "tKsAQ",
+                                      "fill": "$ink",
+                                      "content": "••••••••••",
+                                      "fontFamily": "$font-body",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "joLja",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "copy",
+                                  "library": "lucide",
+                                  "fill": "$ink"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "Gc9e0",
+                          "type": "ref",
+                          "ref": "d5SuVN",
+                          "name": "Toast",
+                          "x": 44,
+                          "y": 120,
+                          "width": 230,
+                          "padding": [
+                            10,
+                            14
+                          ],
+                          "descendants": {
+                            "zcFaL": {
+                              "content": "Kredensial terkirim",
+                              "fontSize": 13
+                            }
+                          }
+                        }
+                      ]
                     },
                     {
                       "type": "frame",
-                      "id": "SIpfp",
+                      "id": "y7OUN",
+                      "name": "Text",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 2,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        4,
+                        4,
+                        4
+                      ],
                       "children": [
                         {
-                          "type": "text",
-                          "id": "JVSPX",
+                          "type": "frame",
+                          "id": "spBFT",
+                          "name": "Step pill",
                           "fill": "$ink",
-                          "content": "Terima kredensial",
-                          "fontFamily": "$font-body",
-                          "fontSize": 15,
-                          "fontWeight": "600"
+                          "cornerRadius": 999,
+                          "gap": 6,
+                          "padding": [
+                            5,
+                            12,
+                            5,
+                            8
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "yZghU",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "key-round",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            },
+                            {
+                              "type": "text",
+                              "id": "g3ykX",
+                              "fill": "#FFFFFF",
+                              "content": "Langkah 3",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
                         },
                         {
                           "type": "text",
-                          "id": "y8V52b",
+                          "id": "f5eqK9",
+                          "fill": "$ink",
+                          "content": "Terima kredensial",
+                          "fontFamily": "$font-head",
+                          "fontSize": 19,
+                          "fontWeight": "600",
+                          "letterSpacing": -0.5
+                        },
+                        {
+                          "type": "text",
+                          "id": "JgbVD",
                           "fill": "$muted",
-                          "content": "Tampil otomatis setelah lunas.",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Email dan password tampil di halaman pesanan, salinan dikirim ke email.",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-body",
-                          "fontSize": 13,
+                          "fontSize": 14,
                           "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vTVFe",
+                  "name": "Payment carousel",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "J6GkZ",
+                      "name": "Header",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "justifyContent": "space_between",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "rhsVx",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "XqGy3",
+                              "fill": "$ink",
+                              "content": "Bisa bayar dari",
+                              "fontFamily": "$font-head",
+                              "fontSize": 18,
+                              "fontWeight": "600",
+                              "letterSpacing": -0.4
+                            },
+                            {
+                              "type": "text",
+                              "id": "ltGyA",
+                              "fill": "$muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Satu QRIS untuk semua e-wallet dan m-banking, atau pakai saldo.",
+                              "fontFamily": "$font-body",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C0fEBG",
+                      "name": "Viewport",
+                      "clip": true,
+                      "width": "fill_container",
+                      "gap": 12,
+                      "padding": [
+                        4,
+                        0,
+                        10,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "adLX8",
+                          "name": "Logo QRIS",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "kJfJY",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 28,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/qris.png",
+                                "mode": "contain",
+                                "transform": [
+                                  5.556,
+                                  0,
+                                  0,
+                                  17.86,
+                                  -0.306,
+                                  -0.661
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tbnzj",
+                          "name": "Logo GoPay",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "nO0Bh",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 24,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/gopay.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yrBwo",
+                          "name": "Logo OVO",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Td1BE",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 24,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/ovo.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wkm9X",
+                          "name": "Logo DANA",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "M2rFk",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 24,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/dana.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "t7U70L",
+                          "name": "Logo ShopeePay",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "ssar0",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 28,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/shopeepay.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "uUf4p",
+                          "name": "Logo m-Banking",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "wbbzg",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "landmark",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            },
+                            {
+                              "type": "text",
+                              "id": "D00Ags",
+                              "fill": "$ink",
+                              "content": "m-Banking",
+                              "fontFamily": "$font-head",
+                              "fontSize": 14,
+                              "fontWeight": "700",
+                              "letterSpacing": -0.3
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RCSZn",
+                          "name": "Logo Saldo",
+                          "width": 132,
+                          "height": 64,
+                          "fill": "$surface",
+                          "cornerRadius": 16,
+                          "stroke": "$hairline",
+                          "strokeWidth": 1,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#11121314",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "gap": 8,
+                          "padding": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "cM2LU",
+                              "name": "Logo image",
+                              "width": "fill_container",
+                              "height": 28,
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "images/logo_website.png",
+                                "mode": "contain"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "kyH5s",
+                          "layoutPosition": "absolute",
+                          "x": 302,
+                          "y": 0,
+                          "name": "Fade right",
+                          "width": 48,
+                          "height": 78,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 90,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#F7F7F8",
+                                "position": 0
+                              },
+                              {
+                                "color": "#F7F7F800",
+                                "position": 1
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yNZEt",
+                      "name": "Dots",
+                      "width": "fill_container",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "m6Rgs",
+                          "name": "Dot active",
+                          "fill": "$ink",
+                          "width": 20,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "jwarQ",
+                          "name": "Dot",
+                          "fill": "$line",
+                          "width": 6,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "F1XPB",
+                          "name": "Dot",
+                          "fill": "$line",
+                          "width": 6,
+                          "height": 6
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 999,
+                          "id": "B7lFWK",
+                          "name": "Dot",
+                          "fill": "$line",
+                          "width": 6,
+                          "height": 6
                         }
                       ]
                     }
@@ -20170,7 +22736,7 @@
       "type": "frame",
       "id": "WT76N",
       "x": 5740,
-      "y": 2581,
+      "y": 2859,
       "name": "Detail Produk Mobile",
       "clip": true,
       "width": 390,
@@ -20666,7 +23232,7 @@
       "type": "frame",
       "id": "LTl0M",
       "x": 3630,
-      "y": 7157,
+      "y": 7944,
       "name": "Dashboard Saldo Mobile",
       "clip": true,
       "width": 390,
@@ -21262,7 +23828,7 @@
       "type": "frame",
       "id": "krPvF",
       "x": 12070,
-      "y": 7157,
+      "y": 7944,
       "name": "Admin Mobile",
       "clip": true,
       "width": 390,
@@ -21906,6 +24472,818 @@
                       "fontWeight": "500"
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "aaGhZ",
+      "x": 4220,
+      "y": 1881,
+      "name": "Nav Menu · Pill Select",
+      "width": 760,
+      "fill": "$bg",
+      "cornerRadius": 24,
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "qwwW1",
+          "name": "Heading",
+          "fill": "$ink",
+          "content": "Nav menu — pill select",
+          "fontFamily": "$font-head",
+          "fontSize": 24,
+          "fontWeight": "700",
+          "letterSpacing": -0.6
+        },
+        {
+          "type": "frame",
+          "id": "gxUBB",
+          "name": "Active",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "ON0Yb",
+              "name": "Active title",
+              "fill": "$ink",
+              "content": "Active",
+              "fontFamily": "$font-head",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "OhSes",
+              "name": "Active desc",
+              "fill": "$muted",
+              "content": "Halaman aktif: pill $ink, teks putih semibold.",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "jvGAq",
+          "name": "Menu active",
+          "fill": "$surface",
+          "cornerRadius": 999,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#11121314",
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "blur": 8
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Ec1Jx",
+              "name": "Item Produk",
+              "fill": "$ink",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Mt0Bu",
+                  "name": "Produk label",
+                  "fill": "#FFFFFF",
+                  "content": "Produk",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CCKUB",
+              "name": "Item Cara beli",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ARyOn",
+                  "name": "Cara beli label",
+                  "fill": "$ink",
+                  "content": "Cara beli",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RH38c",
+              "name": "Item Riwayat",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "d1DmKF",
+                  "name": "Riwayat label",
+                  "fill": "$ink",
+                  "content": "Riwayat",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "enb8H",
+              "name": "Item Bantuan",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MagQ7",
+                  "name": "Bantuan label",
+                  "fill": "$ink",
+                  "content": "Bantuan",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Js5ND",
+          "name": "Hover",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "T5Fqb",
+              "name": "Hover title",
+              "fill": "$ink",
+              "content": "Hover",
+              "fontFamily": "$font-head",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "PnOwR",
+              "name": "Hover desc",
+              "fill": "$muted",
+              "content": "Pill hover $pill muncul di bawah item yang disorot; pill aktif tetap.",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "TcemJ",
+          "name": "Menu hover",
+          "fill": "$surface",
+          "cornerRadius": 999,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#11121314",
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "blur": 8
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "o5Dme5",
+              "name": "Item Produk",
+              "fill": "$ink",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r9wAk",
+                  "name": "Produk label",
+                  "fill": "#FFFFFF",
+                  "content": "Produk",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LZq9L",
+              "name": "Item Cara beli",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "PmAUw",
+                  "name": "Cara beli label",
+                  "fill": "$ink",
+                  "content": "Cara beli",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hFwmd",
+              "name": "Item Riwayat",
+              "fill": "$pill",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "saS5R",
+                  "name": "Riwayat label",
+                  "fill": "$ink",
+                  "content": "Riwayat",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HN7ns",
+              "name": "Item Bantuan",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OAhAp",
+                  "name": "Bantuan label",
+                  "fill": "$ink",
+                  "content": "Bantuan",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OwpH3",
+          "name": "Pindah halaman",
+          "layout": "vertical",
+          "gap": 6,
+          "children": [
+            {
+              "type": "text",
+              "id": "Wp8UG",
+              "name": "Pindah halaman title",
+              "fill": "$ink",
+              "content": "Pindah halaman",
+              "fontFamily": "$font-head",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "f0r7yq",
+              "name": "Pindah halaman desc",
+              "fill": "$muted",
+              "content": "Pill aktif meluncur ke item baru (posisi + lebar).",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "m8nDPE",
+          "name": "Menu moved",
+          "fill": "$surface",
+          "cornerRadius": 999,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#11121314",
+            "offset": {
+              "x": 0,
+              "y": 2
+            },
+            "blur": 8
+          },
+          "gap": 4,
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "xE9jX",
+              "name": "Item Produk",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "U8BC92",
+                  "name": "Produk label",
+                  "fill": "$ink",
+                  "content": "Produk",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NqMYF",
+              "name": "Item Cara beli",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TZrhR",
+                  "name": "Cara beli label",
+                  "fill": "$ink",
+                  "content": "Cara beli",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y1H73",
+              "name": "Item Riwayat",
+              "fill": "$ink",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ltbfd",
+                  "name": "Riwayat label",
+                  "fill": "#FFFFFF",
+                  "content": "Riwayat",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jq90r",
+              "name": "Item Bantuan",
+              "cornerRadius": 999,
+              "padding": [
+                10,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "BftEz",
+                  "name": "Bantuan label",
+                  "fill": "$ink",
+                  "content": "Bantuan",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Qbf9L",
+          "name": "Motion spec",
+          "width": "fill_container",
+          "fill": "$surface",
+          "cornerRadius": 16,
+          "layout": "vertical",
+          "gap": 6,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "YCroq",
+              "name": "Spec line",
+              "fill": "$ink",
+              "content": "• Satu pill aktif + satu pill hover, posisi absolut di belakang teks",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "uaYTI",
+              "name": "Spec line",
+              "fill": "$ink",
+              "content": "• Transisi transform & width 350ms, ease cubic-bezier(.22,1,.36,1) (--kr-ease)",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "RQ6zL",
+              "name": "Spec line",
+              "fill": "$ink",
+              "content": "• Hover pill fade-in 150ms; hilang saat mouse keluar menu",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "NWSGX",
+              "name": "Spec line",
+              "fill": "$ink",
+              "content": "• prefers-reduced-motion: tanpa luncuran, pill langsung pindah",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "EBJUc",
+      "x": 5060,
+      "y": 1881,
+      "name": "Avatar Profil · Notion style",
+      "width": 960,
+      "fill": "$bg",
+      "cornerRadius": 24,
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "Ou8Lm",
+          "name": "Heading",
+          "fill": "$ink",
+          "content": "Avatar profil — gaya Notion",
+          "fontFamily": "$font-head",
+          "fontSize": 24,
+          "fontWeight": "700",
+          "letterSpacing": -0.6
+        },
+        {
+          "type": "frame",
+          "id": "GoAtt",
+          "name": "Avatars",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "ayMPG",
+              "name": "Avatar Cewek",
+              "reusable": true,
+              "clip": true,
+              "width": 400,
+              "height": 400,
+              "fill": "#FFFFFF",
+              "cornerRadius": 200,
+              "stroke": "$hairline",
+              "strokeWidth": 4,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "AHBvM",
+                  "x": 0,
+                  "y": 0,
+                  "fill": "#ffffffa3",
+                  "width": 400,
+                  "height": 400
+                },
+                {
+                  "type": "path",
+                  "id": "p6iGM",
+                  "x": 31.2256,
+                  "y": 22.55,
+                  "geometry": "M337.72437 350.30002c-3.20002-13.4-11.35004-29.75-25.45002-39.80002-12.75-9.09998-36.09997-15.64999-53.90002-22.59998 17.40002-5.14999 27.95001-27.6 26.90002-52.20002 3.35004 17.05002 0.65003 32.69999-6.14996 40.50001-1.25 1.45001-0.04999 2.29999 1.59998 1.79999 9.09997-3 18.10003-15.85001 18.10003-33.99998 0-19.40003-8.75-40.40003-14.65002-68.60003-5.75-27.5-9.5-60.84999-18.84998-90.24999-17.25004-55.3-52.30003-76.15-69.25004-72.85-7.44999-7.85-21.15-12.3-35.24999-12.3-28.05 0-65.55 17.25-87.95 61.64999-15.75 30.85001-21.35 68.35001-27.15 100.75002-5.45 31.74998-15.10001 59.39998-15.1 79.79999 0 11.35 1.5 18.69999 5.84999 25.8 3.85001 6.25 9.4 9.65002 12.10001 10.05002 1.1 0.19998 1.34999-0.75 0.45-1.9-7.25-9.70001-9.5-26.25001-6.60001-42.55003-0.14999 32.65001 12.2 52.75002 27.9 57.2-15.8 5.60003-33.39999 11.05002-44.64999 19.6-14.25 10.60001-22.9 28.50003-25.65 40.4-0.3 1.55005 2.25 3.95001 3.25 4.25 3.5-14.54999 11.25-30.79999 24.7-40.39997 13.40001-9.64999 43.40001-18.30001 61-25.40002 1.65 0.70001 3.14999 1.25 4.65 1.64999 14.5 24 44.65 37.35004 74 37.35004 34.1 0 66.5-17.65002 76.15-40.85001 21.45 8.09998 50.54997 14.95002 64.15001 24.54999 14.39996 10 23.34997 27.55002 27.09997 43.09998 1.10004-0.69998 3.10004-2.54996 2.70002-4.74997z",
+                  "fill": "#111110",
+                  "width": 337.7765,
+                  "height": 355.05
+                },
+                {
+                  "type": "path",
+                  "id": "BSivP",
+                  "x": 273,
+                  "y": 153.105,
+                  "geometry": "M8.39999 0.69498c7-2.65001 14.80002 2.2 14.80002 15.89999 0 23.00001-13.90002 34.75-23.20001 29.85001 1.25-7.64999 2.30002-16.84999 2.64999-24.80001 1.5-3.2 2.60001-6.7 3.35001-10.05 4.29999-1.35001 7.60001 1.59999 9.20001 5.85001 0.54999 1.5 2.34998 1.54999 2.34998-0.45 0-6.30002-5.64999-10.05002-10.44998-9.3 0.60001-2.55 1-5 1.29998-7z",
+                  "fill": "#ffffff",
+                  "width": 23.2,
+                  "height": 47.5444
+                },
+                {
+                  "type": "ellipse",
+                  "id": "gILJu",
+                  "x": 275.7322,
+                  "y": 190.2537,
+                  "fill": "#111110",
+                  "width": 7.3366,
+                  "height": 7.3366
+                },
+                {
+                  "type": "path",
+                  "id": "p2i7d",
+                  "x": 97.1,
+                  "y": 161.8326,
+                  "geometry": "M13.8 0.51746c0.64999 2.2 1.35 4.74998 2 7.05-5.85-0.45-10.4 4.14998-10.15 10.55 0.05 1.95 1.85 2.14998 2.4 0.64998 1.65-5.19998 5.6-7.44998 9.24999-6.64998 1.55001 3.75 3.65001 7.5 5.40001 10.29999 1.00001 8.29999 2.90001 17.45 4.7 23.10001-12.20001 7.05-27.4-9.89999-27.4-30 0-13.45001 8.2-17 13.8-15z",
+                  "fill": "#ffffff",
+                  "width": 27.4,
+                  "height": 47.144
+                },
+                {
+                  "type": "ellipse",
+                  "id": "lkfwE",
+                  "x": 113.1492,
+                  "y": 198.2957,
+                  "fill": "#111110",
+                  "width": 7.3366,
+                  "height": 7.3366
+                },
+                {
+                  "type": "path",
+                  "id": "VKZFR",
+                  "x": 123.5,
+                  "y": 66.55,
+                  "geometry": "M101.35001 0c10.89999 21.7 29.64999 48.3 39.25 66.3 5.1 9.39999 7.35 20.2 7.35 33.80001 0 21.5-2.65002 38.94998-9.35003 51.25-10.19997 19.04998-37.99997 37.54998-53.49997 42.05-6.45001 1.84997-13.90001 1.75-20.7 0.09997-16.8-4.44999-41.40001-20.34999-51.20001-36.5-8.85-14.24998-13.2-37.69999-13.2-53.94999 0-10.09999 2.10001-17.49999 7.25-23.79999 11.95001-14.39999 26.85001-31.25 36-43.40001-7.89999 14.80001-19.89999 30.90001-29.40001 37.95001-2.45 1.84999-5.2 3.89999-5.99998 5.09999-0.65001 0.95001 0.14999 1.45 1.35 1.10001 13.34998-5.3 26.99998-4.55 39.04999-2.45 2.5 0.45 2.95-1.60001 1.59999-3.00001-4-4.2-12.64999-5.54999-19.29999-5.2 19.2-10.14999 37.79999-34.44999 47.09999-52.49999-5.94998 19.55-18.39999 38.7-31.39999 47.64999-1.5 1.10001-0.75 2.20001 1.14999 1.95001 16.25-2.45 50.70001-26.5 53.95002-66.45z",
+                  "fill": "#ffffff",
+                  "width": 147.95,
+                  "height": 194.7625
+                },
+                {
+                  "type": "path",
+                  "id": "waCpa",
+                  "x": 130.35,
+                  "y": 252.15,
+                  "geometry": "M104.69998 0c0.25002 13.30002 0.70001 25.10001 3.90003 33.30002 3.24998 8.44998 10.84997 13.89999 17.6 16.79999-1.35 2.60001-4.25003 5.29999-6.35 6.75-1.35001 1.10001-0.85003 2.29999 0.84997 2.6 6.40003 1.14999 14.40003-0.30002 20-2.70001-12.29999 23.69998-42.89998 38-72.04999 38-29.5 0-57.10001-13.5-68.64999-32.5 6.10001 0.64999 12.64999-0.39999 15.39999-1.79999 1.2-0.64999 1-1.85001-0.1-2.45001-3.09999-1.75-6.09999-3.25-7.05001-4.35001 0.20001-0.14999 0.40001-0.19998 0.65001-0.25 9.25 4.40002 21.59999 4.04999 27 1.15003 1.45001-0.75003 1.25-2.10004-0.04998-2.45001-4.25002-1.29999-8.30002-4.45001-10.30002-7 9.55-8 10.25-25.79999 9.8-42.04999 10.45 6.19998 22.64999 10.89999 33.5 10.89999 12.3 0 25.5-7.10001 35.84999-13.95001z",
+                  "fill": "#ffffff",
+                  "width": 140.7,
+                  "height": 94.75
+                },
+                {
+                  "type": "path",
+                  "id": "s22v8",
+                  "x": 275.6,
+                  "y": 303.8,
+                  "geometry": "M0 2.10001l3.29999-2.10001-1.29999 2.65002-2-0.55001z",
+                  "fill": "#ffffff",
+                  "width": 3.3,
+                  "height": 2.65
+                },
+                {
+                  "type": "path",
+                  "id": "iDrqH",
+                  "x": 177.6347,
+                  "y": 212.3992,
+                  "geometry": "M3.66528 2.65083c4.70001 3.35001 11.55002 4.45001 17.20002 4.45002 7.64999 0 16.14999-2.59999 20.14999-6.40001 2.3-1.95 5.10001 0.55 2.90001 2.85-5.25001 4.70001-14.70001 7.8-23.05 7.8-7.5 0-15.59999-2.2-19.85001-5.4-2.39999-1.89998-0.14999-4.8 2.64999-3.30001z",
+                  "fill": "#111110",
+                  "width": 44.7141,
+                  "height": 11.3508
+                },
+                {
+                  "type": "path",
+                  "id": "s9VHlU",
+                  "x": 192.757,
+                  "y": 191.3918,
+                  "geometry": "M4.29298 0.05818c1.10001-0.35001 1.2 0.94998 0.45 1.99999-2.95 4.35001 0.59999 6.10001 3.5 4.6 1.75-0.90001 3 1.2 1.45001 2.5-2.90001 2.54999-7.80002 1.5-9.35002-2.05-1.19998-3.14999 0.90001-6.84999 3.95001-7.04999z",
+                  "fill": "#111110",
+                  "width": 10.3962,
+                  "height": 10.5662
+                },
+                {
+                  "type": "path",
+                  "id": "ZyX22",
+                  "x": 141.57,
+                  "y": 158.8,
+                  "geometry": "M14.28003 0c8 0 13.49999 3.59999 13.49998 10.75 0 5.7-3.79999 9.45-8.09999 9.45-4.7 0-8.05-4.20001-8.05-9.30001 0-2.89999 0.95-5.59999 2.35001-6.79998-4.3-0.2-8.65001 1.64999-11.35001 3.59999-1.90001 1.25-3.45-0.45001-2.14999-2.2 2.64999-3.40001 8.34999-5.5 13.8-5.5z",
+                  "fill": "#111110",
+                  "width": 27.78,
+                  "height": 20.2
+                },
+                {
+                  "type": "path",
+                  "id": "wdUjo",
+                  "x": 225.05,
+                  "y": 154.35,
+                  "geometry": "M14.45001 0c5 0 9.7 1.89999 11.60001 4.34999 1.39999 1.75-0.10001 3.35001-1.8 2.40001-3.45001-2.25-7.95-3.20001-11.4-2.65001 2.09999 1.59999 3.39998 4.5 3.39998 7.7 0 5.60001-3.75 8.75-8.09999 8.75-4.7 0-8.15001-4.05-8.15001-9.49999 0-7.8 6.70001-11.05 14.45001-11.05z",
+                  "fill": "#111110",
+                  "width": 26.6033,
+                  "height": 20.55
+                },
+                {
+                  "type": "path",
+                  "id": "c3htMK",
+                  "x": 216.7941,
+                  "y": 130.75,
+                  "geometry": "M22.05586 0c8.69998 0 17.29999 2.95 20.15 6.75 1.14999 1.40001 0.20001 2.25-1.29999 1.8-5.15002-1.55-10.85002-2.00002-15.8-2.00001-8.3 0-17.45001 2.25002-22.55002 3.85-2.64999 0.70001-3.24998-1.39999-1.74999-3.04998 4.3-4.35001 13.09999-7.35001 21.25-7.35001z",
+                  "fill": "#111110",
+                  "width": 42.7161,
+                  "height": 10.5384
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ctSrp",
+              "name": "Avatar Cowok",
+              "reusable": true,
+              "clip": true,
+              "width": 400,
+              "height": 400,
+              "fill": "#FFFFFF",
+              "cornerRadius": 200,
+              "stroke": "$hairline",
+              "strokeWidth": 4,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "Zdt6e",
+                  "x": 0,
+                  "y": 0,
+                  "fill": "#ffffffa3",
+                  "width": 400,
+                  "height": 400
+                },
+                {
+                  "type": "path",
+                  "id": "s4dNw",
+                  "x": 23.6089,
+                  "y": 21.8053,
+                  "geometry": "M352.74103 353.49463c-2.84998-6.54999-7.5-15.35001-12.19995-19.25-26.75-22.09998-62.00003-30-84.25003-43.95001-7.19997-4.44998-13.44997-6.49997-19.69997-6.54999-2.05002-2.10001-4.25002-4.44998-4.95001-7.5-2.25-10.39999-2.54999-26.24999-1.60001-35.49999 9.75-10.14999 16.85001-21.19998 19.85001-36.59999 14.44999 5.05001 29.99998-20.5 29.99998-41.75 0-11.74998-5.35-18.64999-12.6-18.94999 2.20001-7.65 4.89999-16.55001 5.55001-23 0.34998 1.44999 0.59998 3.6 1.09998 4.3 2.04999-4.5 3.39999-13.5 3.05002-18.8 0.85 0.94999 1.49997 2.89999 2.20001 3.70001 2.74997-8.50002 1.04999-22.05002-3.20004-29.15003 2.55002 1.40001 4.75003 5.10001 6.70001 6.85001-0.84998-11.25-6.14999-21.59999-12.75-28.05-3.79999-7.8-11.54999-14.5-17.89998-17.4 5.45 0 10.95 3.4 14.59999 5.75001-3.79999-9.85001-18.69996-18.25001-31.44999-14.65001 1.80001-6.9-2.24997-14.35-6.99999-16.25 2.05 4.2 2.25 10.15 0.49999 13.35-2.54999-21.6-19.69999-29.6-32.99999-28.35-0.05 0.2 0.04999 0.45 0.25 0.6 6.25 2.3 11.74999 7.05 13.79999 12-12.09999-11.05-29.84999-16.35-45.44998-13.65-11.40001 2.75-21.35001 4.5-32.15001 0.2-0.15 0.1-0.15 0.35 0 0.6 2.19999 2.95 6.15001 5.5 9.35 6.95-6.70001 0.4-13 2.35-17.95002 5.4-8.6 3.55-17.89999 7.1-22.19999 13.05 2.95-0.89999 6.6-2.14999 9.44999-2.3-6.59999 2.75-12.04999 7.3-16.89999 11.45-5.60001 4.75-12.7 8.1-18.3 8.9-0.05 0.15 0 0.4 0.19999 0.55001 3.8 2.05 9.35001 2.64999 13.45001 2.25-12.24999 7.84999-20.64999 22.4-22.5 35.24998 0.1 0.05 0.35 0 0.55-0.14999 2.15-2.84999 5.2-6.25 7.35-7.5-5.6 10.05-7.55 24.45-6.25 34.20001 0.15 0.10001 0.39999 0.05001 0.60001-0.15001 0.99999-2.05 2.29999-4.5 3.34999-5.35-0.55 7.55 1.14999 16.75001 3.5 21.40001 0.55-1.20002 1-3.29999 1.3-4.2 1 7.64999 3.85 16.45 5.60001 22.2-7.35001 0.40001-12.05 7.94999-12.05001 18.94999 0 22.70002 16.54999 45.65001 29.85 41.90001 3.24999 15.74999 11.6 28.4 21.00001 37.04999 0.89998 9.89999 0.39999 24.84999-1.3 34.75002-0.55001 2.94995-3.05001 5.64996-4.95 7.64996-6.10001 0.10001-12.00002 2.79999-18.15001 6.35001-25.5 15.19998-62.25 25.69998-84.9 44.14999-4.95 4.10001-9.8 13.75-12.05 19.60001-1 2.55001 2.2 3.64999 3.25 1.70001 3.4-6.15003 7.1-14.04999 11.65-18 22.40001-18.60001 54.45-28.30002 76.35-40 3.75 29.94998 42.25 53.95001 83.90002 53.95001 43.54999 0 80.54999-24.90002 84.64998-53.95001 24.5 12.70001 56.84997 21.49997 77.70001 40 4.74997 4.34997 8.54999 12.19998 11.69998 17.70001 1.25 2.29999 4.40003 0.99997 3.34998-1.75003z m-278.19998-191.09998c-0.59999-15.65001 10.25001-18.09999 15.30001-11.74998 1.2 4.09999 2.05 9.45 2.55 12.99998-2.2-4.5-5.8-8.09999-8.85-7.94999-3.4 0.20001-5 5.04998-3.95 6.8 0.2 0.14999 0.55 0.10001 0.75-0.14999 1.15-2.25 2.35-3.80001 3.65001-3.65001 4.89999 1.05 10.04999 16.55 13.44998 21.44999 0.65 0.85001 1.65001 0.59999 1.60001-0.49998-0.95-9.75002-1.7-21.20001-1.85-28.85001 0.7 0.15 1.54999 0.45 2.2 0.84999 1.6 0.80001 3.89999 0.9 5.7 1.2-0.55001 22.25002 15.20001 34.75002 30.10001 34.75002 20.64999 0 32.7-17.25002 31.34999-35.95002 4.5-4.1 13.15001-3.59999 17.30002 0-1.55002 20 12.95 35.95002 30.64998 35.95002 17.65001 0 31.10002-13.80002 30.90001-34.75002 1.6-0.54999 3.70001-0.54999 4.95001-1.39999 0.64996-0.54999 1.54999-0.70002 2.34998-0.65 0.05001 9.30001-0.89997 21.19998-1.4 28.75-0.04999 1.25 1.04999 1.4 1.65003 0.59999 3.84999-6.84999 8.04994-20.25 12.59999-21.44999 1.74997-0.4 3.19998 1.64999 4.09997 3.6 0.25 0.34999 0.75 0.34999 0.85001 0.09999 0.69998-3.15001-1.55002-6.69999-4.45001-6.69999-3.54999 0.20001-6.94999 5-8.54999 7.94999 0.64999-4.6 1.5-9.6 2.54999-12.90001 5.75-6.59999 15.64999-3.64999 15.6 11.65001 0.25 21.84999-15.80002 42.30001-24.94999 37.85001 0.45001-5.14999 1.70001-12.75 1.35-15.8-0.24997-1.04999-1.29999-0.84999-1.59997 0-3.00003 10.89999-4.95002 23.79998-9.70002 33.44999-8.8 17.84999-27.85 33.05001-45.35 42-12.79999 6.34998-28.5 6.25-40.80001 0.44999-18.8-9.39998-36.79999-24.24996-45.09999-41.69999-5.15001-10.94999-7.40001-25-10.20001-34.55-0.35-1.2-1.65-1.34999-1.75001 0-0.05 5.05 1.65 11.5 2.25001 16.15001-10.7 5-25.2-18.2-25.25001-37.85001z m32.95-8.09999c-0.2-15.44999 13.15001-20.94999 27.30001-20.94999 14.65001 0 28.95001 5.89997 28.95001 21.3 0 18.04999-13.19999 30.24998-28.55 30.24998-15.75001 0-27.50001-13.15001-27.70002-30.59999z m79.15002 0.35001c0-15.75002 14.09999-21.3 27.84999-21.3 14.40001 0 28.45003 5.54998 28.40001 20.94999 0 17.85001-12.5 30.59999-28.40001 30.59999-16.15 0-27.84999-13.99998-27.84999-30.24998z m-61.10002 91.14999c8.55003 7.65 18.90002 14.39998 28.20002 18.64998 13.15 5.54999 29.2 5.30002 41.04999 0.45001 11.05-5 22.80002-13.19999 30.75002-19.24998-0.45 10.69997 0.09999 22.64998 1.84999 31.49998 1.14999 5.94999 4.44999 11.59998 7.20001 13.04999 0.34998-0.29999-0.15002-2.35-0.45001-3.29999 1.94998 1.9 4.79999 3.34998 6.25 5.15-1.25 17.30002-29.45 38.89999-65.29999 38.89999-40.00002 0-63.45002-25.34997-64.40002-38.89999 1.34999-2.15 4.45-3.9 6.45-5.15-0.35001 1.19999-0.95001 2.95002-0.5 3.54999 3.25-1.84997 6.20001-8.25 7.14999-13.90002 1.55002-9.9 1.95002-21.79995 1.75-30.74996z m49.80003 102.24999c-45.45001 0-78.90002-26.80002-81.55003-52.10001 4.75001-3.05002 10.35001-6.25 14.55001-7.70001-1.2 1.55002-1.30001 3.39999-0.95 5.20001 5.09999 22.10001 34.75001 40.79999 67.70002 40.79999 38.84998 0 66.79999-23 69.25-41.25 0.29999-2.09998-0.20001-3.85001-1.20001-4.84998 5 2.14997 10.44998 5.19999 14.44999 7.79999-3.65 30-41.44999 52.10001-82.24998 52.10001z m-78.00002-201.05001c-0.2-6.29998-0.10001-13.34999 0.40001-18.04998 0.85-4.5 4.19999-9.25 5.79999-12.35001 0.2-5 0.6-10.7 1.75001-14.25 5.89998-2.95 11.49998-8.3 15.29999-11.89999-2.15 5.64999-6.65 11.34999-9.5 14.44999-0.09999 0.30001 0.14999 0.55001 0.65001 0.5 13.64999-1.8 25.85001-16.25 33.4-23.6-3.09999 8.7-9.4 18.5-14.4 22.94999-0.15001 0.25002 0.04999 0.55001 0.54999 0.55001 10.50002-0.59999 21.90001-8.2 28.3-13.79999-2.25 5.14999-7.44999 10.7-10.14999 13.55-0.10001 0.24999 0.14999 0.44998 0.59999 0.44998 15.20001-0.84999 32.2-16.44999 39.35001-26.59999-2.9 10.3-10.25 21.30001-16.15001 26-0.19998 0.25 0.05002 0.59999 0.60002 0.59999 13.09999-0.75 26.04999-13.84999 31.39999-23.34999-1.20001 7.40001-5.55 16.3-8.40001 19.90001-0.04998 0.29999 0.15 0.45 0.55001 0.29999 10-4.95 17.89999-18.64999 19.3-29.59999 8.95 4.75 14 20.89999 13.04999 32.74998 0.1 0.40001 0.45 0.5 0.85 0.25002 3.30001-3.50002 4.85003-10.15001 5.25002-14.45 1.14999 2.29999 2.10001 5.64999 3.09998 8.44998 1.45001 4.75002 4.70001 9.25002 7.14999 12.05001 0.10001 1.75001 0.10001 3.55 0.30002 4.85 2.19998 3.9 5.1 8.45 5.70001 12.30001 0.59998 5.85 0.79999 12.95001 0.69998 18.3-0.69998 0.05-1.89999 0.14999-2.64999-0.09999-1.85001-0.70001-4.05002-0.45001-5.60001-0.35001-3.89999-11.1-16.85-15.65001-30.05-15.65001-14.2 0-26.7 6.05001-29.75 17.09999-5.89998-3.34999-13.94998-3.09999-18.9 0-3.6-11.69998-16.84999-17.09999-31.05-17.09999-12.9 0-25.50001 5.10001-29.00001 15.65001-1.69999-0.15001-3.64999-0.35-5.09999 0.19998-1.05 0.25002-2.35 0.20002-3.35 0z",
+                  "fill": "#000000",
+                  "width": 352.9519,
+                  "height": 356.5399
+                },
+                {
+                  "type": "ellipse",
+                  "id": "uZp7D",
+                  "x": 155.6104,
+                  "y": 167.2316,
+                  "fill": "#000000",
+                  "width": 13.3312,
+                  "height": 16.4219
+                },
+                {
+                  "type": "ellipse",
+                  "id": "IDP5w",
+                  "x": 228.4134,
+                  "y": 167.2316,
+                  "fill": "#000000",
+                  "width": 13.3312,
+                  "height": 16.4219
+                },
+                {
+                  "type": "path",
+                  "id": "MIVI0",
+                  "x": 185.6125,
+                  "y": 204.2067,
+                  "geometry": "M3.73747 0.19331c-2.44998 2.69998-4.14998 7.14999-3.64999 10.34999 0.75002 5.5 7.25 7.79999 12.20001 7.79999 2.79999 0 4.64998-2.19998 7.54999-2.75 1.90001-0.34999 1.55-2.29999-0.2-2.29999-2.79999 0-4.89999 2.2-7.34999 2.2-4.10002-0.2-8.40001-2.09999-8.70001-5.95-0.2-3.09999 1.8-6.7 1.95-8.44999 0.10001-1-1.04999-1.34999-1.80001-0.9z",
+                  "fill": "#000000",
+                  "width": 21.114,
+                  "height": 18.3433
+                },
+                {
+                  "type": "path",
+                  "id": "HaaAe",
+                  "x": 172.648,
+                  "y": 235.4891,
+                  "geometry": "M50.05203 0.26086c-5.90001 3.59999-15.60002 5.25-24.15002 5.25-9.2 0-18.84999-2-23.65-5.15-1.99998-1.29999-3.09999 1.25-1.44999 2.5 5.65001 4.05 15.65001 5.85001 25.09999 5.85 9.70001 0 20.70001-2.25 25.65001-5.95 1.8-1.40001 0.25-3.5-1.49999-2.5z",
+                  "fill": "#000000",
+                  "width": 52.3543,
+                  "height": 8.7109
+                },
+                {
+                  "type": "path",
+                  "id": "AYybC",
+                  "x": 109.1107,
+                  "y": 189.4523,
+                  "geometry": "M3.28929 0.04773c-2.84999 1.05-3.64999 5.25-3.14999 8.25 0.5 4.15001 3.85001 8.05 6.3 8.70001 0.55 0.09999 0.75-0.50002 0.49999-1.1-1.95-2.89999-3.89999-5.65001-4.1-8.80001-0.25-2.45 0.95-4.85001 1.6-6.1 0.30001-0.7-0.4-1.14999-1.15-0.95z",
+                  "fill": "#000000",
+                  "width": 7.0457,
+                  "height": 17.0087
+                },
+                {
+                  "type": "path",
+                  "id": "VMrLj",
+                  "x": 281.2144,
+                  "y": 189.4127,
+                  "geometry": "M2.13562 0.18732c-0.24997 0.2-0.24997 0.65001 0 1.05002 1.30002 1.8 2.05005 3.79999 1.80002 6.04998-0.25 3.34999-2.75 6.45001-3.79999 8.55001-0.40002 0.79999 0.14999 1.35001 0.79999 1.14999 3.25003-1.64999 5.5-5.64999 5.85-9.34999 0.44998-4.25-2.15002-8.60001-4.65002-7.45001z",
+                  "fill": "#000000",
+                  "width": 6.8368,
+                  "height": 17.0286
+                },
+                {
+                  "type": "path",
+                  "id": "E8Bjq",
+                  "x": 135.35,
+                  "y": 139.3,
+                  "geometry": "M42.74999 10c0.35001 0.05 0.45-0.3 0.3-0.55-0.69998-1.2-2.14999-2.60001-3.19998-3.30001 1.74999 0.8 3.64999 2.60001 5 3.30001 0.54999 0.20001 1-0.15001 0.94998-0.7-1-6.55-14.24998-8.75-25.25-8.75-6.89999 0-11.79999 1.3-15.29999 4.34999-2.70001 2.15001-4.75 5.25002-5.25 7.35001 0 0.35001 0.29999 0.55 0.69998 0.45001 13.20001-4.95001 28.80002-5.05 42.05001-2.15001z",
+                  "fill": "#000000",
+                  "width": 45.8038,
+                  "height": 12.1758
+                },
+                {
+                  "type": "path",
+                  "id": "g4foX",
+                  "x": 216.4729,
+                  "y": 139.2851,
+                  "geometry": "M0.82713 9.4649c1.05-1 3.00002-2.55 4.40001-3.19999-1.14999 0.95-2.54999 2.3-3.05 3.3-0.10001 0.29999 0.10001 0.5 0.45001 0.45 13.44998-3.45 29.54999-2.65001 41.94998 2.15001 0.45001 0.14999 0.75-0.15001 0.60004-0.60001-3.65002-7.65001-10.75003-11.55-20.25003-11.55-11.35001-0.25-23.94998 2.64999-24.89999 8.3-0.14999 0.84999 0.34999 1.39999 0.79998 1.14999z",
+                  "fill": "#000000",
+                  "width": 45.2162,
+                  "height": 12.2039
                 }
               ]
             }

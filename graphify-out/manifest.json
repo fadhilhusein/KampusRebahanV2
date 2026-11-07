@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "components/landing/EditorialLanding.tsx": {
-    "mtime": 1793944384.7478955,
-    "seen": 1793944609.9849358,
-    "ast_hash": "4181e76f0626758c0bafd9ee96e438cb",
+    "mtime": 1794029694.6171603,
+    "seen": 1794029767.3671877,
+    "ast_hash": "8fdf18aed8349c587061949d7e6b096b",
     "semantic_hash": ""
   },
   "components/landing/RecentPurchaseBanner.tsx": {
@@ -774,9 +774,9 @@
     "semantic_hash": ""
   },
   "design/SPEC.md": {
-    "mtime": 1793945158.9012363,
-    "seen": 1793945168.936762,
-    "ast_hash": "47afaa93750b2bf98e458b17d4f4a4ab",
+    "mtime": 1794029337.2963955,
+    "seen": 1794029767.3671877,
+    "ast_hash": "266b06463ade7c8ddbf31d00685c01ed",
     "semantic_hash": ""
   },
   "public/KAMPUSREBAHAN.jpg": {
@@ -1317,6 +1317,96 @@
     "mtime": 1793952037.7220733,
     "seen": 1793952225.6991231,
     "ast_hash": "e37989449ec7cb670bcfcedfb47fae55",
+    "semantic_hash": ""
+  },
+  "components/landing/PaymentCarousel.tsx": {
+    "mtime": 1794029514.4202178,
+    "seen": 1794029767.3671877,
+    "ast_hash": "c02e56dd194c5dcea314958f6543fa4f",
+    "semantic_hash": ""
+  },
+  "design/images/dana.png": {
+    "mtime": 1794029302.697,
+    "seen": 1794029767.3671877,
+    "ast_hash": "c261002a68f7bf41ca8b4a7acc711a71",
+    "semantic_hash": ""
+  },
+  "design/images/dana.svg": {
+    "mtime": 1794029278.874461,
+    "seen": 1794029767.3671877,
+    "ast_hash": "917283598f9bd3508c24a9ecbd57d41c",
+    "semantic_hash": ""
+  },
+  "design/images/gopay.png": {
+    "mtime": 1794029302.663,
+    "seen": 1794029767.3671877,
+    "ast_hash": "866c53dd83d2d78c556cc7004d5130d1",
+    "semantic_hash": ""
+  },
+  "design/images/gopay.svg": {
+    "mtime": 1794029268.7219405,
+    "seen": 1794029767.3671877,
+    "ast_hash": "cb0ea0ede89764663b95e5b92939fcc9",
+    "semantic_hash": ""
+  },
+  "design/images/logo_website.png": {
+    "mtime": 1794029288.7567313,
+    "seen": 1794029767.3671877,
+    "ast_hash": "8cb584bd727aca5689cfdf22c8a78d61",
+    "semantic_hash": ""
+  },
+  "design/images/ovo.png": {
+    "mtime": 1794029302.683,
+    "seen": 1794029767.3671877,
+    "ast_hash": "0a5b34af23f3cdb9428abd85dbbb8c95",
+    "semantic_hash": ""
+  },
+  "design/images/ovo.svg": {
+    "mtime": 1794029268.861481,
+    "seen": 1794029767.3671877,
+    "ast_hash": "c3c8c623f42be4a6f94b2a243eb40855",
+    "semantic_hash": ""
+  },
+  "design/images/qris.png": {
+    "mtime": 1794029288.7471797,
+    "seen": 1794029767.3671877,
+    "ast_hash": "bccf39c730c7f568de1808d24f6a5865",
+    "semantic_hash": ""
+  },
+  "design/images/shopeepay.png": {
+    "mtime": 1794029470.8802717,
+    "seen": 1794029767.3671877,
+    "ast_hash": "5e77b5d21dffb36eda5b0f37676bac98",
+    "semantic_hash": ""
+  },
+  "public/payments/dana.svg": {
+    "mtime": 1794029470.6554933,
+    "seen": 1794029767.3671877,
+    "ast_hash": "917283598f9bd3508c24a9ecbd57d41c",
+    "semantic_hash": ""
+  },
+  "public/payments/gopay.svg": {
+    "mtime": 1794029470.649503,
+    "seen": 1794029767.3671877,
+    "ast_hash": "cb0ea0ede89764663b95e5b92939fcc9",
+    "semantic_hash": ""
+  },
+  "public/payments/ovo.svg": {
+    "mtime": 1794029470.6525,
+    "seen": 1794029767.3671877,
+    "ast_hash": "c3c8c623f42be4a6f94b2a243eb40855",
+    "semantic_hash": ""
+  },
+  "public/payments/qris-logo.png": {
+    "mtime": 1794029498.473,
+    "seen": 1794029767.3671877,
+    "ast_hash": "c1bae1465dfa1fc262d8e2c2fa574091",
+    "semantic_hash": ""
+  },
+  "public/payments/shopeepay.png": {
+    "mtime": 1794029470.796,
+    "seen": 1794029767.3671877,
+    "ast_hash": "5e77b5d21dffb36eda5b0f37676bac98",
     "semantic_hash": ""
   },
   "package-lock.json": {
