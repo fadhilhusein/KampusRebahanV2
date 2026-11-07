@@ -1,5 +1,12 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
+
 export default function WhatsAppButton() {
+  // The admin area has its own bottom bar, and the store owner doesn't need "contact admin".
+  if (usePathname().startsWith("/dashboard/admin")) return null;
+
   return (
     <a
       href="https://wa.me/6285180642043"
