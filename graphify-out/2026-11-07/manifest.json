@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "app/terms/page.tsx": {
-    "mtime": 1793944908.050139,
-    "seen": 1793945005.8167565,
-    "ast_hash": "1d5e71dbfcf73fc998fa2a8b77730f64",
+    "mtime": 1794050546.8618052,
+    "seen": 1794050677.2927258,
+    "ast_hash": "bfc3d6b861d23545cc778fd8c36bbb9d",
     "semantic_hash": ""
   },
   "auth.config.ts": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/LoyaltyCard.tsx": {
-    "mtime": 1794050257.4242394,
-    "seen": 1794050366.464954,
-    "ast_hash": "5a1804392d5ac59cd2fda5ac4e06c0df",
+    "mtime": 1794050495.3139167,
+    "seen": 1794050677.300032,
+    "ast_hash": "45c518ba2dfc7ce4d127b1e532e97f94",
     "semantic_hash": ""
   },
   "components/dashboard/TransactionsTable.tsx": {
@@ -516,10 +516,10 @@
     "semantic_hash": "c8fa3854a7fd2dc2782f557bc339d9ad"
   },
   "lib/api.ts": {
-    "mtime": 1784908444.8231177,
-    "seen": 1793935814.1698234,
-    "ast_hash": "c8eec70796f088b8196066f4d12d613a",
-    "semantic_hash": "c8eec70796f088b8196066f4d12d613a"
+    "mtime": 1794060469.9591632,
+    "seen": 1794060622.0077188,
+    "ast_hash": "08be4e2216baf3627e3a9af1edfd0e76",
+    "semantic_hash": ""
   },
   "lib/bayarGg.ts": {
     "mtime": 1793837281.1805112,
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "lib/loyalty.ts": {
-    "mtime": 1794050257.2573023,
-    "seen": 1794050366.477189,
-    "ast_hash": "865db8a9d345bf8a649f20646956932d",
+    "mtime": 1794050495.5168438,
+    "seen": 1794050677.328969,
+    "ast_hash": "6b952d2a6e9a5c7355c4b6d07a9df0aa",
     "semantic_hash": ""
   },
   "lib/mailer.ts": {
@@ -1629,6 +1629,30 @@
     "mtime": 1794049269.4498467,
     "seen": 1794050109.6939776,
     "ast_hash": "66615aed752427d8b08ff101439eb734",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20261107150000_add_order_completed_at/migration.sql": {
+    "mtime": 1794047372.4194624,
+    "seen": 1794050789.7409513,
+    "ast_hash": "9e93cde10cf6388bf968e002a8ca61bd",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20261107160000_coupon_revoked_status/migration.sql": {
+    "mtime": 1794047917.9447956,
+    "seen": 1794050789.7409513,
+    "ast_hash": "4464142d00230514bb7b5be652cf889c",
+    "semantic_hash": ""
+  },
+  "design/marketing/caption-story-claude-gemini.md": {
+    "mtime": 1794051414.0816176,
+    "seen": 1794060622.0087414,
+    "ast_hash": "054036db2904b19eb64e159c442978d6",
+    "semantic_hash": ""
+  },
+  "design/marketing/story-claude-pro-gratis-gemini.png": {
+    "mtime": 1794051411.6965885,
+    "seen": 1794060622.0087414,
+    "ast_hash": "0323f7da264a77e795ae37794008c89e",
     "semantic_hash": ""
   },
   "package-lock.json": {
