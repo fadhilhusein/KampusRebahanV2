@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { warungApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { syncSupplierOrders } from "@/lib/supplierSync";
+import { displayStatus } from "@/lib/orderStatus";
 
 export async function GET() {
   try {
@@ -20,8 +22,10 @@ export async function GET() {
       return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
     }
 
+    await syncSupplierOrders({ userId });
+
     // Primary source: DB orders (all statuses, sell price)
-    const [dbOrders, reviews] = await Promise.all([
+    const [dbOrders, reviews, refunds] = await Promise.all([
       prisma.order.findMany({
         where: { userId },
         orderBy: { createdAt: "desc" },
@@ -30,7 +34,12 @@ export async function GET() {
         where: { userId },
         include: { user: { select: { name: true } } },
       }),
+      prisma.balanceTransaction.findMany({
+        where: { userId, type: "REFUND", orderId: { not: null } },
+        select: { orderId: true, amount: true, wallet: true },
+      }),
     ]);
+    const refundByOrderId = new Map(refunds.map((r) => [r.orderId!, r]));
 
     const reviewByOrderId = new Map(
       reviews.map((review) => [
@@ -58,10 +67,14 @@ export async function GET() {
 
     const merged = dbOrders.map((order) => {
       const apiTx = order.apiOrderId ? apiTxMap.get(order.apiOrderId) : null;
+      const refund = refundByOrderId.get(order.id);
       return {
         order_id: order.id,
         db_order_id: order.id,
-        db_status: order.status,
+        db_status: displayStatus(order.status, order.refundedAt),
+        refunded_at: order.refundedAt?.toISOString() ?? null,
+        refund_amount: refund?.amount ?? null,
+        refund_wallet: refund?.wallet ?? null,
         status: apiTx?.status ?? order.status.toLowerCase(),
         payment_status: apiTx?.payment_status ?? order.status.toLowerCase(),
         total_amount: order.sellPrice,

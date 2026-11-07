@@ -15,6 +15,7 @@ import {
   Landmark, Copy, Check, Download, ArrowRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { displayStatus } from "@/lib/orderStatus";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -32,6 +33,7 @@ const statusInfo: Record<string, { label: string; color: "primary" | "secondary"
   COMPLETED:       { label: "Selesai", color: "secondary", icon: PartyPopper, desc: "Order selesai! Cek detail akun di riwayat transaksi." },
   FAILED:          { label: "Gagal", color: "primary", icon: XCircle, desc: "Terjadi masalah saat memproses order. Hubungi admin." },
   REJECTED:        { label: "Ditolak", color: "primary", icon: Ban, desc: "Order ditolak. Hubungi admin untuk informasi lebih lanjut." },
+  REFUNDED:        { label: "Direfund", color: "primary", icon: Ban, desc: "Order dibatalkan dan dana dikembalikan ke saldo kamu." },
   EXPIRED:         { label: "Kadaluarsa", color: "primary", icon: TimerOff, desc: "QRIS kadaluarsa sebelum dibayar. Buat order baru untuk mencoba lagi." },
 };
 
@@ -60,6 +62,7 @@ interface Order {
   gatewayExpiresAt: string | null;
   bridgePaymentUrl: string | null;
   bridgeExpiresAt: string | null;
+  refundedAt: string | null;
   createdAt: string;
 }
 
@@ -265,6 +268,24 @@ export default function OrderDetailPage() {
     return () => clearInterval(id);
   }, [order, orderId]);
 
+  // Waiting on supplier delivery: re-read the order (the GET syncs with the supplier).
+  // Capped at 5 minutes so a long PO doesn't keep polling; a reload checks again.
+  const processing = order?.status === "PROCESSING";
+  useEffect(() => {
+    if (!processing) return;
+    let ticks = 0;
+    const id = setInterval(async () => {
+      if (++ticks > 30) return clearInterval(id);
+      try {
+        const data = await fetch(`/api/order/${orderId}`).then((r) => r.json());
+        if (data.success && data.data.status !== "PROCESSING") setOrder(data.data);
+      } catch {
+        // retry on next tick
+      }
+    }, 10000);
+    return () => clearInterval(id);
+  }, [processing, orderId]);
+
   async function handleConfirmPayment() {
     if (!orderId || confirming) return;
     setConfirming(true);
@@ -290,7 +311,7 @@ export default function OrderDetailPage() {
   }
 
   const info = order
-    ? (statusInfo[order.status] ?? { label: order.status, color: "default" as const, icon: Package, desc: "" })
+    ? (statusInfo[displayStatus(order.status, order.refundedAt)] ?? { label: order.status, color: "default" as const, icon: Package, desc: "" })
     : null;
   const isPending = order?.status === "PENDING_PAYMENT";
   const isAutoQris = order?.paymentMethod === "QRIS_GATEWAY" || order?.paymentMethod === "QRIS_BRIDGE";

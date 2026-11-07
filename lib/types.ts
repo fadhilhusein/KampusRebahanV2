@@ -72,7 +72,11 @@ export interface Transaction {
   db_order_id: string;
   total_amount: number;
   status: string;
+  /** Our status for display; "REFUNDED" for a rejected order whose money went back. */
   db_status: string;
+  refunded_at?: string | null;
+  refund_amount?: number | null;
+  refund_wallet?: "MAIN" | "REFERRAL" | null;
   payment_status: string;
   products: Product[];
   account_details: AccountDetail[];

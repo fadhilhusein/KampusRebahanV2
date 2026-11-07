@@ -9,8 +9,13 @@ export const statusColor: Record<string, StatusColor> = {
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  REFUNDED: "primary",
   EXPIRED: "primary",
 };
+
+/** Display key: a rejected order whose money went back shows as "Direfund". */
+export const displayStatus = (status: string, refundedAt: string | Date | null | undefined) =>
+  status === "REJECTED" && refundedAt ? "REFUNDED" : status;
 
 export const statusLabel: Record<string, string> = {
   PENDING_PAYMENT: "Menunggu Bayar",
@@ -20,5 +25,6 @@ export const statusLabel: Record<string, string> = {
   COMPLETED: "Selesai",
   FAILED: "Gagal",
   REJECTED: "Ditolak",
+  REFUNDED: "Direfund",
   EXPIRED: "Kadaluarsa",
 };
