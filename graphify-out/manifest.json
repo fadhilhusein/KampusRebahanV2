@@ -114,9 +114,9 @@
     "semantic_hash": "38368e13e8f9fe29e858139d39476f05"
   },
   "app/api/order/[orderId]/route.ts": {
-    "mtime": 1794047405.2306738,
-    "seen": 1794047726.3253882,
-    "ast_hash": "d7842b9c9425e8aadbae307aae4a7935",
+    "mtime": 1794062769.2471886,
+    "seen": 1794062821.1676507,
+    "ast_hash": "05b59a3e67721603b0e9032ba3da6d4c",
     "semantic_hash": ""
   },
   "app/api/order/route.ts": {
@@ -198,15 +198,15 @@
     "semantic_hash": ""
   },
   "app/dashboard/admin/layout.tsx": {
-    "mtime": 1793837281.156645,
-    "seen": 1793935814.168319,
-    "ast_hash": "c5c26bd8da0cf5f5061c82e1c0cb686e",
-    "semantic_hash": "c5c26bd8da0cf5f5061c82e1c0cb686e"
+    "mtime": 1794066706.2395024,
+    "seen": 1794067645.304335,
+    "ast_hash": "2dae4ea86ab9710ae9adeb6eab0ba1e5",
+    "semantic_hash": ""
   },
   "app/dashboard/admin/page.tsx": {
-    "mtime": 1794049924.9662595,
-    "seen": 1794050109.664562,
-    "ast_hash": "cdb5f99168c74d54938c7e8a82b5ebb4",
+    "mtime": 1794067431.9103072,
+    "seen": 1794067645.304335,
+    "ast_hash": "9c772e50f2b7f4cdc988f55a7e67f413",
     "semantic_hash": ""
   },
   "app/dashboard/balance/page.tsx": {
@@ -462,9 +462,9 @@
     "semantic_hash": ""
   },
   "components/ui/WhatsAppButton.tsx": {
-    "mtime": 1793944793.3068438,
-    "seen": 1793945005.8167565,
-    "ast_hash": "509053876d6648514fde8500ab60db56",
+    "mtime": 1794067453.6583722,
+    "seen": 1794067645.304335,
+    "ast_hash": "879017b91e57261f485e748070330b2b",
     "semantic_hash": ""
   },
   "components/ui/auth-kit.tsx": {
@@ -1440,9 +1440,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/AdminAffiliate.tsx": {
-    "mtime": 1794032074.3507154,
-    "seen": 1794032236.7782595,
-    "ast_hash": "ff2928ca91cb047ae4ac8f8c619b6cbc",
+    "mtime": 1794066836.7943108,
+    "seen": 1794067645.304335,
+    "ast_hash": "1cbe7c44f75aabba881c9998f25a79e2",
     "semantic_hash": ""
   },
   "components/referral/RefCapture.tsx": {
@@ -1663,8 +1663,134 @@
   },
   "prisma/migrations/20261107180000_add_rate_limit/migration.sql": {
     "mtime": 1794061027.6894412,
-    "seen": 1794061333.9098377,
-    "ast_hash": "",
+    "seen": 1794062278.5830467,
+    "ast_hash": "58e2dfe63e3b0bfe08364e07aaea1c21",
+    "semantic_hash": ""
+  },
+  "app/api/admin/summary/route.ts": {
+    "mtime": 1794066677.9850464,
+    "seen": 1794067645.304335,
+    "ast_hash": "3082a67c1d73004945a515bbcb5b4ac4",
+    "semantic_hash": ""
+  },
+  "app/dashboard/admin/loyalty/page.tsx": {
+    "mtime": 1794066878.9794664,
+    "seen": 1794067645.304335,
+    "ast_hash": "e6467c76fff7d60dece9f101121818fd",
+    "semantic_hash": ""
+  },
+  "app/dashboard/admin/orders/page.tsx": {
+    "mtime": 1794066767.7524116,
+    "seen": 1794067645.304335,
+    "ast_hash": "fe9983549ae0586d28d411386d656c7b",
+    "semantic_hash": ""
+  },
+  "app/dashboard/admin/payouts/page.tsx": {
+    "mtime": 1794066838.1139884,
+    "seen": 1794067645.304335,
+    "ast_hash": "c2bb6d185bfccd20a44dd0efcb4aefa8",
+    "semantic_hash": ""
+  },
+  "app/dashboard/admin/settings/page.tsx": {
+    "mtime": 1794066878.9469705,
+    "seen": 1794067645.304335,
+    "ast_hash": "f90ffbd7da2fdc535c73c48a5f85d88e",
+    "semantic_hash": ""
+  },
+  "app/dashboard/admin/settings/popup/page.tsx": {
+    "mtime": 1794066879.03684,
+    "seen": 1794067645.304335,
+    "ast_hash": "5818ab0763a8583127e926f232109c02",
+    "semantic_hash": ""
+  },
+  "components/admin/AdminShell.tsx": {
+    "mtime": 1794066706.1528287,
+    "seen": 1794067645.304335,
+    "ast_hash": "0ebaab856ce4290a1a02aafff52a114f",
+    "semantic_hash": ""
+  },
+  "components/admin/OrdersView.tsx": {
+    "mtime": 1794067510.9562967,
+    "seen": 1794067645.304335,
+    "ast_hash": "212a8c676d52867db08872a226384234",
+    "semantic_hash": ""
+  },
+  "components/admin/PayoutsView.tsx": {
+    "mtime": 1794067432.1084285,
+    "seen": 1794067645.304335,
+    "ast_hash": "79311da0b9974e5aedb9f8064d0f8950",
+    "semantic_hash": ""
+  },
+  "components/admin/SettingsView.tsx": {
+    "mtime": 1794067432.0099878,
+    "seen": 1794067645.304335,
+    "ast_hash": "58a63414bf6fb6f1f3820cede25061de",
+    "semantic_hash": ""
+  },
+  "components/admin/shared.tsx": {
+    "mtime": 1794066661.7459302,
+    "seen": 1794067645.304335,
+    "ast_hash": "1e0ccf96ab04cd84aac25c8a8fe17a74",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/beranda-desktop.png": {
+    "mtime": 1794066477.58833,
+    "seen": 1794067645.304335,
+    "ast_hash": "4529dc8050ac429497a34f08e9fa3a66",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/beranda-mobile.png": {
+    "mtime": 1794066477.5863247,
+    "seen": 1794067645.304335,
+    "ast_hash": "16e38383b2ba4aa9415c4e210bdfec6a",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/detail-pesanan-mobile.png": {
+    "mtime": 1794066477.596574,
+    "seen": 1794067645.304335,
+    "ast_hash": "bac8219672a7f6df87f4b3c32d85ca19",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/loyalitas-mobile.png": {
+    "mtime": 1794066477.6093118,
+    "seen": 1794067645.304335,
+    "ast_hash": "71fd6b5e00c16cd52ea172152bc180bf",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pencairan-mobile.png": {
+    "mtime": 1794066477.5987263,
+    "seen": 1794067645.304335,
+    "ast_hash": "df3eed650440c09c086abc167572d670",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pencairan-tandai-dibayar-mobile.png": {
+    "mtime": 1794066477.6062477,
+    "seen": 1794067645.304335,
+    "ast_hash": "931d72b8b8b32281139f2bd280c47163",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pencairan-tolak-mobile.png": {
+    "mtime": 1794066477.6077943,
+    "seen": 1794067645.304335,
+    "ast_hash": "a443b59bcf2052fba5cf59d46677d41c",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pengaturan-mobile.png": {
+    "mtime": 1794066477.6113472,
+    "seen": 1794067645.304335,
+    "ast_hash": "8c0e1593817f5ba663572aeccd71c7fe",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pesanan-desktop.png": {
+    "mtime": 1794066477.5945725,
+    "seen": 1794067645.304335,
+    "ast_hash": "ad4a6b15c46d5c6bf3ac9ad89cda1e74",
+    "semantic_hash": ""
+  },
+  "design/admin-v2/pesanan-mobile.png": {
+    "mtime": 1794066477.591571,
+    "seen": 1794067645.304335,
+    "ast_hash": "7267b26c9208faf572e1de654d0f0e3b",
     "semantic_hash": ""
   },
   "package-lock.json": {
