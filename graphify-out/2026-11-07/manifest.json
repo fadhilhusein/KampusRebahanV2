@@ -18,15 +18,15 @@
     "semantic_hash": "69cef2a1c3542ab2c2174ac212776b0f"
   },
   "app/api/admin/orders/route.ts": {
-    "mtime": 1784605444.7248588,
-    "seen": 1793935814.168319,
-    "ast_hash": "0f7c092a41fd655618694b17489510ad",
-    "semantic_hash": "0f7c092a41fd655618694b17489510ad"
+    "mtime": 1794047405.0199552,
+    "seen": 1794047726.321388,
+    "ast_hash": "5ba3a143181ab1ebe074beb8bbf4a2c3",
+    "semantic_hash": ""
   },
   "app/api/admin/reject/route.ts": {
-    "mtime": 1794031943.432567,
-    "seen": 1794032236.761219,
-    "ast_hash": "186399012c0c41ffb162144816a68273",
+    "mtime": 1794049269.6658502,
+    "seen": 1794050109.6530821,
+    "ast_hash": "1c725c8d407fab3f455e4f18d4bf9b05",
     "semantic_hash": ""
   },
   "app/api/admin/settings/route.ts": {
@@ -96,10 +96,10 @@
     "semantic_hash": "6487a15b9103e7286039423271d0dea1"
   },
   "app/api/loyalty/route.ts": {
-    "mtime": 1793837281.1524975,
-    "seen": 1793935814.168319,
-    "ast_hash": "d2df61e6e96a898de8e0b5e8e5ef6e0e",
-    "semantic_hash": "d2df61e6e96a898de8e0b5e8e5ef6e0e"
+    "mtime": 1794047415.1104467,
+    "seen": 1794047726.3253882,
+    "ast_hash": "536d2d61eff457b8fe114336e7c6cf9d",
+    "semantic_hash": ""
   },
   "app/api/order/[orderId]/bridge-status/route.ts": {
     "mtime": 1793837307.945992,
@@ -114,10 +114,10 @@
     "semantic_hash": "38368e13e8f9fe29e858139d39476f05"
   },
   "app/api/order/[orderId]/route.ts": {
-    "mtime": 1784909618.7675562,
-    "seen": 1793935814.168319,
-    "ast_hash": "2fbe3e480528cf51105d1156dec38c59",
-    "semantic_hash": "2fbe3e480528cf51105d1156dec38c59"
+    "mtime": 1794047405.2306738,
+    "seen": 1794047726.3253882,
+    "ast_hash": "d7842b9c9425e8aadbae307aae4a7935",
+    "semantic_hash": ""
   },
   "app/api/order/route.ts": {
     "mtime": 1794031934.7872334,
@@ -150,10 +150,10 @@
     "semantic_hash": "803112008a9a5e696f0aae90d27bbd15"
   },
   "app/api/transactions/route.ts": {
-    "mtime": 1793837281.1536298,
-    "seen": 1793935814.168319,
-    "ast_hash": "f14284b45a8dbe047bd06ab0dd7b0421",
-    "semantic_hash": "f14284b45a8dbe047bd06ab0dd7b0421"
+    "mtime": 1794049761.6438158,
+    "seen": 1794050109.6607885,
+    "ast_hash": "4bbb3aac08a62806b59990ef996f2d8c",
+    "semantic_hash": ""
   },
   "app/api/webhook/bayar-gg/route.ts": {
     "mtime": 1793837281.1536298,
@@ -168,10 +168,10 @@
     "semantic_hash": "8987d61c43a9eee3e955d3b9460c203b"
   },
   "app/api/webhook/route.ts": {
-    "mtime": 1784605444.7427495,
-    "seen": 1793935814.168319,
-    "ast_hash": "343b857644648cfe14872e012ec41503",
-    "semantic_hash": "343b857644648cfe14872e012ec41503"
+    "mtime": 1794047404.8558297,
+    "seen": 1794047726.3289535,
+    "ast_hash": "4f3722f0548185d4add265d7e16afec0",
+    "semantic_hash": ""
   },
   "app/auth/forgot-password/page.tsx": {
     "mtime": 1793944855.7473738,
@@ -204,9 +204,9 @@
     "semantic_hash": "c5c26bd8da0cf5f5061c82e1c0cb686e"
   },
   "app/dashboard/admin/page.tsx": {
-    "mtime": 1794034162.2993486,
-    "seen": 1794034281.7588313,
-    "ast_hash": "76dedef6ff10ab0e92e2767c09b18d74",
+    "mtime": 1794049924.9662595,
+    "seen": 1794050109.664562,
+    "ast_hash": "cdb5f99168c74d54938c7e8a82b5ebb4",
     "semantic_hash": ""
   },
   "app/dashboard/balance/page.tsx": {
@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "app/dashboard/transactions/[orderId]/page.tsx": {
-    "mtime": 1794032020.75409,
-    "seen": 1794032236.7737381,
-    "ast_hash": "1f5449d4991fbb1b5575a36000386cec",
+    "mtime": 1794049812.5572186,
+    "seen": 1794050109.6655648,
+    "ast_hash": "8acc933909c95a5cce717f54e8743253",
     "semantic_hash": ""
   },
   "app/dashboard/transactions/page.tsx": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "app/order/[orderId]/page.tsx": {
-    "mtime": 1794032020.6556668,
-    "seen": 1794032236.7747388,
-    "ast_hash": "603c48b2a310e25b339988ed7816d5c2",
+    "mtime": 1794049778.9526455,
+    "seen": 1794050109.6665618,
+    "ast_hash": "752e51ab251a3f226a9c1b4da2fa62ea",
     "semantic_hash": ""
   },
   "app/page.tsx": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/LoyaltyCard.tsx": {
-    "mtime": 1793944882.3000193,
-    "seen": 1793945005.8167565,
-    "ast_hash": "83b58194b0ad55f4af1357c292347ddf",
+    "mtime": 1794050257.4242394,
+    "seen": 1794050366.464954,
+    "ast_hash": "5a1804392d5ac59cd2fda5ac4e06c0df",
     "semantic_hash": ""
   },
   "components/dashboard/TransactionsTable.tsx": {
@@ -540,16 +540,16 @@
     "semantic_hash": "e8411f60c94d18b2e90072e0e772876d"
   },
   "lib/fulfillOrder.ts": {
-    "mtime": 1794031934.6003969,
-    "seen": 1794032236.7899377,
-    "ast_hash": "5d7bd44aa04ec959a2b126782c629135",
+    "mtime": 1794047391.1508293,
+    "seen": 1794047726.3478434,
+    "ast_hash": "6f6e849d8d7a39f035aaa43a1dfa1dfa",
     "semantic_hash": ""
   },
   "lib/loyalty.ts": {
-    "mtime": 1793837281.1819558,
-    "seen": 1793935814.1698234,
-    "ast_hash": "479f82358b548ec9530c504131426c0f",
-    "semantic_hash": "479f82358b548ec9530c504131426c0f"
+    "mtime": 1794050257.2573023,
+    "seen": 1794050366.477189,
+    "ast_hash": "865db8a9d345bf8a649f20646956932d",
+    "semantic_hash": ""
   },
   "lib/mailer.ts": {
     "mtime": 1793837281.1819558,
@@ -558,10 +558,10 @@
     "semantic_hash": "792fd9a65312fe544b5c78a9a2a0a895"
   },
   "lib/orderStatus.ts": {
-    "mtime": 1793837281.1819558,
-    "seen": 1793935814.1698234,
-    "ast_hash": "4b3db1dba6f928e171ba943613f8b9f6",
-    "semantic_hash": "4b3db1dba6f928e171ba943613f8b9f6"
+    "mtime": 1794049750.3847487,
+    "seen": 1794050109.6904697,
+    "ast_hash": "43c0130e9de67f87d2c1e69505c3751b",
+    "semantic_hash": ""
   },
   "lib/paymentBridge.ts": {
     "mtime": 1793837307.979867,
@@ -594,10 +594,10 @@
     "semantic_hash": ""
   },
   "lib/types.ts": {
-    "mtime": 1793837307.7422998,
-    "seen": 1793935814.1698234,
-    "ast_hash": "8c5c4955b9e72979227acb8679de7d06",
-    "semantic_hash": "8c5c4955b9e72979227acb8679de7d06"
+    "mtime": 1794049779.049039,
+    "seen": 1794050109.6944077,
+    "ast_hash": "b209c95b5fad4b54eb56e3ef8330bee1",
+    "semantic_hash": ""
   },
   "lib/utils.ts": {
     "mtime": 1784605444.796921,
@@ -1569,6 +1569,66 @@
     "mtime": 1794034909.181912,
     "seen": 1794034919.0224466,
     "ast_hash": "c5838b209c78e129279b986e626a7c54",
+    "semantic_hash": ""
+  },
+  "lib/loyaltyRules.test.ts": {
+    "mtime": 1794047435.3891063,
+    "seen": 1794047726.3488753,
+    "ast_hash": "ad300ad95c9eecd8d198eded83579c7d",
+    "semantic_hash": ""
+  },
+  "lib/loyaltyRules.ts": {
+    "mtime": 1794047435.3272471,
+    "seen": 1794047726.3488753,
+    "ast_hash": "9f6545631e868418aa90b8431303759a",
+    "semantic_hash": ""
+  },
+  "lib/supplierSync.ts": {
+    "mtime": 1794047391.0470448,
+    "seen": 1794047726.3518748,
+    "ast_hash": "5faf3323be2fda0516f009d75db25fc5",
+    "semantic_hash": ""
+  },
+  "design/marketing/caption-update-november.md": {
+    "mtime": 1794045456.3794005,
+    "seen": 1794047726.3589258,
+    "ast_hash": "debab4455fd957eb5191325bb7f1f5ce",
+    "semantic_hash": ""
+  },
+  "design/marketing/poster-update-november.png": {
+    "mtime": 1794045435.0765798,
+    "seen": 1794047726.363925,
+    "ast_hash": "4907a5208fb7f9ebc8fe864ba017d348",
+    "semantic_hash": ""
+  },
+  "app/api/admin/loyalty/route.ts": {
+    "mtime": 1794047951.8045855,
+    "seen": 1794048420.7390273,
+    "ast_hash": "0207f24d3d54adcace0dc642850fb9d2",
+    "semantic_hash": ""
+  },
+  "components/dashboard/AdminLoyalty.tsx": {
+    "mtime": 1794047978.1464615,
+    "seen": 1794048420.7711883,
+    "ast_hash": "da4191bf3e5be9f4c10a84d48f77631a",
+    "semantic_hash": ""
+  },
+  "components/dashboard/RefundDialog.tsx": {
+    "mtime": 1794049877.8651545,
+    "seen": 1794050109.6741197,
+    "ast_hash": "107d7377610a45e47519e10a56a3ccc3",
+    "semantic_hash": ""
+  },
+  "lib/contact.ts": {
+    "mtime": 1794049811.8253767,
+    "seen": 1794050109.6893697,
+    "ast_hash": "b7c8a3511e4a403e7866a6bc016b5d84",
+    "semantic_hash": ""
+  },
+  "lib/refundPreview.ts": {
+    "mtime": 1794049269.4498467,
+    "seen": 1794050109.6939776,
+    "ast_hash": "66615aed752427d8b08ff101439eb734",
     "semantic_hash": ""
   },
   "package-lock.json": {

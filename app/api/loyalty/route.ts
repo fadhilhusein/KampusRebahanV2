@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getLoyaltyState } from "@/lib/loyalty";
+import { syncSupplierOrders } from "@/lib/supplierSync";
 
 export async function GET() {
   try {
@@ -19,6 +20,7 @@ export async function GET() {
       return NextResponse.json({ success: false, message: "User tidak ditemukan." }, { status: 404 });
     }
 
+    await syncSupplierOrders({ userId });
     return NextResponse.json({ success: true, data: await getLoyaltyState(userId) });
   } catch (err) {
     console.error("GET /api/loyalty failed:", err);

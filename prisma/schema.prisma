@@ -58,6 +58,8 @@ model Order {
   gatewayQrString  String?
   gatewayStatus    String?
   refundedAt       DateTime?
+  // When the supplier confirmed delivery; drives the loyalty coupon waiting period.
+  completedAt      DateTime?
   bridgeRef        String?
   bridgePaymentUrl String?        @db.Text
   bridgeStatus     String?
@@ -244,6 +246,11 @@ model Coupon {
   status     CouponStatus @default(ACTIVE)
   orderId    String?      @unique
   redeemedAt DateTime?
+  // Set when the reward's cost was deducted from a refund, so it happens only once.
+  clawedBackAt DateTime?
+  clawbackAmount Int?
+  // Last time a refund dropped the customer below the threshold before redeeming.
+  revokedAt  DateTime?
   createdAt  DateTime     @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -255,4 +262,6 @@ model Coupon {
 enum CouponStatus {
   ACTIVE
   REDEEMED
+  // Refund dropped the total below the threshold; reactivated if the customer qualifies again.
+  REVOKED
 }

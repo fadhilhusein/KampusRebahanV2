@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 import type { WebhookPayload } from "@/lib/types";
+import { applySupplierStatus } from "@/lib/supplierSync";
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("x-rebahan-signature") ?? "";
@@ -30,24 +31,12 @@ export async function POST(req: NextRequest) {
 
   const { event, data } = payload;
 
-  switch (event) {
-    case "order.processing":
-      // Order sedang diproses — tambahkan logika notifikasi di sini
-      console.log("[webhook] order.processing", data.order_id);
-      break;
+  console.log("[webhook]", event, data?.order_id);
 
-    case "order.completed":
-      // Order selesai — kirim email/notifikasi ke pembeli
-      console.log("[webhook] order.completed", data.order_id);
-      break;
-
-    case "order.failed":
-      // Order gagal
-      console.log("[webhook] order.failed", data.order_id);
-      break;
-
-    default:
-      console.warn("[webhook] unknown event:", event);
+  if (typeof data?.order_id === "string") {
+    if (event === "order.completed") await applySupplierStatus(data.order_id, "completed");
+    else if (event === "order.failed") await applySupplierStatus(data.order_id, "failed");
+    else if (event !== "order.processing") console.warn("[webhook] unknown event:", event);
   }
 
   return NextResponse.json({ status: "ok" });

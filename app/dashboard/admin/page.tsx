@@ -11,6 +11,9 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { AdminPayouts, AffiliateSettingsForm } from "@/components/dashboard/AdminAffiliate";
 import AdminPopupSettings from "@/components/dashboard/AdminPopupSettings";
+import AdminLoyalty from "@/components/dashboard/AdminLoyalty";
+import RefundDialog from "@/components/dashboard/RefundDialog";
+import { displayStatus } from "@/lib/orderStatus";
 import Reveal, { RevealItem, EASE } from "@/components/ui/Reveal";
 
 function formatPrice(price: number) {
@@ -31,10 +34,12 @@ const statusColor: Record<string, "primary" | "secondary" | "tertiary" | "defaul
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  REFUNDED: "primary",
   EXPIRED: "primary",
 };
 
 const statusLabel: Record<string, string> = {
+  REFUNDED: "Direfund",
   PENDING_PAYMENT: "Pending",
   PAID: "Paid",
   PROCESSING: "Processing",
@@ -73,19 +78,23 @@ interface AdminOrder {
   gatewayStatus: string | null;
   bridgeRef: string | null;
   bridgeStatus: string | null;
+  refundedAt: string | null;
   createdAt: string;
   user: { email: string; name: string | null };
 }
+
+const orderStatusKey = (o: AdminOrder) => displayStatus(o.status, o.refundedAt);
 
 interface OrderCardProps {
   order: AdminOrder;
   isLoading: boolean;
   onConfirm: (id: string) => void;
-  onReject: (id: string, refundEligible: boolean) => void;
+  onReject: (id: string) => void;
   onRecheckGateway: (id: string) => void;
   onRecheckBridge: (id: string) => void;
 }
 
+// Keep in sync with REFUND_ELIGIBLE_STATUSES in lib/refundPreview.ts (server-only module).
 const REFUND_ELIGIBLE_STATUSES = ["PAID", "PROCESSING", "AWAITING_RETRY", "COMPLETED"];
 
 const recheckBtn = buttonClass("secondary", "sm");
@@ -202,15 +211,15 @@ function OrderActions({
   grow,
 }: OrderCardProps & { grow?: boolean }) {
   const g = grow ? " flex-1" : "";
+  const refundable = !order.refundedAt && REFUND_ELIGIBLE_STATUSES.includes(order.status);
   const rejectButton = (
-    <button
-      onClick={() => onReject(order.id, REFUND_ELIGIBLE_STATUSES.includes(order.status))}
-      disabled={isLoading}
-      className={`${buttonClass("danger", "sm")}${g}`}
-    >
-      Tolak
+    <button onClick={() => onReject(order.id)} disabled={isLoading} className={`${buttonClass("danger", "sm")}${g}`}>
+      {refundable ? "Refund / Tolak" : "Tolak"}
     </button>
   );
+
+  // Paid orders (delivered or still with the supplier) can be refunded from here.
+  if ((order.status === "PROCESSING" || order.status === "COMPLETED") && refundable) return rejectButton;
 
   if (order.status === "AWAITING_RETRY") {
     return (
@@ -226,18 +235,24 @@ function OrderActions({
   if (order.status === "PENDING_PAYMENT" || order.status === "PAID") {
     if (order.paymentMethod === "QRIS_GATEWAY") {
       return (
-        <button onClick={() => onRecheckGateway(order.id)} disabled={isLoading} className={`${recheckBtn}${g}`}>
-          <RotateCw size={13} aria-hidden="true" />
-          {isLoading ? "..." : "Cek status Bayar.gg"}
-        </button>
+        <>
+          <button onClick={() => onRecheckGateway(order.id)} disabled={isLoading} className={`${recheckBtn}${g}`}>
+            <RotateCw size={13} aria-hidden="true" />
+            {isLoading ? "..." : "Cek status Bayar.gg"}
+          </button>
+          {order.status === "PAID" && rejectButton}
+        </>
       );
     }
     if (order.paymentMethod === "QRIS_BRIDGE") {
       return (
-        <button onClick={() => onRecheckBridge(order.id)} disabled={isLoading} className={`${recheckBtn}${g}`}>
-          <RotateCw size={13} aria-hidden="true" />
-          {isLoading ? "..." : "Cek status Bridge"}
-        </button>
+        <>
+          <button onClick={() => onRecheckBridge(order.id)} disabled={isLoading} className={`${recheckBtn}${g}`}>
+            <RotateCw size={13} aria-hidden="true" />
+            {isLoading ? "..." : "Cek status Bridge"}
+          </button>
+          {order.status === "PAID" && rejectButton}
+        </>
       );
     }
     return (
@@ -264,7 +279,7 @@ const OrderRow = memo(function OrderRow({ index, ...props }: OrderCardProps & { 
           <div className="text-xs text-muted">{formatDate(order.createdAt)}</div>
         </td>
         <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold">{formatPrice(order.sellPrice)}</td>
-        <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
+        <td className="px-4 py-3"><StatusBadge status={orderStatusKey(order)} /></td>
         <td className="px-4 py-3"><div className="flex flex-wrap items-center gap-2"><OrderActions {...props} /></div></td>
       </tr>
       <tr className="kr-fade-up" style={anim}>
@@ -286,7 +301,7 @@ const OrderCard = memo(function OrderCard(props: OrderCardProps) {
           <div className="truncate text-[13px] text-muted">{order.user.name ?? order.user.email}</div>
           <div className="text-xs text-muted">{formatDate(order.createdAt)}</div>
         </div>
-        <StatusBadge status={order.status} />
+        <StatusBadge status={orderStatusKey(order)} />
       </div>
       <div className="flex gap-2"><OrderActions {...props} grow /></div>
       <Rincian order={order} />
@@ -361,6 +376,7 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("ALL");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [refundOrderId, setRefundOrderId] = useState<string | null>(null);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
   const [markup, setMarkup] = useState<number | "">("");
   const [markupLoading, setMarkupLoading] = useState(false);
@@ -493,25 +509,14 @@ export default function AdminPage() {
     await refreshOneOrder(orderId);
   }, [refreshOneOrder]);
 
-  const rejectOrder = useCallback(async (orderId: string, refundEligible: boolean) => {
-    const reason = window.prompt("Alasan penolakan (opsional):");
-    if (reason === null) return; // dialog dibatalkan
-    const refund = refundEligible ? window.confirm("Kembalikan dana ke saldo user?") : false;
-    setActionLoading(orderId);
+  // Opens the refund/reject dialog; the dialog does the request and reports back.
+  const rejectOrder = useCallback((orderId: string) => {
     setNotice(null);
-    const res = await fetch("/api/admin/reject", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, reason, refund }),
-    });
-    const data = await res.json();
-    setNotice({ ok: !!data.success, text: data.message ?? (data.success ? "Berhasil." : "Gagal.") });
-    setActionLoading(null);
-    await refreshOneOrder(orderId);
-  }, [refreshOneOrder]);
+    setRefundOrderId(orderId);
+  }, []);
 
-  const filters = ["ALL", "PENDING_PAYMENT", "AWAITING_RETRY", "COMPLETED", "FAILED", "REJECTED"];
-  const filtered = filter === "ALL" ? orders : orders.filter((o) => o.status === filter);
+  const filters = ["ALL", "PENDING_PAYMENT", "PROCESSING", "AWAITING_RETRY", "COMPLETED", "FAILED", "REJECTED", "REFUNDED"];
+  const filtered = filter === "ALL" ? orders : orders.filter((o) => orderStatusKey(o) === filter);
 
   // Semua statistik dihitung di klien dari orders yang sudah di-fetch.
   const totalRevenue = orders.filter((o) => o.status === "COMPLETED").reduce((s, o) => s + o.sellPrice, 0);
@@ -563,7 +568,7 @@ export default function AdminPage() {
                 aria-pressed={filter === f}
                 className="kr-chip kr-press shrink-0"
               >
-                {f === "ALL" ? `Semua (${orders.length})` : `${statusLabel[f]} (${orders.filter((o) => o.status === f).length})`}
+                {f === "ALL" ? `Semua (${orders.length})` : `${statusLabel[f]} (${orders.filter((o) => orderStatusKey(o) === f).length})`}
               </button>
             ))}
           </div>
@@ -656,6 +661,18 @@ export default function AdminPage() {
       </div>
 
       <AdminPopupSettings />
+
+      <AdminLoyalty />
+
+      <RefundDialog
+        key={refundOrderId ?? "closed"}
+        orderId={refundOrderId}
+        onClose={() => setRefundOrderId(null)}
+        onDone={(result) => {
+          setNotice(result);
+          if (refundOrderId) refreshOneOrder(refundOrderId);
+        }}
+      />
 
       <AdminPayouts />
     </div>

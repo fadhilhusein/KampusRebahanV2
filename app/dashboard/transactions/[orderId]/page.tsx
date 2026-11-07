@@ -11,7 +11,8 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
-import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star } from "lucide-react";
+import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, MessageCircle, Undo2 } from "lucide-react";
+import { whatsappLink } from "@/lib/contact";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -43,6 +44,7 @@ const statusColor: Record<string, "primary" | "secondary" | "tertiary" | "defaul
   COMPLETED: "secondary",
   FAILED: "primary",
   REJECTED: "primary",
+  REFUNDED: "primary",
   EXPIRED: "primary",
   completed: "secondary",
   processing: "tertiary",
@@ -57,8 +59,26 @@ const statusLabel: Record<string, string> = {
   COMPLETED: "Selesai",
   FAILED: "Gagal",
   REJECTED: "Ditolak",
+  REFUNDED: "Direfund",
   EXPIRED: "Kadaluarsa",
 };
+
+// Orders a customer may raise a refund/complaint about (paid and not already closed).
+const COMPLAINT_STATUSES = ["PROCESSING", "AWAITING_RETRY", "COMPLETED"];
+
+function complaintMessage(tx: Transaction) {
+  return [
+    "Halo admin KampusRebahan, saya ingin mengajukan refund / komplain.",
+    "",
+    `ID pesanan: ${tx.order_id}`,
+    `Produk: ${tx.productName} - ${tx.variantName}`,
+    `Tanggal: ${formatDate(tx.created_at)}`,
+    `Total: ${formatPrice(tx.total_amount ?? 0)}`,
+    `Status: ${statusLabel[tx.db_status] ?? tx.db_status}`,
+    "",
+    "Kendala: ",
+  ].join("\n");
+}
 
 const PASSWORD_KEYS = ["password", "pass", "pwd", "sandi", "pin", "secret", "token"];
 
@@ -409,6 +429,21 @@ export default function TransactionDetailPage() {
                 </GlassCard>
               ) : null}
 
+              {tx.db_status === "REFUNDED" && (
+                <GlassCard className="flex items-start gap-3 p-5 md:p-6">
+                  <Undo2 size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-danger" />
+                  <div>
+                    <div className="text-base font-semibold">Pesanan direfund</div>
+                    <p className="text-[13px] text-muted">
+                      {tx.refund_amount != null
+                        ? `Dana ${formatPrice(tx.refund_amount)} dikembalikan ke ${tx.refund_wallet === "REFERRAL" ? "saldo referensi" : "saldo"}`
+                        : "Dana dikembalikan ke saldo"}
+                      {tx.refunded_at ? ` pada ${formatDate(tx.refunded_at)}.` : "."}
+                    </p>
+                  </div>
+                </GlassCard>
+              )}
+
               <ProductReviewPanel
                 tx={tx}
                 onReviewCreated={(review) =>
@@ -417,7 +452,7 @@ export default function TransactionDetailPage() {
               />
             </RevealItem>
 
-            <RevealItem className="lg:w-[400px] lg:shrink-0">
+            <RevealItem className="flex flex-col gap-4 lg:w-[400px] lg:shrink-0">
               <GlassCard className="flex flex-col gap-4 p-5 md:p-7">
                 <h2 className="text-xl font-semibold">Rincian pembayaran</h2>
                 <div className="flex justify-between gap-3 text-sm">
@@ -446,6 +481,23 @@ export default function TransactionDetailPage() {
                   <ArrowLeft size={15} aria-hidden="true" /> Kembali ke Riwayat
                 </Link>
               </GlassCard>
+
+              {COMPLAINT_STATUSES.includes(tx.db_status) && (
+                <GlassCard className="flex flex-col gap-3 p-5">
+                  <h2 className="text-base font-semibold">Ada kendala dengan pesanan ini?</h2>
+                  <p className="text-[13px] text-muted">
+                    Ajukan refund atau komplain lewat WhatsApp admin. Pesan otomatis berisi ID pesanan dan produk.
+                  </p>
+                  <a
+                    href={whatsappLink(complaintMessage(tx))}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`kr-press ${buttonClass("secondary")} w-full lg:w-fit`}
+                  >
+                    <MessageCircle size={16} aria-hidden="true" /> Ajukan refund / komplain
+                  </a>
+                </GlassCard>
+              )}
             </RevealItem>
           </Reveal>
         </>

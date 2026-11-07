@@ -41036,6 +41036,640 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "koJRf",
+      "x": 71,
+      "y": 15950,
+      "name": "Poster Update November",
+      "clip": true,
+      "width": 1080,
+      "height": 1350,
+      "fill": "$card",
+      "layout": "vertical",
+      "padding": [
+        64,
+        72
+      ],
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "wm2Oy",
+          "layoutPosition": "absolute",
+          "x": 520,
+          "y": -180,
+          "name": "Glow",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "radial",
+            "enabled": true,
+            "rotation": 0,
+            "size": {
+              "width": 1,
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#2447E02E",
+                "position": 0
+              },
+              {
+                "color": "#2447E000",
+                "position": 1
+              }
+            ]
+          },
+          "width": 820,
+          "height": 620
+        },
+        {
+          "type": "frame",
+          "id": "jMULq",
+          "name": "Top",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Mbfbj",
+              "name": "Logo",
+              "width": 248,
+              "height": 62,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/logo_website.png",
+                "mode": "contain"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "dOca5",
+              "fill": "$ink",
+              "cornerRadius": 999,
+              "gap": 10,
+              "padding": [
+                12,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "N8gvm",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "sparkles",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "qS7ez",
+                  "fill": "#FFFFFF",
+                  "content": "Update November 2026",
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lVCG0",
+          "name": "Headline",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            56,
+            0,
+            48,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "N6ZuTe",
+              "fill": "$ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Ada yang baru\ndi KampusRebahan.",
+              "lineHeight": 0.96,
+              "fontFamily": "$font-head",
+              "fontSize": 100,
+              "fontWeight": "700",
+              "letterSpacing": -4.5
+            },
+            {
+              "type": "text",
+              "id": "FYWZx",
+              "fill": "$muted",
+              "textGrowth": "fixed-width",
+              "width": 860,
+              "content": "Kami sudah merapikan banyak hal biar belanja akun premium makin gampang. Ini ringkasannya:",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-body",
+              "fontSize": 28,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ePljs",
+          "name": "Grid",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "I5mkkt",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hv1cv",
+                  "name": "Card 01",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 32,
+                  "stroke": "$hairline",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Cf8jl",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "vsnWs",
+                          "width": 64,
+                          "height": 64,
+                          "fill": "$pill",
+                          "cornerRadius": 20,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "SbevK",
+                              "width": 30,
+                              "height": 30,
+                              "icon": "layout-template",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "B2chJ",
+                          "fill": "$muted",
+                          "content": "01",
+                          "fontFamily": "$font-head",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q9FYAH",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kAnhv",
+                      "fill": "$ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tampilan baru",
+                      "fontFamily": "$font-head",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "UGCHR",
+                      "fill": "$muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Halaman lebih rapi, ringan, dan enak dipakai di HP. Cara beli juga makin jelas.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "EpSY7",
+                  "name": "Card 02",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$accent",
+                  "cornerRadius": 32,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lchv8",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "wdB8q",
+                          "width": 64,
+                          "height": 64,
+                          "fill": "#FFFFFF1F",
+                          "cornerRadius": 20,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "EGRo1",
+                              "width": 30,
+                              "height": 30,
+                              "icon": "zap",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "x7TW9T",
+                          "fill": "#FFFFFFB8",
+                          "content": "02",
+                          "fontFamily": "$font-head",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ucaFq",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "f6Ll3A",
+                      "fill": "#FFFFFF",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "QRIS Instan (Bridge)",
+                      "fontFamily": "$font-head",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "buORP",
+                      "fill": "#FFFFFFB8",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Metode bayar baru yang lebih stabil. Scan, bayar, akun langsung terkirim.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xkKCj",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mfEEb",
+                  "name": "Card 03",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": 32,
+                  "stroke": "$hairline",
+                  "strokeWidth": 1,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "U5xKX4",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "OnAFB",
+                          "width": 64,
+                          "height": 64,
+                          "fill": "$pill",
+                          "cornerRadius": 20,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "gHD1O",
+                              "width": 30,
+                              "height": 30,
+                              "icon": "gift",
+                              "library": "lucide",
+                              "fill": "$ink"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "QCmnE",
+                          "fill": "$muted",
+                          "content": "03",
+                          "fontFamily": "$font-head",
+                          "fontSize": 24,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rs57v",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "H5fdQ",
+                      "fill": "$ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Program afiliasi",
+                      "fontFamily": "$font-head",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "TcHjk",
+                      "fill": "$muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bagikan link referral kamu dan dapat komisi dari setiap pembelian teman.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Z6CQed",
+                  "name": "Card 04",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$ink",
+                  "cornerRadius": 32,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1112131A",
+                    "offset": {
+                      "x": 0,
+                      "y": 10
+                    },
+                    "blur": 30
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vTryS",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "m5deS",
+                          "width": 64,
+                          "height": 64,
+                          "fill": "#FFFFFF1F",
+                          "cornerRadius": 20,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Tj6xg",
+                              "width": 30,
+                              "height": 30,
+                              "icon": "badge-percent",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "gnMeM",
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 999,
+                          "padding": [
+                            8,
+                            16
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "j3lLz",
+                              "fill": "$ink",
+                              "content": "Coming soon",
+                              "fontFamily": "$font-body",
+                              "fontSize": 18,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "e3l1p",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MqC1N",
+                      "fill": "#FFFFFF",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Promo & diskon",
+                      "fontFamily": "$font-head",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "W0gZ9S",
+                      "fill": "#FFFFFFB8",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Lagi kami siapkan. Pantau grup ini biar nggak ketinggalan.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 22,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZkccZ",
+          "name": "spacer",
+          "width": 10,
+          "height": 28
+        },
+        {
+          "type": "frame",
+          "id": "kqgFo",
+          "name": "CTA",
+          "width": "fill_container",
+          "fill": "$ink",
+          "cornerRadius": 999,
+          "padding": [
+            24,
+            24,
+            24,
+            36
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cF13v",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "iOrfV",
+                  "fill": "#FFFFFFB3",
+                  "content": "Cobain sekarang di",
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "XU6y9",
+                  "fill": "#FFFFFF",
+                  "content": "kampus-rebahan.my.id",
+                  "fontFamily": "$font-head",
+                  "fontSize": 38,
+                  "fontWeight": "700",
+                  "letterSpacing": -1
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KjHiW",
+              "width": 72,
+              "height": 72,
+              "fill": "#FFFFFF",
+              "cornerRadius": 999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "nT7sj",
+                  "width": 32,
+                  "height": 32,
+                  "icon": "arrow-up-right",
+                  "library": "lucide",
+                  "fill": "$ink"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
