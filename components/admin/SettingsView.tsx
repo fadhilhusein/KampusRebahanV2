@@ -16,6 +16,8 @@ interface Settings {
   qris_bridge_enabled: boolean;
   referral_commission_percent: number;
   referral_min_payout: number;
+  topup_qris_gateway_enabled: boolean;
+  topup_qris_bridge_enabled: boolean;
 }
 
 const methods = [
@@ -24,7 +26,13 @@ const methods = [
   ["qris_bridge_enabled", "QRIS Instan (Bridge)", "Terverifikasi otomatis"],
 ] as const;
 
-type MethodKey = (typeof methods)[number][0];
+const topupMethods = [
+  ["topup_qris_gateway_enabled", "QRIS Bayar.gg", "QR tampil di halaman top up"],
+  ["topup_qris_bridge_enabled", "QRIS Instan (Bridge)", "User diarahkan ke halaman bayar Bridge"],
+] as const;
+
+type MethodKey = (typeof methods)[number][0] | (typeof topupMethods)[number][0];
+type MethodList = readonly (readonly [MethodKey, string, string])[];
 
 async function post(body: Record<string, unknown>) {
   return fetch("/api/admin/settings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
@@ -83,7 +91,13 @@ export default function SettingsView() {
   const { addToast } = useToast();
   const [s, setS] = useState<Settings | null>(null);
   const [markup, setMarkup] = useState<number | "">("");
-  const [enabled, setEnabled] = useState<Record<MethodKey, boolean>>({ bank_transfer_enabled: true, qris_gateway_enabled: true, qris_bridge_enabled: true });
+  const [enabled, setEnabled] = useState<Record<MethodKey, boolean>>({
+    bank_transfer_enabled: true,
+    qris_gateway_enabled: true,
+    qris_bridge_enabled: true,
+    topup_qris_gateway_enabled: true,
+    topup_qris_bridge_enabled: false,
+  });
   const [percent, setPercent] = useState<number | "">("");
   const [minPayout, setMinPayout] = useState<number | "">("");
   const [popup, setPopup] = useState<{ enabled: boolean; title: string } | null>(null);
@@ -96,7 +110,13 @@ export default function SettingsView() {
         if (!d.success) return;
         setS(d.data);
         setMarkup(d.data.markup_percent);
-        setEnabled({ bank_transfer_enabled: d.data.bank_transfer_enabled, qris_gateway_enabled: d.data.qris_gateway_enabled, qris_bridge_enabled: d.data.qris_bridge_enabled });
+        setEnabled({
+          bank_transfer_enabled: d.data.bank_transfer_enabled,
+          qris_gateway_enabled: d.data.qris_gateway_enabled,
+          qris_bridge_enabled: d.data.qris_bridge_enabled,
+          topup_qris_gateway_enabled: d.data.topup_qris_gateway_enabled,
+          topup_qris_bridge_enabled: d.data.topup_qris_bridge_enabled,
+        });
         setPercent(d.data.referral_commission_percent);
         setMinPayout(d.data.referral_min_payout);
       });
@@ -118,7 +138,34 @@ export default function SettingsView() {
     if (last.success && s) setS({ ...s, ...Object.assign({}, ...requests) });
   }
 
-  const methodsDirty = !!s && methods.some(([k]) => s[k] !== enabled[k]);
+  const dirty = (list: MethodList) => !!s && list.some(([k]) => s[k] !== enabled[k]);
+
+  function methodGroup(group: string, list: MethodList, saveLabel: string) {
+    const isDirty = dirty(list);
+    return (
+      <>
+        <ul>
+          {list.map(([key, title, sub]) => (
+            <li key={key} className="flex min-h-16 items-center gap-4 border-t border-hairline py-2 first:border-t-0">
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold">{title}</span>
+                <span className="block text-[13px] text-muted">{sub}</span>
+              </span>
+              <Switch label={title} checked={enabled[key]} onChange={(v) => setEnabled((e) => ({ ...e, [key]: v }))} />
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          disabled={!isDirty || saving === group}
+          onClick={() => save(group, list.filter(([k]) => s![k] !== enabled[k]).map(([k]) => ({ [k]: enabled[k] })))}
+          className={`${buttonClass("primary")} min-h-12 w-full`}
+        >
+          {saving === group ? "Menyimpan..." : isDirty ? saveLabel : "Tidak ada perubahan"}
+        </button>
+      </>
+    );
+  }
 
   return (
     <>
@@ -136,25 +183,14 @@ export default function SettingsView() {
           </Group>
 
           <Group title="Metode pembayaran" description="Metode yang nonaktif disembunyikan di checkout.">
-            <ul>
-              {methods.map(([key, title, sub]) => (
-                <li key={key} className="flex min-h-16 items-center gap-4 border-t border-hairline py-2 first:border-t-0">
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-semibold">{title}</span>
-                    <span className="block text-[13px] text-muted">{sub}</span>
-                  </span>
-                  <Switch label={title} checked={enabled[key]} onChange={(v) => setEnabled((e) => ({ ...e, [key]: v }))} />
-                </li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              disabled={!methodsDirty || saving === "methods"}
-              onClick={() => save("methods", methods.filter(([k]) => s[k] !== enabled[k]).map(([k]) => ({ [k]: enabled[k] })))}
-              className={`${buttonClass("primary")} min-h-12 w-full`}
-            >
-              {saving === "methods" ? "Menyimpan..." : methodsDirty ? "Simpan metode" : "Tidak ada perubahan"}
-            </button>
+            {methodGroup("methods", methods, "Simpan metode")}
+          </Group>
+
+          <Group title="Top up saldo" description="Metode QRIS untuk isi saldo. Kalau keduanya aktif, user memilih sendiri.">
+            {methodGroup("topup", topupMethods, "Simpan metode top up")}
+            {!enabled.topup_qris_gateway_enabled && !enabled.topup_qris_bridge_enabled && (
+              <p className="text-[13px] font-medium text-danger">Keduanya mati: user tidak bisa top up saldo.</p>
+            )}
           </Group>
 
           <Group title="Afiliasi" description="Komisi dihitung dengan persentase yang berlaku saat pesanan selesai, dibatasi margin toko.">

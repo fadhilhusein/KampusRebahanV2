@@ -81,3 +81,18 @@ export async function setQrisBridgeEnabled(enabled: boolean): Promise<void> {
     create: { key: "qris_bridge_enabled", value: String(enabled) },
   });
 }
+
+// Top up QRIS providers, toggled separately from product checkout.
+// Bridge starts off so existing behaviour (Bayar.gg only) holds until admin enables it.
+async function getBoolSetting(key: string, fallback: boolean): Promise<boolean> {
+  try {
+    const row = await prisma.setting.findUnique({ where: { key } });
+    if (row) return row.value === "true";
+  } catch {}
+  return fallback;
+}
+
+export const isTopupQrisGatewayEnabled = () => getBoolSetting("topup_qris_gateway_enabled", true);
+export const setTopupQrisGatewayEnabled = (v: boolean) => setSetting("topup_qris_gateway_enabled", String(v));
+export const isTopupQrisBridgeEnabled = () => getBoolSetting("topup_qris_bridge_enabled", false);
+export const setTopupQrisBridgeEnabled = (v: boolean) => setSetting("topup_qris_bridge_enabled", String(v));

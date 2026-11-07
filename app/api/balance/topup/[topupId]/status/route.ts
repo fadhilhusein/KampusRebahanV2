@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { bayarGg } from "@/lib/bayarGg";
+import { paymentBridge } from "@/lib/paymentBridge";
 import { creditTopUp } from "@/lib/creditTopUp";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ topupId: string }> }) {
@@ -19,29 +20,36 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ top
     return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
   }
 
-  if (!topup.gatewayInvoiceId) {
-    return NextResponse.json({ success: false, message: "Top up ini tidak memakai QRIS gateway." }, { status: 400 });
+  const isBridge = !!topup.bridgeRef;
+  if (!isBridge && !topup.gatewayInvoiceId) {
+    return NextResponse.json({ success: false, message: "Top up ini tidak memakai QRIS otomatis." }, { status: 400 });
   }
 
   if (topup.status !== "PENDING") {
-    return NextResponse.json({ success: true, data: { status: topup.gatewayStatus ?? topup.status } });
+    return NextResponse.json({ success: true, data: { status: (isBridge ? topup.bridgeStatus : topup.gatewayStatus) ?? topup.status } });
   }
 
-  const check = await bayarGg.checkPayment(topup.gatewayInvoiceId);
-  if (!check.success) {
-    return NextResponse.json({ success: false, message: check.error }, { status: 502 });
+  let status: string;
+  if (isBridge) {
+    const check = await paymentBridge.getPaymentByOrderId(topup.id);
+    if (!check.success) return NextResponse.json({ success: false, message: check.error }, { status: 502 });
+    status = check.data.status;
+    await prisma.balanceTopUp.update({ where: { id: topupId }, data: { bridgeStatus: status } });
+  } else {
+    const check = await bayarGg.checkPayment(topup.gatewayInvoiceId!);
+    if (!check.success) return NextResponse.json({ success: false, message: check.error }, { status: 502 });
+    status = check.data.status;
+    await prisma.balanceTopUp.update({ where: { id: topupId }, data: { gatewayStatus: status } });
   }
 
-  await prisma.balanceTopUp.update({ where: { id: topupId }, data: { gatewayStatus: check.data.status } });
-
-  if (check.data.status === "paid") {
+  if (status === "paid") {
     const result = await creditTopUp(topupId);
     return NextResponse.json({ success: result.success, message: result.message, data: { status: "paid" } });
   }
 
-  if (check.data.status === "expired" || check.data.status === "cancelled") {
-    await prisma.balanceTopUp.update({ where: { id: topupId }, data: { status: "EXPIRED" } });
+  if (["expired", "cancelled", "failed"].includes(status)) {
+    await prisma.balanceTopUp.updateMany({ where: { id: topupId, status: "PENDING" }, data: { status: "EXPIRED" } });
   }
 
-  return NextResponse.json({ success: true, data: { status: check.data.status } });
+  return NextResponse.json({ success: true, data: { status } });
 }

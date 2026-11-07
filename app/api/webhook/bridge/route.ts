@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyBridgeWebhookSignature } from "@/lib/paymentBridge";
 import { fulfillOrder } from "@/lib/fulfillOrder";
+import { creditTopUp } from "@/lib/creditTopUp";
 import type { BridgeWebhookPayload } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -22,6 +23,18 @@ export async function POST(req: NextRequest) {
 
   const order = await prisma.order.findFirst({ where: { bridgeRef: payload.data.ref } });
   if (!order) {
+    const topup = await prisma.balanceTopUp.findUnique({ where: { bridgeRef: payload.data.ref } });
+    if (topup) {
+      await prisma.balanceTopUp.update({ where: { id: topup.id }, data: { bridgeStatus: payload.data.status } });
+      if (payload.event === "payment.paid" && payload.data.status === "paid") {
+        const result = await creditTopUp(topup.id);
+        return NextResponse.json({ status: "ok", message: result.message });
+      }
+      if (payload.event === "payment.failed" || payload.event === "payment.expired") {
+        await prisma.balanceTopUp.updateMany({ where: { id: topup.id, status: "PENDING" }, data: { status: "EXPIRED" } });
+      }
+      return NextResponse.json({ status: "ok" });
+    }
     // Ack with 200 so the bridge doesn't keep retrying (1m/5m/.../6h) for an
     // order that will never show up on our side.
     return NextResponse.json({ status: "order not found" });

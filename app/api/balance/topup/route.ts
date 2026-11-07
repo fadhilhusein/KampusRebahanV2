@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { bayarGg, TOPUP_MIN_AMOUNT, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
+import { paymentBridge } from "@/lib/paymentBridge";
+import { isTopupQrisBridgeEnabled, isTopupQrisGatewayEnabled } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,6 +27,16 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const amount = Number(body.amount);
+    const method = body.paymentMethod ?? "QRIS_GATEWAY";
+
+    if (method !== "QRIS_GATEWAY" && method !== "QRIS_BRIDGE") {
+      return NextResponse.json({ success: false, message: "Metode pembayaran tidak valid." }, { status: 400 });
+    }
+
+    const enabled = method === "QRIS_BRIDGE" ? await isTopupQrisBridgeEnabled() : await isTopupQrisGatewayEnabled();
+    if (!enabled) {
+      return NextResponse.json({ success: false, message: "Metode top up ini sedang tidak tersedia." }, { status: 400 });
+    }
 
     if (!Number.isInteger(amount) || amount < TOPUP_MIN_AMOUNT || amount > QRIS_GATEWAY_MAX_AMOUNT) {
       return NextResponse.json(
@@ -41,6 +53,36 @@ export async function POST(req: NextRequest) {
     });
 
     const appUrl = process.env.APP_URL || new URL(req.url).origin;
+    const topupPage = `${appUrl}/dashboard/balance/topup/${topup.id}`;
+
+    if (method === "QRIS_BRIDGE") {
+      // The bridge keys payments by order_id; top up ids are cuids, so they never collide with order ids.
+      const bridgeResult = await paymentBridge.createPayment({
+        order_id: topup.id,
+        amount,
+        success_return_url: topupPage,
+        cancel_return_url: topupPage,
+        metadata: { user_id: userId, kind: "topup" },
+      });
+
+      if (!bridgeResult.success) {
+        await prisma.balanceTopUp.update({ where: { id: topup.id }, data: { status: "CANCELLED" } });
+        return NextResponse.json({ success: false, message: `Gagal membuat pembayaran QRIS Bridge: ${bridgeResult.error}` }, { status: 502 });
+      }
+
+      await prisma.balanceTopUp.update({
+        where: { id: topup.id },
+        data: {
+          bridgeRef: bridgeResult.data.ref,
+          bridgePaymentUrl: bridgeResult.data.payment_url,
+          bridgeStatus: bridgeResult.data.status,
+          bridgeExpiresAt: new Date(bridgeResult.data.expires_at),
+        },
+      });
+
+      return NextResponse.json({ success: true, data: { topupId: topup.id, payment_url: bridgeResult.data.payment_url } });
+    }
+
     const gatewayResult = await bayarGg.createPayment({
       amount,
       payment_url: "https://www.bayar.gg/pay",
@@ -49,7 +91,7 @@ export async function POST(req: NextRequest) {
       description: "Top up saldo KampusRebahan",
       customer_name: session.user?.name ?? undefined,
       customer_email: email,
-      redirect_url: `${appUrl}/balance/topup/${topup.id}`,
+      redirect_url: topupPage,
     });
 
     if (!gatewayResult.success) {

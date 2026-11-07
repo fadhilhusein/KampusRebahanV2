@@ -142,6 +142,10 @@ model BalanceTopUp {
   gatewayQrString  String?
   gatewayStatus    String?
   gatewayExpiresAt DateTime?
+  bridgeRef        String?     @unique
+  bridgePaymentUrl String?
+  bridgeStatus     String?
+  bridgeExpiresAt  DateTime?
   creditedAt       DateTime?
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
