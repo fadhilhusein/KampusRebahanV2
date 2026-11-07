@@ -2,6 +2,7 @@ import { getProductsWithStats } from "@/lib/products";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import EditorialLanding from "@/components/landing/EditorialLanding";
+import InfoPopup from "@/components/landing/InfoPopup";
 import type { Product } from "@/lib/types";
 export const revalidate = 300;
 export default async function HomePage() {
@@ -17,6 +18,7 @@ export default async function HomePage() {
         <EditorialLanding products={products} />
       </main>
       <Footer />
+      <InfoPopup />
     </div>
   );
 }
