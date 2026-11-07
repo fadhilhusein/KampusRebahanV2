@@ -16,6 +16,9 @@ const TOPUP_MIN_AMOUNT = 10000;
 const TOPUP_MAX_AMOUNT = 500000;
 const PRESET_AMOUNTS = [10000, 25000, 50000, 100000];
 
+type TopupMethod = "QRIS_GATEWAY" | "QRIS_BRIDGE";
+const METHOD_LABEL: Record<TopupMethod, string> = { QRIS_GATEWAY: "QRIS Bayar.gg", QRIS_BRIDGE: "QRIS Instan" };
+
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
 }
@@ -30,6 +33,8 @@ export default function BalancePage() {
   const [amount, setAmount] = useState<number | "">("");
   const [topupLoading, setTopupLoading] = useState(false);
   const [error, setError] = useState("");
+  const [methods, setMethods] = useState<TopupMethod[] | null>(null);
+  const [method, setMethod] = useState<TopupMethod>("QRIS_GATEWAY");
 
   useEffect(() => {
     Promise.all([
@@ -41,6 +46,17 @@ export default function BalancePage() {
         if (txnData.success) setTransactions(txnData.data);
       })
       .finally(() => setLoading(false));
+
+    fetch("/api/settings/public")
+      .then((r) => r.json())
+      .then((d) => {
+        const list: TopupMethod[] = [];
+        if (d.data?.topupQrisGatewayEnabled) list.push("QRIS_GATEWAY");
+        if (d.data?.topupQrisBridgeEnabled) list.push("QRIS_BRIDGE");
+        setMethods(list);
+        if (list[0]) setMethod(list[0]);
+      })
+      .catch(() => setMethods(["QRIS_GATEWAY"]));
   }, []);
 
   async function handleTopup(e: React.FormEvent) {
@@ -58,11 +74,12 @@ export default function BalancePage() {
       const res = await fetch("/api/balance/topup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: numAmount }),
+        body: JSON.stringify({ amount: numAmount, paymentMethod: method }),
       });
       const data = await res.json();
       if (data.success) {
-        router.push(`/dashboard/balance/topup/${data.data.topupId}`);
+        if (data.data.payment_url) window.location.href = data.data.payment_url;
+        else router.push(`/dashboard/balance/topup/${data.data.topupId}`);
       } else {
         const msg = data.message ?? "Gagal membuat top up.";
         setError(msg);
@@ -130,13 +147,29 @@ export default function BalancePage() {
               />
             </div>
 
+            {methods && methods.length > 1 && (
+              <div role="group" aria-label="Metode pembayaran" className="grid grid-cols-2 gap-2">
+                {methods.map((m) => (
+                  <button key={m} type="button" aria-pressed={method === m} onClick={() => setMethod(m)} className="kr-chip kr-press px-2">
+                    {METHOD_LABEL[m]}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {methods?.length === 0 && (
+              <p role="status" className="rounded-2xl bg-pill px-4 py-3 text-[13px] font-medium text-muted">
+                Top up saldo sedang tidak tersedia. Coba lagi nanti.
+              </p>
+            )}
+
             {error && (
               <div id="topup-error" role="alert" className="rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">
                 {error}
               </div>
             )}
 
-            <ButtonPrimary type="submit" disabled={topupLoading} className="kr-press w-full">
+            <ButtonPrimary type="submit" disabled={topupLoading || methods?.length === 0} className="kr-press w-full">
               <Zap size={16} aria-hidden="true" />
               {topupLoading ? "Memproses..." : "Isi saldo via QRIS"}
             </ButtonPrimary>

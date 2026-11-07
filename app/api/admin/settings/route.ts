@@ -13,19 +13,25 @@ import {
   setReferralCommissionPercent,
   getReferralMinPayout,
   setReferralMinPayout,
+  isTopupQrisGatewayEnabled,
+  setTopupQrisGatewayEnabled,
+  isTopupQrisBridgeEnabled,
+  setTopupQrisBridgeEnabled,
 } from "@/lib/settings";
 
 export async function GET() {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
 
-  const [markup, bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled, referralPercent, referralMinPayout] = await Promise.all([
+  const [markup, bankTransferEnabled, qrisGatewayEnabled, qrisBridgeEnabled, referralPercent, referralMinPayout, topupGateway, topupBridge] = await Promise.all([
     getMarkupPercent(),
     isBankTransferEnabled(),
     isQrisGatewayEnabled(),
     isQrisBridgeEnabled(),
     getReferralCommissionPercent(),
     getReferralMinPayout(),
+    isTopupQrisGatewayEnabled(),
+    isTopupQrisBridgeEnabled(),
   ]);
 
   return NextResponse.json({
@@ -37,6 +43,8 @@ export async function GET() {
       qris_bridge_enabled: qrisBridgeEnabled,
       referral_commission_percent: referralPercent,
       referral_min_payout: referralMinPayout,
+      topup_qris_gateway_enabled: topupGateway,
+      topup_qris_bridge_enabled: topupBridge,
     },
   });
 }
@@ -92,6 +100,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: body.qris_bridge_enabled ? "QRIS Instan (Bridge) diaktifkan." : "QRIS Instan (Bridge) dimatikan.",
+    });
+  }
+
+  if (body.topup_qris_gateway_enabled !== undefined) {
+    await setTopupQrisGatewayEnabled(Boolean(body.topup_qris_gateway_enabled));
+    return NextResponse.json({
+      success: true,
+      message: body.topup_qris_gateway_enabled ? "Top up via Bayar.gg diaktifkan." : "Top up via Bayar.gg dimatikan.",
+    });
+  }
+
+  if (body.topup_qris_bridge_enabled !== undefined) {
+    await setTopupQrisBridgeEnabled(Boolean(body.topup_qris_bridge_enabled));
+    return NextResponse.json({
+      success: true,
+      message: body.topup_qris_bridge_enabled ? "Top up via QRIS Bridge diaktifkan." : "Top up via QRIS Bridge dimatikan.",
     });
   }
 

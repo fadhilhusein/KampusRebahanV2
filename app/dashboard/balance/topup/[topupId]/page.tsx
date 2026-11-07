@@ -22,6 +22,8 @@ interface TopUp {
   status: string;
   gatewayQrString: string | null;
   gatewayExpiresAt: string | null;
+  bridgePaymentUrl: string | null;
+  bridgeExpiresAt: string | null;
 }
 
 const QR_SIZE = "h-[220px] w-[220px] md:h-[260px] md:w-[260px]";
@@ -56,7 +58,7 @@ export default function TopUpPaymentPage() {
         if (data.success && data.data?.status === "paid") {
           addToast("Saldo berhasil ditambahkan!", "success");
           router.push("/dashboard/balance");
-        } else if (data.success && data.data?.status && ["expired", "cancelled"].includes(data.data.status)) {
+        } else if (data.success && data.data?.status && ["expired", "cancelled", "failed"].includes(data.data.status)) {
           const topupRes = await fetch(`/api/balance/topup/${topupId}`);
           const topupData = await topupRes.json();
           if (topupData.success) setTopup(topupData.data);
@@ -87,7 +89,7 @@ export default function TopUpPaymentPage() {
           <RevealItem className="flex min-w-0 flex-1 flex-col items-center gap-4 rounded-[32px] bg-surface p-6 text-center shadow-card md:p-8">
             {topup.status === "PENDING" ? (
               <>
-                <h2 className="text-2xl font-semibold md:text-[32px]">Scan untuk isi saldo</h2>
+                <h2 className="text-2xl font-semibold md:text-[32px]">{topup.bridgePaymentUrl ? "Selesaikan pembayaran" : "Scan untuk isi saldo"}</h2>
                 <p role="status" className="inline-flex items-center gap-2 text-[13px] font-medium text-muted">
                   <span aria-hidden="true" className="relative flex h-2.5 w-2.5">
                     <span className="absolute inset-0 animate-ping rounded-full bg-success opacity-60" />
@@ -95,7 +97,11 @@ export default function TopUpPaymentPage() {
                   </span>
                   Menunggu pembayaran, dicek otomatis
                 </p>
-                {topup.gatewayQrString ? (
+                {topup.bridgePaymentUrl ? (
+                  <a href={topup.bridgePaymentUrl} className={`kr-press ${buttonClass()} w-full max-w-[320px]`}>
+                    Lanjutkan pembayaran QRIS
+                  </a>
+                ) : topup.gatewayQrString ? (
                   <GatewayQr value={topup.gatewayQrString} className={QR_SIZE} />
                 ) : (
                   <div className={`flex items-center justify-center rounded-[20px] bg-pill text-xs text-muted ${QR_SIZE}`}>
@@ -103,7 +109,7 @@ export default function TopUpPaymentPage() {
                   </div>
                 )}
                 <div className="font-display text-3xl font-bold">{formatPrice(topup.amount)}</div>
-                {topup.gatewayExpiresAt && <Countdown expiresAt={topup.gatewayExpiresAt} />}
+                {(topup.bridgeExpiresAt ?? topup.gatewayExpiresAt) && <Countdown expiresAt={(topup.bridgeExpiresAt ?? topup.gatewayExpiresAt)!} />}
               </>
             ) : topup.status === "PAID" ? (
               <div className="kr-fade-in py-8">
