@@ -15,6 +15,9 @@ export default function Footer() {
           <Link href="/privacy" className="transition-colors duration-150 hover:text-ink hover:underline">
             Privasi
           </Link>
+          <Link href="/refund-calculator" className="transition-colors duration-150 hover:text-ink hover:underline">
+            Kalkulator refund
+          </Link>
           <a
             href="https://wa.me/6285180642043"
             target="_blank"
