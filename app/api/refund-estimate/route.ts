@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/adminAuth";
 import { getSessionUserId } from "@/lib/referral";
-import { warungApi } from "@/lib/api";
 import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
-import { estimateOrderRefund, parseWarrantyDays } from "@/lib/refundCalc";
+import { estimateOrderRefund } from "@/lib/refundCalc";
+import { lookupWarranty } from "@/lib/refundPreview";
 
 export async function GET(req: NextRequest) {
   const userId = await getSessionUserId();
@@ -28,11 +28,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, message: "Invoice tidak ditemukan di akunmu." }, { status: 404 });
   }
 
-  const products = await warungApi.getProducts().catch(() => null);
-  const variant = products?.success
-    ? products.data.flatMap((p) => p.variants).find((v) => v.id === order.variantId)
-    : undefined;
-  if (!variant) {
+  const warranty = await lookupWarranty(order.variantId);
+  if (!warranty) {
     return NextResponse.json(
       { success: false, message: "Data garansi produk ini tidak tersedia lagi. Hubungi admin untuk cek manual." },
       { status: 422 }
@@ -46,7 +43,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, message: "Format tanggal tidak valid." }, { status: 400 });
   }
 
-  const warrantyDays = parseWarrantyDays(variant.warranty);
   const result = estimateOrderRefund({
     status: order.status,
     sellPrice: order.sellPrice,
@@ -54,7 +50,7 @@ export async function GET(req: NextRequest) {
     createdAt: order.createdAt,
     completedAt: order.completedAt,
     refundedAt: order.refundedAt,
-    warrantyDays,
+    warrantyDays: warranty.days,
     issueAt,
     now,
   });
@@ -67,7 +63,7 @@ export async function GET(req: NextRequest) {
       variantName: order.variantName,
       price: order.sellPrice,
       paymentMethod: order.paymentMethod,
-      warranty: variant.warranty,
+      warranty: warranty.text,
       deliveredAt: order.completedAt,
       ...result,
     },

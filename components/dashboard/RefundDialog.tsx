@@ -5,6 +5,9 @@ import { TrendingDown, TriangleAlert, Undo2, X } from "lucide-react";
 import { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { RefundPreview } from "@/lib/refundPreview";
+import { REFUND_SERVICE_FEE_PERCENT } from "@/lib/refundCalc";
+
+const todayWib = () => new Date(Date.now() + 7 * 3_600_000).toISOString().slice(0, 10);
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -28,19 +31,41 @@ export default function RefundDialog({
   const [error, setError] = useState("");
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState<"refund" | "reject" | null>(null);
+  // Issue date and warranty override feed the S&K formula; "" means today / the supplier's warranty.
+  const [date, setDate] = useState("");
+  const [warranty, setWarranty] = useState("");
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
     if (orderId && !d.open) d.showModal();
     if (!orderId && d.open) d.close();
+  }, [orderId]);
+
+  useEffect(() => {
     if (!orderId) return;
     // Parent mounts a fresh dialog per order (key={orderId}), so state starts empty here.
-    fetch(`/api/admin/reject?orderId=${encodeURIComponent(orderId)}`)
-      .then((r) => r.json())
-      .then((d) => (d.success ? setPreview(d.data) : setError(d.message ?? "Gagal memuat rincian.")))
-      .catch(() => setError("Gagal memuat rincian."));
-  }, [orderId]);
+    const qs = new URLSearchParams({ orderId });
+    if (date) qs.set("date", date);
+    if (warranty !== "") qs.set("warranty", warranty);
+    let cancelled = false;
+    const t = setTimeout(() => {
+      fetch(`/api/admin/reject?${qs}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (cancelled) return;
+          if (d.success) {
+            setPreview(d.data);
+            setError("");
+          } else setError(d.message ?? "Gagal memuat rincian.");
+        })
+        .catch(() => !cancelled && setError("Gagal memuat rincian."));
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [orderId, date, warranty]);
 
   async function submit(refund: boolean) {
     if (!orderId) return;
@@ -48,7 +73,7 @@ export default function RefundDialog({
     const data = await fetch("/api/admin/reject", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, reason: reason.trim() || null, refund }),
+      body: JSON.stringify({ orderId, reason: reason.trim() || null, refund, date: date || null, warranty: warranty === "" ? null : warranty }),
     })
       .then((r) => r.json())
       .catch(() => ({ success: false, message: "Terjadi kesalahan. Coba lagi." }));
@@ -80,14 +105,49 @@ export default function RefundDialog({
           </button>
         </div>
 
-        {error ? (
-          <div role="alert" className="rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">{error}</div>
-        ) : !p ? (
-          <Skeleton className="h-40 w-full" radius="rounded-[18px]" />
+        {error && <div role="alert" className="rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">{error}</div>}
+        {!p ? (
+          !error && <Skeleton className="h-40 w-full" radius="rounded-[18px]" />
         ) : (
           <>
+            {p.refundEligible || p.notEligibleReason ? (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <label htmlFor="refund-date" className="text-[13px] font-semibold">Tanggal kendala</label>
+                  <input id="refund-date" type="date" max={todayWib()} value={date} onChange={(e) => setDate(e.target.value)} className="kr-field min-h-11" />
+                </div>
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <label htmlFor="refund-warranty" className="text-[13px] font-semibold">Masa garansi (hari)</label>
+                  <input
+                    id="refund-warranty"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    value={warranty}
+                    placeholder={p.warrantyDays ? String(p.warrantyDays) : p.warrantyKnown ? "0" : "?"}
+                    onChange={(e) => setWarranty(e.target.value)}
+                    className="kr-field min-h-11"
+                  />
+                </div>
+                <p className="col-span-2 -mt-1 text-xs text-muted">
+                  Kosongkan tanggal untuk hari ini. Garansi dari supplier: {p.warrantyKnown ? (p.warrantyText ?? "-") : "tidak tersedia"}. Isi 0 untuk tanpa garansi.
+                </p>
+              </div>
+            ) : null}
+
             <dl className="flex flex-col gap-2.5 rounded-[18px] bg-card p-4 text-sm">
               <div className="flex justify-between gap-3"><dt className="text-muted">Dibayar</dt><dd className="font-semibold tabular-nums">{formatPrice(p.sellPrice)}</dd></div>
+              {p.refundEligible && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-muted">
+                    {p.warrantyDays ? `× ${p.remainingDays}/${p.warrantyDays} hari × ${100 - REFUND_SERVICE_FEE_PERCENT}%` : `× ${100 - REFUND_SERVICE_FEE_PERCENT}% (belum terkirim)`}
+                  </dt>
+                  <dd className="font-semibold tabular-nums">{formatPrice(p.gross)}</dd>
+                </div>
+              )}
+              {p.opFee > 0 && (
+                <div className="flex justify-between gap-3"><dt className="text-muted">Biaya operasional (QRIS Instan)</dt><dd className="font-semibold tabular-nums text-danger">-{formatPrice(p.opFee)}</dd></div>
+              )}
               <div className="flex justify-between gap-3"><dt className="text-muted">Dikembalikan ke</dt><dd className="font-semibold">{walletLabel}</dd></div>
               {p.withheld > 0 && (
                 <div className="flex justify-between gap-3"><dt className="text-muted">Potongan hadiah Gemini AI Pro</dt><dd className="font-semibold tabular-nums text-danger">-{formatPrice(p.withheld)}</dd></div>
@@ -119,7 +179,7 @@ export default function RefundDialog({
             )}
             {!p.refundEligible && (
               <p className="rounded-[14px] bg-pill px-3.5 py-2.5 text-[13px] font-medium text-muted">
-                Pesanan ini tidak bisa direfund (sudah direfund atau belum dibayar). Kamu tetap bisa menolaknya.
+                {p.notEligibleReason ?? "Pesanan ini tidak bisa direfund (sudah direfund atau belum dibayar)."} Kamu tetap bisa menolaknya.
               </p>
             )}
 

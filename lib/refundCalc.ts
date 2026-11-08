@@ -59,6 +59,8 @@ export interface OrderRefundInput {
   warrantyDays: number | null;
   issueAt: Date;
   now: Date;
+  /** Admin cancelling an undelivered order doesn't wait for the buyer's 48h window. */
+  ignoreWait?: boolean;
 }
 
 export type OrderRefundResult =
@@ -74,7 +76,7 @@ export function estimateOrderRefund(o: OrderRefundInput): OrderRefundResult {
   if (o.status === "PAID" || o.status === "PROCESSING" || o.status === "AWAITING_RETRY") {
     // shortcut: no paidAt column, so the 48h window starts at order creation; add paidAt if admins need it exact.
     const eligibleAt = new Date(o.createdAt.getTime() + UNDELIVERED_REFUND_AFTER_MS);
-    if (o.now < eligibleAt) return { eligible: false, reason: "Produk belum terkirim, tapi belum lewat 48 jam.", eligibleAt };
+    if (!o.ignoreWait && o.now < eligibleAt) return { eligible: false, reason: "Produk belum terkirim, tapi belum lewat 48 jam.", eligibleAt };
     const r = estimateRefund(o.sellPrice, o.warrantyDays ?? 1, 0, opFee)!;
     return { eligible: true, kind: "UNDELIVERED", warrantyDays: o.warrantyDays, usedDays: 0, remainingDays: o.warrantyDays ?? 0, gross: r.gross, opFee, amount: r.amount };
   }
