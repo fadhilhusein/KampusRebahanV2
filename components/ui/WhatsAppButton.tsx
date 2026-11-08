@@ -5,7 +5,10 @@ import { MessageCircle } from "lucide-react";
 
 export default function WhatsAppButton() {
   // The admin area has its own bottom bar, and the store owner doesn't need "contact admin".
-  if (usePathname().startsWith("/dashboard/admin")) return null;
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard/admin")) return null;
+  // Sit above the user dashboard's fixed bottom bar (shown below lg).
+  const lift = pathname.startsWith("/dashboard") ? "max-lg:bottom-24" : "";
 
   return (
     <a
@@ -13,7 +16,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       style={{ animationDelay: "600ms" }}
-      className="kr-fade-up kr-press fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface text-ink shadow-soft hover:-translate-y-0.5 hover:bg-pill hover:shadow-card"
+      className={`kr-fade-up kr-press fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-hairline bg-surface text-ink shadow-soft hover:-translate-y-0.5 hover:bg-pill hover:shadow-card ${lift}`}
       aria-label="Kontak admin melalui WhatsApp"
     >
       <MessageCircle size={22} />
