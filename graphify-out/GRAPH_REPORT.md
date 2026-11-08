@@ -1,17 +1,17 @@
 # Graph Report - KampusRebahanV2  (2026-11-08)
 
 ## Corpus Check
-- 187 files · ~72,046 words
+- 188 files · ~72,338 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 8 file(s) not represented in the graph (top: (none) 2, .ico 2, .css 1)
 
 ## Summary
-- 904 nodes · 2510 edges · 47 communities (44 shown, 3 thin omitted)
+- 904 nodes · 2503 edges · 52 communities (46 shown, 6 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 43 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7c701d43`
+- Built from commit: `02292633`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -28,35 +28,40 @@
 - Dev Dependencies
 - auth.ts
 - referral.ts
-- TransactionsTable.tsx
+- refundPreview.ts
 - dependencies
 - balance/page.tsx
 - TypeScript Config
-- buttonClass
+- TransactionsTable.tsx
 - supplierSync.ts
 - auth.ts
 - reviews/route.ts
 - affiliate/page.tsx
 - transactions/[orderId]/page.tsx
 - Route Protection Middleware
-- Skeleton
+- refundCalc.ts
 - NPM Scripts
-- react
-- @types/pg@^8.20.0
+- categoryIcons.ts
+- Skeleton
 - Caption sounding update: November 2026
 - PostCSS Config
 - NextAuth Handlers
 - Caption promo: Beli Claude Pro, gratis Gemini AI Pro
 - prisma.ts
 - order/[orderId]/page.tsx
+- nodemailer
 - prisma
 - SettingsView.tsx
+- pg
+- Order (Prisma model)
 - Caption WhatsApp — KampusRebahan
+- RefundDialog.tsx
 - lucide-react
 - ThemeToggle.tsx
+- next-themes
+- @types/bcryptjs@^2.4.6
 - app/layout.tsx
 - fulfillOrder.ts
-- [id]/page.tsx
 - recent-purchases/route.ts
 - ButtonPrimary.tsx
 - eslint.config.mjs
@@ -71,22 +76,22 @@
 4. `buttonClass()` - 42 edges
 5. `prisma` - 40 edges
 6. `Skeleton()` - 37 edges
-7. `auth` - 34 edges
-8. `requireAdmin()` - 34 edges
+7. `requireAdmin()` - 34 edges
+8. `auth` - 34 edges
 9. `Navbar()` - 31 edges
 10. `Footer()` - 26 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Missing Error State on Products Page` --conceptually_related_to--> `getProductsWithStats()`  [AMBIGUOUS]
   anti-slop/audit-001-2026-09-20.md → lib/products.ts
-- `3.11 Legal` --references--> `LegalArticle()`  [INFERRED]
-  design/SPEC.md → components/layout/LegalArticle.tsx
 - `3.5 Pembayaran QRIS → `/order/[orderId]` (status pending)` --references--> `GatewayQr()`  [INFERRED]
   design/SPEC.md → components/payment/GatewayQr.tsx
+- `3.11 Legal` --references--> `LegalArticle()`  [INFERRED]
+  design/SPEC.md → components/layout/LegalArticle.tsx
+- `BalanceTransaction (Prisma model)` --shares_data_with--> `POST()`  [INFERRED]
+  prisma/schema.prisma → app/api/admin/reject/route.ts
 - `Order (Prisma model)` --shares_data_with--> `POST()`  [INFERRED]
-  prisma/schema.prisma → app/api/admin/confirm/route.ts
-- `User (Prisma model)` --shares_data_with--> `POST()`  [INFERRED]
-  prisma/schema.prisma → app/api/auth/register/route.ts
+  prisma/schema.prisma → app/api/admin/reject/route.ts
 
 ## Import Cycles
 - None detected.
@@ -96,7 +101,7 @@
 - **Order Payment & Fulfillment Lifecycle** — prisma_schema_order, prisma_schema_orderstatus, app_api_order_route_post, app_api_admin_confirm_route_post, app_api_admin_reject_route_post, lib_fulfillorder_fulfillorder, lib_orderstatus_statuslabel [INFERRED 0.85]
 - **Password Reset Flow** — prisma_schema_passwordresettoken, prisma_schema_user, app_api_auth_forgot_password_route_post, app_api_auth_reset_password_route_post [INFERRED 0.85]
 
-## Communities (47 total, 3 thin omitted)
+## Communities (52 total, 6 thin omitted)
 
 ### Community 0 - "OrdersView.tsx"
 Cohesion: 0.08
@@ -115,8 +120,8 @@ Cohesion: 0.12
 Nodes (25): GET(), POST(), GET(), AdminPopupSettings(), formatSaved(), CardProps, InfoPopup(), PopupCard() (+17 more)
 
 ### Community 4 - "loyalty.ts"
-Cohesion: 0.06
-Nodes (58): GET(), IN_PROGRESS, GET(), parseOptions(), POST(), NumberField(), RefundCalculator(), rupiah() (+50 more)
+Cohesion: 0.16
+Nodes (16): GET(), IN_PROGRESS, findCoupon(), generateCouponCode(), getLoyaltyState(), isUniqueViolation(), LOYALTY_REWARD, LOYALTY_REWARD_LABEL (+8 more)
 
 ### Community 5 - "Docs, Audit & Design Notes"
 Cohesion: 0.10
@@ -131,8 +136,8 @@ Cohesion: 0.09
 Nodes (25): GET(), HomePage(), revalidate, HIDDEN_PRODUCT_IDS, getProductsWithStats(), AccountDetail, ApiResponse, BalanceResponse (+17 more)
 
 ### Community 8 - "[id]/page.tsx"
-Cohesion: 0.20
-Nodes (15): NotFound(), metadata, PrivacyPage(), metadata, RefundCalculatorPage(), metadata, TermsPage(), DashboardFrame() (+7 more)
+Cohesion: 0.15
+Nodes (21): NotFound(), PaymentCancelContent(), PaymentCancelPage(), StatusIcon(), CheckState, PaymentSuccessContent(), PaymentSuccessPage(), metadata (+13 more)
 
 ### Community 9 - "Dev Dependencies"
 Cohesion: 0.12
@@ -146,13 +151,13 @@ Nodes (13): POST(), POST(), POST(), POST(), GET(), sendResetCodeEmail(), clientI
 Cohesion: 0.11
 Nodes (39): GET(), POST(), POST(), POST(), GET(), POST(), GET(), calcCommission() (+31 more)
 
-### Community 12 - "TransactionsTable.tsx"
-Cohesion: 0.16
-Nodes (15): columnLabels, formatDate(), formatPrice(), paymentLabels, RowActions(), StatusFilter(), TransactionsTable(), DropdownMenuContent (+7 more)
+### Community 12 - "refundPreview.ts"
+Cohesion: 0.21
+Nodes (14): GET(), parseOptions(), POST(), settleLoyaltyOnReject(), creditWallet(), reverseCommission(), OrderRefundResult, parseWarrantyDays() (+6 more)
 
 ### Community 13 - "dependencies"
-Cohesion: 0.08
-Nodes (26): dependencies, @auth/prisma-adapter@^2.11.2, bcryptjs@^3.0.3, lucide-react@^1.3.0, motion@^12.37.0, next@16.2.6, nodemailer@^7.0.13, pg@^8.20.0 (+18 more)
+Cohesion: 0.09
+Nodes (22): dependencies, @auth/prisma-adapter@^2.11.2, bcryptjs@^3.0.3, lucide-react@^1.3.0, motion@^12.37.0, next@16.2.6, next-auth@^5.0.0-beta.31, @prisma/client@^7.8.0 (+14 more)
 
 ### Community 14 - "balance/page.tsx"
 Cohesion: 0.19
@@ -162,9 +167,9 @@ Nodes (14): BalancePage(), handleTopup(), formatPrice(), METHOD_LABEL, PRESET_AM
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 16 - "buttonClass"
-Cohesion: 0.40
-Nodes (7): PaymentCancelContent(), PaymentCancelPage(), StatusIcon(), CheckState, PaymentSuccessContent(), PaymentSuccessPage(), buttonClass()
+### Community 16 - "TransactionsTable.tsx"
+Cohesion: 0.16
+Nodes (15): columnLabels, formatDate(), formatPrice(), paymentLabels, RowActions(), StatusFilter(), TransactionsTable(), DropdownMenuContent (+7 more)
 
 ### Community 17 - "supplierSync.ts"
 Cohesion: 0.16
@@ -183,24 +188,24 @@ Cohesion: 0.11
 Nodes (19): AffiliateData, AffiliatePage(), formatDate(), formatPrice(), METHODS, CountUp(), fetchLoyalty(), formatPrice() (+11 more)
 
 ### Community 21 - "transactions/[orderId]/page.tsx"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (25): AccountDetailsPanel(), AccountGroup, COMPLAINT_STATUSES, complaintMessage(), Credential, CredentialRow(), formatDate(), formatPrice() (+17 more)
 
 ### Community 22 - "Route Protection Middleware"
 Cohesion: 0.40
 Nodes (3): config, PROTECTED, SESSION_COOKIES
 
-### Community 23 - "Skeleton"
-Cohesion: 0.26
-Nodes (10): TransactionsPage(), useDashboardUser(), baseTabs, DashboardHeader(), Tab, CheckoutSkeleton(), ProductDetailSkeleton(), Skeleton() (+2 more)
+### Community 23 - "refundCalc.ts"
+Cohesion: 0.23
+Nodes (13): NumberField(), RefundCalculator(), rupiah(), SIM_METHODS, estimateOrderRefund(), estimateRefund(), operationalFee(), OrderRefundInput (+5 more)
 
 ### Community 24 - "NPM Scripts"
 Cohesion: 0.40
 Nodes (5): scripts, build, dev, lint, start
 
-### Community 25 - "react"
-Cohesion: 0.18
-Nodes (6): formatRelativeTime(), RecentPurchase, RecentPurchaseBanner(), GradientBorderProps, iconMap, react
+### Community 26 - "Skeleton"
+Cohesion: 0.26
+Nodes (10): TransactionsPage(), useDashboardUser(), baseTabs, DashboardHeader(), Tab, CheckoutSkeleton(), ProductDetailSkeleton(), Skeleton() (+2 more)
 
 ### Community 27 - "Caption sounding update: November 2026"
 Cohesion: 0.40
@@ -215,8 +220,8 @@ Cohesion: 0.18
 Nodes (15): GET(), POST(), GET(), GET(), GET(), GET(), GET(), PATCH() (+7 more)
 
 ### Community 32 - "order/[orderId]/page.tsx"
-Cohesion: 0.17
-Nodes (17): formatPrice(), TopUp, TopUpPaymentPage(), CopyButton(), formatDate(), formatPrice(), Order, OrderDetailPage() (+9 more)
+Cohesion: 0.14
+Nodes (19): formatPrice(), TopUp, TopUpPaymentPage(), CopyButton(), formatDate(), formatPrice(), Order, OrderDetailPage() (+11 more)
 
 ### Community 34 - "prisma"
 Cohesion: 0.13
@@ -226,29 +231,37 @@ Nodes (19): POST(), GET(), POST(), POST(), QRIS_GATEWAY_MAX_AMOUNT, TOPUP_MIN_AM
 Cohesion: 0.20
 Nodes (13): AdminSettingsPage(), Field(), Group(), MethodKey, MethodList, methods, post(), Settings (+5 more)
 
+### Community 36 - "pg"
+Cohesion: 0.33
+Nodes (4): pg@^8.20.0, @prisma/adapter-pg@^7.8.0, pg, @prisma/adapter-pg
+
+### Community 37 - "Order (Prisma model)"
+Cohesion: 0.31
+Nodes (10): BalanceTopUp (Prisma model), BalanceTransaction (Prisma model), BalanceTxnType (Prisma enum), Coupon (Prisma model), CouponStatus (Prisma enum), Order (Prisma model), ProductReview (Prisma model), TopUpStatus (Prisma enum) (+2 more)
+
 ### Community 38 - "Caption WhatsApp — KampusRebahan"
 Cohesion: 0.33
 Nodes (5): Caption 1 (lengkap), Caption 2 (singkat, untuk status), Caption 3 (ajakan santai di grup), Caption WhatsApp — KampusRebahan, Jargon pilihan
 
+### Community 39 - "RefundDialog.tsx"
+Cohesion: 0.38
+Nodes (5): formatPrice(), RefundDialog(), todayWib(), REFUND_SERVICE_FEE_PERCENT, RefundPreview
+
 ### Community 40 - "lucide-react"
-Cohesion: 0.14
-Nodes (22): CredentialVisual(), EditorialLanding(), minPrice(), PayVisual(), PickVisual(), rupiah, steps, Bubble() (+14 more)
+Cohesion: 0.12
+Nodes (24): CredentialVisual(), EditorialLanding(), minPrice(), PayVisual(), PickVisual(), rupiah, steps, Bubble() (+16 more)
 
 ### Community 41 - "ThemeToggle.tsx"
-Cohesion: 0.43
-Nodes (6): clientSnapshot(), serverSnapshot(), subscribe(), ThemeToggle(), next-themes@^0.4.6, next-themes
+Cohesion: 0.70
+Nodes (4): clientSnapshot(), serverSnapshot(), subscribe(), ThemeToggle()
 
 ### Community 47 - "app/layout.tsx"
-Cohesion: 0.20
-Nodes (10): inter, interTight, metadata, RootLayout(), RefCapture(), NextAuthSessionProvider(), ToastProvider(), WhatsAppButton() (+2 more)
+Cohesion: 0.24
+Nodes (8): inter, interTight, metadata, RootLayout(), RefCapture(), NextAuthSessionProvider(), ToastProvider(), WhatsAppButton()
 
 ### Community 50 - "fulfillOrder.ts"
 Cohesion: 0.21
 Nodes (12): POST(), CouponUnavailableError, POST(), GET(), fulfillOrder(), FulfillOrderResult, processClaimedOrder(), adminNotifyEmail() (+4 more)
-
-### Community 51 - "[id]/page.tsx"
-Cohesion: 0.31
-Nodes (8): ProductDetailContent(), ProductDetailPage(), Terms(), rupiah, typeIcon(), VariantSelector(), Kartu varian (`VariantSelector`, komponen .pen "VariantCard"), ProductVariant
 
 ### Community 52 - "recent-purchases/route.ts"
 Cohesion: 0.83
@@ -267,8 +280,8 @@ Cohesion: 0.23
 Nodes (10): AdminLoyaltyPage(), AdminLoyalty(), filters, formatDate(), formatPrice(), Row, stateInfo, Badge() (+2 more)
 
 ### Community 59 - "ButtonPrimary.tsx"
-Cohesion: 0.18
-Nodes (12): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, ProductsCatalog(), ProductsContent(), ProductsPage(), ButtonPrimary() (+4 more)
+Cohesion: 0.12
+Nodes (22): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, ProductDetailContent(), ProductDetailPage(), Terms(), ProductsCatalog() (+14 more)
 
 ### Community 60 - "dotenv"
 Cohesion: 0.40
@@ -279,24 +292,24 @@ Nodes (4): dotenv@^17.4.2, prisma@^7.8.0, dotenv, prisma
   anti-slop/audit-001-2026-09-20.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **14 isolated node(s):** `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `TopUpStatus (Prisma enum)`, `Keyboard/Focus & ARIA Issues (outline-none, Link wrapping button, dropdown/toast)` (+9 more)
+- **14 isolated node(s):** `{ GET, POST }`, `Setting (Prisma model)`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)`, `TopUpStatus (Prisma enum)` (+9 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 250 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `next` connect `prisma.ts` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `Password Reset UI Kit`, `types.ts`, `[id]/page.tsx`, `Dev Dependencies`, `auth.ts`, `referral.ts`, `TransactionsTable.tsx`, `dependencies`, `balance/page.tsx`, `buttonClass`, `supplierSync.ts`, `reviews/route.ts`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `Route Protection Middleware`, `Skeleton`, `order/[orderId]/page.tsx`, `prisma`, `SettingsView.tsx`, `lucide-react`, `app/layout.tsx`, `fulfillOrder.ts`, `[id]/page.tsx`, `recent-purchases/route.ts`, `ButtonPrimary.tsx`, `ButtonPrimary.tsx`?**
+- **Why does `next` connect `prisma.ts` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `Password Reset UI Kit`, `types.ts`, `[id]/page.tsx`, `Dev Dependencies`, `auth.ts`, `referral.ts`, `refundPreview.ts`, `dependencies`, `balance/page.tsx`, `TransactionsTable.tsx`, `supplierSync.ts`, `reviews/route.ts`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `Route Protection Middleware`, `Skeleton`, `order/[orderId]/page.tsx`, `prisma`, `SettingsView.tsx`, `lucide-react`, `app/layout.tsx`, `fulfillOrder.ts`, `recent-purchases/route.ts`, `ButtonPrimary.tsx`, `ButtonPrimary.tsx`?**
   _High betweenness centrality (0.344) - this node is a cross-community bridge._
-- **What connects `{ GET, POST }`, `BalanceTxnType (Prisma enum)`, `CouponStatus (Prisma enum)` to the rest of the system?**
+- **What connects `{ GET, POST }`, `Setting (Prisma model)`, `BalanceTxnType (Prisma enum)` to the rest of the system?**
   _14 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `OrdersView.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.08143839238498149 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `react` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `Password Reset UI Kit`, `[id]/page.tsx`, `Dev Dependencies`, `TransactionsTable.tsx`, `dependencies`, `balance/page.tsx`, `buttonClass`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `Skeleton`, `order/[orderId]/page.tsx`, `SettingsView.tsx`, `lucide-react`, `ThemeToggle.tsx`, `app/layout.tsx`, `[id]/page.tsx`, `ButtonPrimary.tsx`, `Badge.tsx`, `ButtonPrimary.tsx`?**
+- **Why does `react` connect `order/[orderId]/page.tsx` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `Password Reset UI Kit`, `[id]/page.tsx`, `Dev Dependencies`, `dependencies`, `balance/page.tsx`, `TransactionsTable.tsx`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `refundCalc.ts`, `categoryIcons.ts`, `Skeleton`, `SettingsView.tsx`, `RefundDialog.tsx`, `lucide-react`, `ThemeToggle.tsx`, `app/layout.tsx`, `ButtonPrimary.tsx`, `Badge.tsx`, `ButtonPrimary.tsx`?**
   _High betweenness centrality (0.116) - this node is a cross-community bridge._
 - **Should `2. Komponen` be split into smaller, more focused modules?**
   _Cohesion score 0.05398110661268556 - nodes in this community are weakly interconnected._
-- **Why does `lucide-react` connect `lucide-react` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `Password Reset UI Kit`, `[id]/page.tsx`, `Dev Dependencies`, `TransactionsTable.tsx`, `dependencies`, `balance/page.tsx`, `buttonClass`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `Skeleton`, `react`, `order/[orderId]/page.tsx`, `SettingsView.tsx`, `ThemeToggle.tsx`, `app/layout.tsx`, `[id]/page.tsx`, `ButtonPrimary.tsx`, `ButtonPrimary.tsx`?**
+- **Why does `lucide-react` connect `lucide-react` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `Password Reset UI Kit`, `[id]/page.tsx`, `Dev Dependencies`, `dependencies`, `balance/page.tsx`, `TransactionsTable.tsx`, `affiliate/page.tsx`, `transactions/[orderId]/page.tsx`, `categoryIcons.ts`, `Skeleton`, `order/[orderId]/page.tsx`, `SettingsView.tsx`, `RefundDialog.tsx`, `ThemeToggle.tsx`, `app/layout.tsx`, `ButtonPrimary.tsx`, `ButtonPrimary.tsx`?**
   _High betweenness centrality (0.072) - this node is a cross-community bridge._
 
 ### Low-confidence Hints

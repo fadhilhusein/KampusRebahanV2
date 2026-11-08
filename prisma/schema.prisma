@@ -58,6 +58,9 @@ model Order {
   gatewayQrString  String?
   gatewayStatus    String?
   refundedAt       DateTime?
+  // What the customer got back and how: "BALANCE" (credited to their wallet) or "MANUAL" (admin paid out directly).
+  refundAmount     Int?
+  refundMethod     String?
   // When the supplier confirmed delivery; drives the loyalty coupon waiting period.
   completedAt      DateTime?
   bridgeRef        String?

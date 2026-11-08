@@ -437,7 +437,9 @@ export default function TransactionDetailPage() {
                     <div className="text-base font-semibold">Pesanan direfund</div>
                     <p className="text-[13px] text-muted">
                       {tx.refund_amount != null
-                        ? `Dana ${formatPrice(tx.refund_amount)} dikembalikan ke ${tx.refund_wallet === "REFERRAL" ? "saldo referensi" : "saldo"}`
+                        ? tx.refund_wallet === "MANUAL"
+                          ? `Dana ${formatPrice(tx.refund_amount)} dikirim langsung oleh admin ke e-wallet / rekeningmu`
+                          : `Dana ${formatPrice(tx.refund_amount)} dikembalikan ke ${tx.refund_wallet === "REFERRAL" ? "saldo referensi" : "saldo"}`
                         : "Dana dikembalikan ke saldo"}
                       {tx.refunded_at ? ` pada ${formatDate(tx.refunded_at)}.` : "."}
                     </p>
