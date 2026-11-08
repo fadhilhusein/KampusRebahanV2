@@ -11,8 +11,8 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
-import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, MessageCircle, Undo2 } from "lucide-react";
-import { whatsappLink } from "@/lib/contact";
+import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, Undo2 } from "lucide-react";
+import RefundRequestCard from "@/components/dashboard/RefundRequestCard";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -66,15 +66,16 @@ const statusLabel: Record<string, string> = {
 // Orders a customer may raise a refund/complaint about (paid and not already closed).
 const COMPLAINT_STATUSES = ["PROCESSING", "AWAITING_RETRY", "COMPLETED"];
 
-function complaintMessage(tx: Transaction) {
+function complaintMessage(tx: Transaction, opening: string, extra: string[] = []) {
   return [
-    "Halo admin KampusRebahan, saya ingin mengajukan refund / komplain.",
+    opening,
     "",
     `ID pesanan: ${tx.order_id}`,
     `Produk: ${tx.productName} - ${tx.variantName}`,
     `Tanggal: ${formatDate(tx.created_at)}`,
     `Total: ${formatPrice(tx.total_amount ?? 0)}`,
     `Status: ${statusLabel[tx.db_status] ?? tx.db_status}`,
+    ...extra,
     "",
     "Kendala: ",
   ].join("\n");
@@ -483,20 +484,7 @@ export default function TransactionDetailPage() {
               </GlassCard>
 
               {COMPLAINT_STATUSES.includes(tx.db_status) && (
-                <GlassCard className="flex flex-col gap-3 p-5">
-                  <h2 className="text-base font-semibold">Ada kendala dengan pesanan ini?</h2>
-                  <p className="text-[13px] text-muted">
-                    Ajukan refund atau komplain lewat WhatsApp admin. Pesan otomatis berisi ID pesanan dan produk.
-                  </p>
-                  <a
-                    href={whatsappLink(complaintMessage(tx))}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`kr-press ${buttonClass("secondary")} w-full lg:w-fit`}
-                  >
-                    <MessageCircle size={16} aria-hidden="true" /> Ajukan refund / komplain
-                  </a>
-                </GlassCard>
+                <RefundRequestCard orderId={tx.order_id} message={(opening, extra) => complaintMessage(tx, opening, extra)} />
               )}
             </RevealItem>
           </Reveal>

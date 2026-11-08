@@ -48,8 +48,12 @@ test("undelivered after 48h refunds 90%, even without warranty", () => {
 });
 
 test("not eligible cases", () => {
-  const early = estimateOrderRefund({ ...base, status: "PROCESSING", issueAt: base.now, now: new Date("2026-11-02T03:00:00Z") });
+  const early = estimateOrderRefund({ ...base, status: "PROCESSING", issueAt: new Date("2026-11-02T03:00:00Z"), now: new Date("2026-11-02T03:00:00Z") });
+  assert.equal(!early.eligible && early.eligibleAt?.toISOString(), "2026-11-03T03:00:00.000Z");
   assert.equal(early.eligible, false);
+  const adminNow = new Date("2026-11-02T03:00:00Z");
+  const adminEarly = estimateOrderRefund({ ...base, status: "PROCESSING", issueAt: adminNow, now: adminNow, ignoreWait: true });
+  assert.equal(adminEarly.eligible && adminEarly.amount, 18000);
   assert.equal(estimateOrderRefund({ ...base, status: "COMPLETED", warrantyDays: null, issueAt: base.now }).eligible, false);
   assert.equal(estimateOrderRefund({ ...base, status: "COMPLETED", issueAt: new Date("2026-12-05T05:00:00Z"), now: new Date("2026-12-06T00:00:00Z") }).eligible, false);
   assert.equal(estimateOrderRefund({ ...base, status: "REJECTED", issueAt: base.now }).eligible, false);
