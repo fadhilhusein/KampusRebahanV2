@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "app/terms/page.tsx": {
-    "mtime": 1794050546.8618052,
-    "seen": 1794050677.2927258,
-    "ast_hash": "bfc3d6b861d23545cc778fd8c36bbb9d",
+    "mtime": 1794105465.2917697,
+    "seen": 1794105498.1931448,
+    "ast_hash": "137c46a35d061a511ebf5149db193081",
     "semantic_hash": ""
   },
   "auth.config.ts": {
@@ -360,9 +360,9 @@
     "semantic_hash": ""
   },
   "components/layout/Footer.tsx": {
-    "mtime": 1793944149.7007892,
-    "seen": 1793944609.9849358,
-    "ast_hash": "c52ab80501d94003c3421d3d6b2567bf",
+    "mtime": 1794103012.1151392,
+    "seen": 1794103096.140396,
+    "ast_hash": "4b3dce9380d68314a5dbe15ce18c5dd5",
     "semantic_hash": ""
   },
   "components/layout/LegalArticle.tsx": {
@@ -1791,6 +1791,180 @@
     "mtime": 1794066477.591571,
     "seen": 1794067645.304335,
     "ast_hash": "7267b26c9208faf572e1de654d0f0e3b",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/capture.mjs": {
+    "mtime": 1794096606.3084571,
+    "seen": 1794102161.3643532,
+    "ast_hash": "8be632451f3019e9d3a75693f6fe8e67",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/inpage.js": {
+    "mtime": 1794096606.3094585,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cff312aef46017fc6ce5334887e986c4",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/match.mjs": {
+    "mtime": 1794096606.3094585,
+    "seen": 1794102161.3643532,
+    "ast_hash": "0a91fe7a236e7cdb757caded4f7c78dc",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/motion.mjs": {
+    "mtime": 1794096606.310458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cf74e095cbd71c5d088e2d48c75bfcf3",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/pixels.mjs": {
+    "mtime": 1794096606.310458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "4797c755ae364de77e4c543feda05402",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/report.mjs": {
+    "mtime": 1794096606.311458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cb271824b1ecb98a0d6b02f95ef82f05",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package.json": {
+    "mtime": 1794096606.3124576,
+    "seen": 1794102161.3643532,
+    "ast_hash": "010f5b98758781b4b7249f294880cbe5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/replica.mjs": {
+    "mtime": 1794096606.3134575,
+    "seen": 1794102161.3643532,
+    "ast_hash": "2f396b400af4a80a9dd94d781ef814fb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/selftest.mjs": {
+    "mtime": 1794096606.3189657,
+    "seen": 1794102161.3643532,
+    "ast_hash": "87ef6687d50b055b3aae7a2be9937aa9",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/SKILL.md": {
+    "mtime": 1794096606.3054183,
+    "seen": 1794102161.408659,
+    "ast_hash": "d6bf2a2374e65af6f0b1c3616353829f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/blueprint.md": {
+    "mtime": 1794096606.3054183,
+    "seen": 1794102161.408659,
+    "ast_hash": "b34dadc0fa14542e9a0dbfa36a9c5f94",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/building.md": {
+    "mtime": 1794096606.306419,
+    "seen": 1794102161.408659,
+    "ast_hash": "0da3c7ded62eb56ca988011309b0affb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/fixing.md": {
+    "mtime": 1794096606.306419,
+    "seen": 1794102161.408659,
+    "ast_hash": "cd45bf3d89ec0d0b0bc09374f501053f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/sources.md": {
+    "mtime": 1794096606.3074183,
+    "seen": 1794102161.408659,
+    "ast_hash": "e1e0ae95912081e442e286cff7f0a455",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-bad.html": {
+    "mtime": 1794096606.3144572,
+    "seen": 1794102161.408659,
+    "ast_hash": "6c4495560c48d967c5bf46434cdc856b",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-good.html": {
+    "mtime": 1794096606.3154588,
+    "seen": 1794102161.408659,
+    "ast_hash": "2b0f54838afec8ae7d4e3e9c289f6fa6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-bad.html": {
+    "mtime": 1794096606.3154588,
+    "seen": 1794102161.408659,
+    "ast_hash": "180ef49eae60ceb71c528b7eee917613",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-good.html": {
+    "mtime": 1794096606.3164577,
+    "seen": 1794102161.408659,
+    "ast_hash": "215ee79371aef7e3981a93a4d133e2a6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-ref.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "08b4abe35528d86da94b450f8f3597e8",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/ref.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "1576178155cdae1a52ef6ce7d7780e2c",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-clone.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "9fdebf7248ef4d860f3c6c1e6fc09f60",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-ref.html": {
+    "mtime": 1794096606.3184583,
+    "seen": 1794102161.408659,
+    "ast_hash": "4e8dac82fc35b3807ad3446388c2e750",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/RefundCalculator.tsx": {
+    "mtime": 1794105450.5223334,
+    "seen": 1794105498.1921456,
+    "ast_hash": "bfe8472f23f96d0ea151c33b05dc50e6",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/page.tsx": {
+    "mtime": 1794104234.5656662,
+    "seen": 1794104418.1206188,
+    "ast_hash": "4ca78525ed02491480bb8d4fedf6a22a",
+    "semantic_hash": ""
+  },
+  "lib/refundCalc.test.ts": {
+    "mtime": 1794105405.8667364,
+    "seen": 1794105498.2122192,
+    "ast_hash": "333c6a7cb777800a69ea44176890c0e3",
+    "semantic_hash": ""
+  },
+  "lib/refundCalc.ts": {
+    "mtime": 1794105405.8667364,
+    "seen": 1794105498.2122192,
+    "ast_hash": "aa5509e3ca8f5618044a00b5fd4a8c2f",
+    "semantic_hash": ""
+  },
+  "app/api/refund-estimate/route.ts": {
+    "mtime": 1794105419.1509397,
+    "seen": 1794105498.1831412,
+    "ast_hash": "2fcf1f48dc7e8e85ba2aa82a5cee3db8",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/InvoiceCheck.tsx": {
+    "mtime": 1794105419.1509397,
+    "seen": 1794105498.1921456,
+    "ast_hash": "f3b692750d52beaf183deeca87a62cf8",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package-lock.json": {
+    "mtime": 1794096606.311458,
+    "seen": 1794102161.443182,
+    "ast_hash": "febbcae59ad15dc35cdb1ad36d8230dc",
     "semantic_hash": ""
   },
   "package-lock.json": {

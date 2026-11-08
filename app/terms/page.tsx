@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LegalArticle from "@/components/layout/LegalArticle";
@@ -64,13 +65,14 @@ export default function TermsPage() {
             <section>
               <h2>6. Garansi & Refund</h2>
               <ul className="list-disc list-inside space-y-2">
-                <li>Garansi berlaku sesuai yang tertera pada masing-masing produk.</li>
+                <li>Garansi berlaku selama masa garansi yang tertera pada masing-masing produk.</li>
+                <li>Garansi berupa <strong>perbaikan akun</strong> atau <strong>penggantian unit akun baru (replace)</strong>. Garansi tidak berupa pengembalian dana.</li>
                 <li>Pengajuan refund atau komplain dilakukan melalui WhatsApp admin, menggunakan tombol <strong>Ajukan refund / komplain</strong> di halaman detail pesanan agar ID pesanan dan detail produk terlampir.</li>
-                <li>Refund dapat diproses jika produk tidak dapat dikirimkan setelah pembayaran terkonfirmasi. Untuk pesanan yang sudah selesai, refund diberikan atas keputusan admin setelah pemeriksaan.</li>
-                <li>Refund diproses sebagai saldo akun, bukan pengembalian uang tunai. Pesanan yang dibayar dengan saldo referensi dikembalikan ke saldo referensi.</li>
+                <li>Refund dapat diajukan dalam dua keadaan: (1) produk <strong>belum terkirim setelah 48 jam</strong> sejak pembayaran terkonfirmasi, atau (2) produk sudah terkirim dan terpakai, dan masalahnya tidak dapat diselesaikan melalui garansi (perbaikan atau penggantian akun).</li>                              
                 <li>Jika refund membuat total belanja Anda turun di bawah syarat Program Loyalitas, berlaku ketentuan pada bagian 7: kupon yang belum ditukar dicabut, dan untuk kupon yang sudah ditukar, nilai hadiah dipotong dari nominal refund.</li>
                 <li>Pesanan yang direfund berstatus <strong>Direfund</strong> di riwayat transaksi.</li>
                 <li>Tidak ada refund untuk kesalahan penggunaan akun oleh pembeli.</li>
+                <li><Link href="/refund-calculator" className="font-medium text-ink underline underline-offset-2">Hitung estimasi refund</Link></li>
               </ul>
             </section>
 

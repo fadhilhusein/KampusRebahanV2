@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "app/api/admin/settings/route.ts": {
-    "mtime": 1794032005.4391599,
-    "seen": 1794032236.761219,
-    "ast_hash": "18967a2df504cee548c9acc90686b0d3",
+    "mtime": 1794080267.784722,
+    "seen": 1794080500.4816785,
+    "ast_hash": "3c32729feefe66b9d2ee1157760cab3b",
     "semantic_hash": ""
   },
   "app/api/auth/[...nextauth]/route.ts": {
@@ -72,15 +72,15 @@
     "semantic_hash": "41a5653a0bbaf5f0af70792ae916450f"
   },
   "app/api/balance/topup/[topupId]/status/route.ts": {
-    "mtime": 1793837281.151498,
-    "seen": 1793935814.168319,
-    "ast_hash": "3f1a0e2b02a1de89af43e3c3459b7743",
-    "semantic_hash": "3f1a0e2b02a1de89af43e3c3459b7743"
+    "mtime": 1794080463.841942,
+    "seen": 1794080500.4838817,
+    "ast_hash": "8026a0f501acaa74174c9201a4d504a9",
+    "semantic_hash": ""
   },
   "app/api/balance/topup/route.ts": {
-    "mtime": 1794061098.7562208,
-    "seen": 1794061283.61013,
-    "ast_hash": "6c6c5c60f6e4c677e943c59fcd97cd1b",
+    "mtime": 1794080236.5265837,
+    "seen": 1794080500.4838817,
+    "ast_hash": "75d12a549b5e1e56329c855deda849d9",
     "semantic_hash": ""
   },
   "app/api/balance/transactions/route.ts": {
@@ -144,10 +144,10 @@
     "semantic_hash": ""
   },
   "app/api/settings/public/route.ts": {
-    "mtime": 1793839227.065452,
-    "seen": 1793935814.168319,
-    "ast_hash": "803112008a9a5e696f0aae90d27bbd15",
-    "semantic_hash": "803112008a9a5e696f0aae90d27bbd15"
+    "mtime": 1794080267.1249516,
+    "seen": 1794080500.4888923,
+    "ast_hash": "3a463f3236c29dbdd4e8216d5d78caa2",
+    "semantic_hash": ""
   },
   "app/api/transactions/route.ts": {
     "mtime": 1794049761.6438158,
@@ -162,10 +162,10 @@
     "semantic_hash": "7842666ea74fe8b8af622c3c1c5d1a7e"
   },
   "app/api/webhook/bridge/route.ts": {
-    "mtime": 1793837307.9532447,
-    "seen": 1793935814.168319,
-    "ast_hash": "8987d61c43a9eee3e955d3b9460c203b",
-    "semantic_hash": "8987d61c43a9eee3e955d3b9460c203b"
+    "mtime": 1794080252.7654698,
+    "seen": 1794080500.4899712,
+    "ast_hash": "2a9c54dd347d3385a644012e11f5b912",
+    "semantic_hash": ""
   },
   "app/api/webhook/route.ts": {
     "mtime": 1794047404.8558297,
@@ -210,15 +210,15 @@
     "semantic_hash": ""
   },
   "app/dashboard/balance/page.tsx": {
-    "mtime": 1793944918.7947307,
-    "seen": 1793945005.8167565,
-    "ast_hash": "70d6313852b19908afe2e199b84cf755",
+    "mtime": 1794080279.261861,
+    "seen": 1794080500.4942846,
+    "ast_hash": "2a7bbdfd84cfc4ea3a3e458e7ec8fe6f",
     "semantic_hash": ""
   },
   "app/dashboard/balance/topup/[topupId]/page.tsx": {
-    "mtime": 1793944936.1935916,
-    "seen": 1793945005.8167565,
-    "ast_hash": "75a4fc49cd2d9283236837ff6094a411",
+    "mtime": 1794080290.4557548,
+    "seen": 1794080500.4942846,
+    "ast_hash": "d7eeb5d4db91a4f8ab76324254e54e56",
     "semantic_hash": ""
   },
   "app/dashboard/layout.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "app/terms/page.tsx": {
-    "mtime": 1794050546.8618052,
-    "seen": 1794050677.2927258,
-    "ast_hash": "bfc3d6b861d23545cc778fd8c36bbb9d",
+    "mtime": 1794103012.047937,
+    "seen": 1794103096.1303961,
+    "ast_hash": "c186e940979b932bd3e9c20f1b4d8ac3",
     "semantic_hash": ""
   },
   "auth.config.ts": {
@@ -360,9 +360,9 @@
     "semantic_hash": ""
   },
   "components/layout/Footer.tsx": {
-    "mtime": 1793944149.7007892,
-    "seen": 1793944609.9849358,
-    "ast_hash": "c52ab80501d94003c3421d3d6b2567bf",
+    "mtime": 1794103012.1151392,
+    "seen": 1794103096.140396,
+    "ast_hash": "4b3dce9380d68314a5dbe15ce18c5dd5",
     "semantic_hash": ""
   },
   "components/layout/LegalArticle.tsx": {
@@ -588,9 +588,9 @@
     "semantic_hash": "d63d8ee39aa73c8bb8dad774a106789c"
   },
   "lib/settings.ts": {
-    "mtime": 1794031876.1074986,
-    "seen": 1794032236.7919376,
-    "ast_hash": "1dc17de5c90c6157092fdcebe830648f",
+    "mtime": 1794080220.2886734,
+    "seen": 1794080500.5266902,
+    "ast_hash": "920ffa7fa54fd3280912196359b6f087",
     "semantic_hash": ""
   },
   "lib/types.ts": {
@@ -1722,9 +1722,9 @@
     "semantic_hash": ""
   },
   "components/admin/SettingsView.tsx": {
-    "mtime": 1794067432.0099878,
-    "seen": 1794067645.304335,
-    "ast_hash": "58a63414bf6fb6f1f3820cede25061de",
+    "mtime": 1794080307.529689,
+    "seen": 1794080500.5012124,
+    "ast_hash": "96b5ac46ad33ef970d03563a52f8656f",
     "semantic_hash": ""
   },
   "components/admin/shared.tsx": {
@@ -1791,6 +1791,180 @@
     "mtime": 1794066477.591571,
     "seen": 1794067645.304335,
     "ast_hash": "7267b26c9208faf572e1de654d0f0e3b",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/capture.mjs": {
+    "mtime": 1794096606.3084571,
+    "seen": 1794102161.3643532,
+    "ast_hash": "8be632451f3019e9d3a75693f6fe8e67",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/inpage.js": {
+    "mtime": 1794096606.3094585,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cff312aef46017fc6ce5334887e986c4",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/match.mjs": {
+    "mtime": 1794096606.3094585,
+    "seen": 1794102161.3643532,
+    "ast_hash": "0a91fe7a236e7cdb757caded4f7c78dc",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/motion.mjs": {
+    "mtime": 1794096606.310458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cf74e095cbd71c5d088e2d48c75bfcf3",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/pixels.mjs": {
+    "mtime": 1794096606.310458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "4797c755ae364de77e4c543feda05402",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/report.mjs": {
+    "mtime": 1794096606.311458,
+    "seen": 1794102161.3643532,
+    "ast_hash": "cb271824b1ecb98a0d6b02f95ef82f05",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package.json": {
+    "mtime": 1794096606.3124576,
+    "seen": 1794102161.3643532,
+    "ast_hash": "010f5b98758781b4b7249f294880cbe5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/replica.mjs": {
+    "mtime": 1794096606.3134575,
+    "seen": 1794102161.3643532,
+    "ast_hash": "2f396b400af4a80a9dd94d781ef814fb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/selftest.mjs": {
+    "mtime": 1794096606.3189657,
+    "seen": 1794102161.3643532,
+    "ast_hash": "87ef6687d50b055b3aae7a2be9937aa9",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/SKILL.md": {
+    "mtime": 1794096606.3054183,
+    "seen": 1794102161.408659,
+    "ast_hash": "d6bf2a2374e65af6f0b1c3616353829f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/blueprint.md": {
+    "mtime": 1794096606.3054183,
+    "seen": 1794102161.408659,
+    "ast_hash": "b34dadc0fa14542e9a0dbfa36a9c5f94",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/building.md": {
+    "mtime": 1794096606.306419,
+    "seen": 1794102161.408659,
+    "ast_hash": "0da3c7ded62eb56ca988011309b0affb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/fixing.md": {
+    "mtime": 1794096606.306419,
+    "seen": 1794102161.408659,
+    "ast_hash": "cd45bf3d89ec0d0b0bc09374f501053f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/sources.md": {
+    "mtime": 1794096606.3074183,
+    "seen": 1794102161.408659,
+    "ast_hash": "e1e0ae95912081e442e286cff7f0a455",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-bad.html": {
+    "mtime": 1794096606.3144572,
+    "seen": 1794102161.408659,
+    "ast_hash": "6c4495560c48d967c5bf46434cdc856b",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-good.html": {
+    "mtime": 1794096606.3154588,
+    "seen": 1794102161.408659,
+    "ast_hash": "2b0f54838afec8ae7d4e3e9c289f6fa6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-bad.html": {
+    "mtime": 1794096606.3154588,
+    "seen": 1794102161.408659,
+    "ast_hash": "180ef49eae60ceb71c528b7eee917613",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-good.html": {
+    "mtime": 1794096606.3164577,
+    "seen": 1794102161.408659,
+    "ast_hash": "215ee79371aef7e3981a93a4d133e2a6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-ref.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "08b4abe35528d86da94b450f8f3597e8",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/ref.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "1576178155cdae1a52ef6ce7d7780e2c",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-clone.html": {
+    "mtime": 1794096606.3174589,
+    "seen": 1794102161.408659,
+    "ast_hash": "9fdebf7248ef4d860f3c6c1e6fc09f60",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-ref.html": {
+    "mtime": 1794096606.3184583,
+    "seen": 1794102161.408659,
+    "ast_hash": "4e8dac82fc35b3807ad3446388c2e750",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/RefundCalculator.tsx": {
+    "mtime": 1794104234.5656662,
+    "seen": 1794104418.1206188,
+    "ast_hash": "22e670f01423bdbecc2f5c4737e66521",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/page.tsx": {
+    "mtime": 1794104234.5656662,
+    "seen": 1794104418.1206188,
+    "ast_hash": "4ca78525ed02491480bb8d4fedf6a22a",
+    "semantic_hash": ""
+  },
+  "lib/refundCalc.test.ts": {
+    "mtime": 1794104148.1896782,
+    "seen": 1794104418.149565,
+    "ast_hash": "3e7b8583eafa910cc9aaa213f784ab4d",
+    "semantic_hash": ""
+  },
+  "lib/refundCalc.ts": {
+    "mtime": 1794104141.8564022,
+    "seen": 1794104418.149565,
+    "ast_hash": "3b83ee7fff6465b207f3cf5eead4778f",
+    "semantic_hash": ""
+  },
+  "app/api/refund-estimate/route.ts": {
+    "mtime": 1794104162.6341565,
+    "seen": 1794104418.1070077,
+    "ast_hash": "3805d085035cce5c008338697420b0b8",
+    "semantic_hash": ""
+  },
+  "app/refund-calculator/InvoiceCheck.tsx": {
+    "mtime": 1794104232.960343,
+    "seen": 1794104418.1206188,
+    "ast_hash": "f4c30ba0be00277806fe320ead7d191d",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package-lock.json": {
+    "mtime": 1794096606.311458,
+    "seen": 1794102161.443182,
+    "ast_hash": "febbcae59ad15dc35cdb1ad36d8230dc",
     "semantic_hash": ""
   },
   "package-lock.json": {
