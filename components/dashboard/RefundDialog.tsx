@@ -34,6 +34,8 @@ export default function RefundDialog({
   // Issue date and warranty override feed the S&K formula; "" means today / the supplier's warranty.
   const [date, setDate] = useState("");
   const [warranty, setWarranty] = useState("");
+  // BALANCE credits the customer's wallet; MANUAL only records a payout the admin made themselves.
+  const [method, setMethod] = useState<"BALANCE" | "MANUAL">("BALANCE");
 
   useEffect(() => {
     const d = ref.current;
@@ -73,7 +75,7 @@ export default function RefundDialog({
     const data = await fetch("/api/admin/reject", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, reason: reason.trim() || null, refund, date: date || null, warranty: warranty === "" ? null : warranty }),
+      body: JSON.stringify({ orderId, reason: reason.trim() || null, refund, date: date || null, warranty: warranty === "" ? null : warranty, method }),
     })
       .then((r) => r.json())
       .catch(() => ({ success: false, message: "Terjadi kesalahan. Coba lagi." }));
@@ -148,7 +150,10 @@ export default function RefundDialog({
               {p.opFee > 0 && (
                 <div className="flex justify-between gap-3"><dt className="text-muted">Biaya operasional (QRIS Instan)</dt><dd className="font-semibold tabular-nums text-danger">-{formatPrice(p.opFee)}</dd></div>
               )}
-              <div className="flex justify-between gap-3"><dt className="text-muted">Dikembalikan ke</dt><dd className="font-semibold">{walletLabel}</dd></div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-muted">Dikembalikan ke</dt>
+                <dd className="font-semibold">{method === "MANUAL" ? "Manual (e-wallet / bank)" : walletLabel}</dd>
+              </div>
               {p.withheld > 0 && (
                 <div className="flex justify-between gap-3"><dt className="text-muted">Potongan hadiah Gemini AI Pro</dt><dd className="font-semibold tabular-nums text-danger">-{formatPrice(p.withheld)}</dd></div>
               )}
@@ -170,6 +175,24 @@ export default function RefundDialog({
                   <li className="flex gap-2.5"><TrendingDown size={16} aria-hidden="true" className="mt-px shrink-0 text-muted" />Progres kupon user turun ke {formatPrice(p.progressAfter)} / {formatPrice(p.threshold)}.</li>
                 )}
               </ul>
+            )}
+
+            {p.refundEligible && (
+              <div className="flex flex-col gap-2">
+                <span id="refund-method" className="text-[13px] font-semibold">Cara refund</span>
+                <div role="group" aria-labelledby="refund-method" className="grid grid-cols-2 gap-2">
+                  {([["BALANCE", walletLabel], ["MANUAL", "Manual (e-wallet / bank)"]] as const).map(([id, label]) => (
+                    <button key={id} type="button" aria-pressed={method === id} onClick={() => setMethod(id)} className="kr-chip kr-press px-2 text-[13px]">
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {method === "MANUAL" && (
+                  <p className="rounded-[14px] bg-warn-bg px-3.5 py-2.5 text-[13px] font-medium text-warn">
+                    Transfer {formatPrice(p.refundAmount)} ke e-wallet / rekening user sendiri dulu. Tombol ini hanya mencatat refund, saldo user tidak bertambah. Tulis tujuan transfer di Alasan.
+                  </p>
+                )}
+              </div>
             )}
 
             {p.delivered && (
@@ -203,7 +226,7 @@ export default function RefundDialog({
               </button>
               {p.refundEligible && (
                 <button type="button" onClick={() => submit(true)} disabled={!!busy} className={`${buttonClass("danger")} max-md:w-full`}>
-                  {busy === "refund" ? "Memproses..." : `Refund ${formatPrice(p.refundAmount)}`}
+                  {busy === "refund" ? "Memproses..." : method === "MANUAL" ? `Tandai sudah ditransfer ${formatPrice(p.refundAmount)}` : `Refund ${formatPrice(p.refundAmount)} ke ${walletLabel.toLowerCase()}`}
                 </button>
               )}
             </div>

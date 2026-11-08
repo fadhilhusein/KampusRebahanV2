@@ -43,7 +43,9 @@ export async function POST(req: NextRequest) {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
 
-  const { orderId, reason, refund, date, warranty } = await req.json();
+  const { orderId, reason, refund, date, warranty, method } = await req.json();
+  // BALANCE credits the customer's wallet; MANUAL records a refund the admin already paid out (e-wallet / bank).
+  const refundMethod = method === "MANUAL" ? "MANUAL" : "BALANCE";
   if (!orderId) return NextResponse.json({ success: false, message: "orderId wajib diisi." }, { status: 400 });
 
   const order = await prisma.order.findUnique({ where: { id: orderId } });
@@ -74,7 +76,7 @@ export async function POST(req: NextRequest) {
       // Claim the refund atomically so a double click or two admins can't credit twice.
       const claimed = await tx.order.updateMany({
         where: { id: orderId, refundedAt: null, status: { in: [...REFUND_ELIGIBLE_STATUSES] } },
-        data: { status: "REJECTED", paymentNote: reason ?? order.paymentNote, refundedAt: new Date() },
+        data: { status: "REJECTED", paymentNote: reason ?? order.paymentNote, refundedAt: new Date(), refundMethod },
       });
       if (claimed.count === 0) return null;
 
@@ -82,6 +84,9 @@ export async function POST(req: NextRequest) {
       // reward, its cost is withheld (once); an unredeemed coupon is revoked.
       const withheld = await settleLoyalty(tx, formulaAmount);
       const refundAmount = Math.max(0, formulaAmount - withheld);
+      await tx.order.update({ where: { id: order.id }, data: { refundAmount } });
+      await reverseCommission(tx, order.id);
+      if (refundMethod === "MANUAL") return { refundAmount, withheld };
 
       // Money paid from the referral wallet goes back there; everything else to the main balance.
       const wallet = order.paymentMethod === "REFERRAL_BALANCE" ? "REFERRAL" : "MAIN";
@@ -100,7 +105,6 @@ export async function POST(req: NextRequest) {
             .join(" · ") || null,
         },
       });
-      await reverseCommission(tx, order.id);
       return { refundAmount, withheld };
     }));
 
@@ -108,9 +112,11 @@ export async function POST(req: NextRequest) {
     const rp = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
     return NextResponse.json({
       success: true,
-      message: refunded.withheld
-        ? `Order ditolak. Refund ${rp(refunded.refundAmount)} (dipotong ${rp(refunded.withheld)} karena kupon Gemini AI Pro sudah ditukar).`
-        : `Order ditolak. Refund ${rp(refunded.refundAmount)} dikembalikan ke saldo.`,
+      message:
+        (refundMethod === "MANUAL"
+          ? `Order ditolak. Refund manual ${rp(refunded.refundAmount)} tercatat, saldo user tidak berubah.`
+          : `Order ditolak. Refund ${rp(refunded.refundAmount)} dikembalikan ke saldo.`) +
+        (refunded.withheld ? ` Sudah dipotong ${rp(refunded.withheld)} karena kupon Gemini AI Pro sudah ditukar.` : ""),
     });
   }
 

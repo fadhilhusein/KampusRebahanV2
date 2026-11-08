@@ -76,7 +76,7 @@ export interface Transaction {
   db_status: string;
   refunded_at?: string | null;
   refund_amount?: number | null;
-  refund_wallet?: "MAIN" | "REFERRAL" | null;
+  refund_wallet?: "MAIN" | "REFERRAL" | "MANUAL" | null;
   payment_status: string;
   products: Product[];
   account_details: AccountDetail[];
