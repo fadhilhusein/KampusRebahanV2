@@ -5,8 +5,21 @@ import type { Product, ProductsResponse } from "@/lib/types";
 import { reservedByVariant } from "@/lib/stock";
 import { availableStock } from "@/lib/stockRules";
 
-export async function getProductsWithStats(): Promise<ProductsResponse> {
+// The supplier list takes ~3s. Listings reuse it for a minute; checkout still reads it fresh
+// (app/api/order) and the stock lock guards the last unit, so a stale display can't oversell.
+// shortcut: per-instance memory cache, move to a shared cache if traffic spreads over many instances.
+const SUPPLIER_TTL_MS = 60_000;
+let supplierCache: { at: number; data: ProductsResponse } | null = null;
+
+async function supplierProducts(): Promise<ProductsResponse> {
+  if (supplierCache && Date.now() - supplierCache.at < SUPPLIER_TTL_MS) return supplierCache.data;
   const data = await warungApi.getProducts();
+  if (data.success) supplierCache = { at: Date.now(), data };
+  return data;
+}
+
+export async function getProductsWithStats(): Promise<ProductsResponse> {
+  const data = await supplierProducts();
 
   if (!data.success) return data;
 
