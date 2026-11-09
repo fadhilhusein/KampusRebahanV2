@@ -5,6 +5,7 @@ import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { bayarGg, TOPUP_MIN_AMOUNT, QRIS_GATEWAY_MAX_AMOUNT } from "@/lib/bayarGg";
 import { paymentBridge } from "@/lib/paymentBridge";
 import { isTopupQrisBridgeEnabled, isTopupQrisGatewayEnabled } from "@/lib/settings";
+import { parseGatewayTime } from "@/lib/stockRules";
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
       const bridgeResult = await paymentBridge.createPayment({
         order_id: topup.id,
         amount,
+        expires_in_hours: 1,
         success_return_url: topupPage,
         cancel_return_url: topupPage,
         metadata: { user_id: userId, kind: "topup" },
@@ -105,7 +107,7 @@ export async function POST(req: NextRequest) {
         gatewayInvoiceId: gatewayResult.data.invoice_id,
         gatewayQrString: gatewayResult.data.qris_string ?? null,
         gatewayStatus: gatewayResult.data.status,
-        gatewayExpiresAt: new Date(gatewayResult.data.expires_at),
+        gatewayExpiresAt: parseGatewayTime(gatewayResult.data.expires_at),
       },
     });
 

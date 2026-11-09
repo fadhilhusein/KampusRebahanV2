@@ -10,6 +10,7 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import GatewayQr from "@/components/payment/GatewayQr";
 import { Skeleton } from "@/components/ui/Skeleton";
 import Countdown from "@/components/payment/Countdown";
+import { PAYMENT_WINDOW_MS } from "@/lib/stockRules";
 import {
   Clock, CheckCircle2, Loader2, PartyPopper, XCircle, Ban, TimerOff, Package,
   Landmark, Copy, Check, Download, ArrowRight,
@@ -34,7 +35,7 @@ const statusInfo: Record<string, { label: string; color: "primary" | "secondary"
   FAILED:          { label: "Gagal", color: "primary", icon: XCircle, desc: "Terjadi masalah saat memproses order. Hubungi admin." },
   REJECTED:        { label: "Ditolak", color: "primary", icon: Ban, desc: "Order ditolak. Hubungi admin untuk informasi lebih lanjut." },
   REFUNDED:        { label: "Direfund", color: "primary", icon: Ban, desc: "Order dibatalkan dan dana dikembalikan ke saldo kamu." },
-  EXPIRED:         { label: "Kadaluarsa", color: "primary", icon: TimerOff, desc: "QRIS kadaluarsa sebelum dibayar. Buat order baru untuk mencoba lagi." },
+  EXPIRED:         { label: "Kadaluarsa", color: "primary", icon: TimerOff, desc: "Batas waktu pembayaran habis sebelum dibayar. Buat order baru untuk mencoba lagi. Jika kamu sudah transfer, hubungi admin." },
 };
 
 const toneClass = {
@@ -184,9 +185,13 @@ function PaymentInstructions({ order }: { order: Order }) {
         )}
       </div>
 
+      {order.paymentMethod === "BANK_TRANSFER" && (
+        <Countdown expiresAt={new Date(new Date(order.createdAt).getTime() + PAYMENT_WINDOW_MS).toISOString()} />
+      )}
+
       {!isQris && (
         <ul className="w-full max-w-sm list-inside list-disc space-y-1 rounded-2xl bg-warn-bg px-4 py-3 text-left text-[13px] font-medium text-warn">
-          <li>Transfer nominal <strong>tepat</strong> termasuk kode unik.</li>
+          <li>Transfer nominal <strong>tepat</strong> termasuk kode unik, dalam <strong>1 jam</strong> sejak pesanan dibuat.</li>
           <li>Admin akan verifikasi otomatis berdasarkan jumlah yang masuk.</li>
           <li><strong>Kesalahan nominal</strong> bukan tanggung jawab kami dan tidak terdapat pengembalian dana.</li>
         </ul>

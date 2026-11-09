@@ -39,6 +39,8 @@ const isRejectable = (o: AdminOrder) => isRefundable(o) || (o.status === "PENDIN
 function primaryAction(o: AdminOrder): { kind: ActionKind; label: string; style: "primary" | "secondary" | "danger" } | null {
   if (o.status === "AWAITING_RETRY") return { kind: "retry", label: "Retry", style: "primary" };
   if (o.status === "PAID" && o.paymentMethod === "BANK_TRANSFER") return { kind: "confirm", label: "Konfirmasi", style: "primary" };
+  // Transfer arrived after the payment window: the admin can still confirm once the money is seen.
+  if (o.status === "EXPIRED" && o.paymentMethod === "BANK_TRANSFER") return { kind: "confirm", label: "Konfirmasi", style: "secondary" };
   if ((o.status === "PENDING_PAYMENT" || o.status === "PAID") && o.paymentMethod === "QRIS_GATEWAY") return { kind: "gateway", label: "Cek status", style: "secondary" };
   if ((o.status === "PENDING_PAYMENT" || o.status === "PAID") && o.paymentMethod === "QRIS_BRIDGE") return { kind: "bridge", label: "Cek status", style: "secondary" };
   if ((o.status === "PROCESSING" || o.status === "COMPLETED") && isRefundable(o)) return { kind: "refund", label: "Refund", style: "danger" };

@@ -49,3 +49,6 @@ next-env.d.ts
 
 # devflow workspace
 .devflow/
+
+# Obsidian vault settings and plugins (local app state; plugins bundle third-party OAuth secrets)
+/graphify-out/obsidian/.obsidian/

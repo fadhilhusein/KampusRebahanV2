@@ -2,13 +2,15 @@ import { warungApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { getMarkupPercent } from "@/lib/settings";
 import type { Product, ProductsResponse } from "@/lib/types";
+import { reservedByVariant } from "@/lib/stock";
+import { availableStock } from "@/lib/stockRules";
 
 export async function getProductsWithStats(): Promise<ProductsResponse> {
   const data = await warungApi.getProducts();
 
   if (!data.success) return data;
 
-  const [soldRows, reviewRows, markup] = await Promise.all([
+  const [soldRows, reviewRows, markup, reserved] = await Promise.all([
     prisma.order.groupBy({
       by: ["productName"],
       where: { status: "COMPLETED" },
@@ -20,6 +22,7 @@ export async function getProductsWithStats(): Promise<ProductsResponse> {
       _count: { _all: true },
     }),
     getMarkupPercent(),
+    reservedByVariant(prisma),
   ]);
 
   const soldByProduct = new Map(
@@ -42,13 +45,12 @@ export async function getProductsWithStats(): Promise<ProductsResponse> {
       soldCount: soldByProduct.get(product.name) ?? 0,
       averageRating: reviewsByProduct.get(product.name)?.averageRating ?? null,
       reviewCount: reviewsByProduct.get(product.name)?.reviewCount ?? 0,
-      variants:
-        markup > 0
-          ? product.variants.map((variant) => ({
-              ...variant,
-              price: Math.ceil(variant.price * (1 + markup / 100)),
-            }))
-          : product.variants,
+      // Stock shown to buyers excludes units our own open orders are holding.
+      variants: product.variants.map((variant) => ({
+        ...variant,
+        price: markup > 0 ? Math.ceil(variant.price * (1 + markup / 100)) : variant.price,
+        stock: availableStock(variant.stock, reserved.get(variant.id) ?? 0),
+      })),
     })),
   };
 }

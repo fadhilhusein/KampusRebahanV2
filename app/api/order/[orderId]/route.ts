@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { requireAdmin } from "@/lib/adminAuth";
 import { syncSupplierOrders } from "@/lib/supplierSync";
+import { isBankTransferExpired } from "@/lib/stockRules";
+
+/** Unpaid bank transfer past the window: mark EXPIRED (lazily, when the order is read). */
+async function expireStaleBankTransfer(order: { id: string; status: string; paymentMethod: string; createdAt: Date }) {
+  if (order.paymentMethod !== "BANK_TRANSFER" || order.status !== "PENDING_PAYMENT") return false;
+  if (!isBankTransferExpired(order.createdAt, new Date())) return false;
+  await prisma.order.updateMany({ where: { id: order.id, status: "PENDING_PAYMENT" }, data: { status: "EXPIRED" } });
+  return true;
+}
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ orderId: string }> }) {
   const session = await auth();
@@ -11,6 +20,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ ord
 
   const { orderId } = await params;
   await syncSupplierOrders({ orderId });
+  const found = await prisma.order.findUnique({ where: { id: orderId }, select: { id: true, status: true, paymentMethod: true, createdAt: true } });
+  if (found) await expireStaleBankTransfer(found);
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { user: { select: { email: true, name: true } } },
@@ -53,6 +64,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ or
     if (order.paymentMethod !== "BANK_TRANSFER") {
       return NextResponse.json(
         { success: false, message: "Pembayaran QRIS dikonfirmasi otomatis oleh sistem." },
+        { status: 400 }
+      );
+    }
+    if (await expireStaleBankTransfer(order)) {
+      return NextResponse.json(
+        { success: false, message: "Batas waktu pembayaran 1 jam sudah lewat. Jika kamu sudah transfer, hubungi admin lewat WhatsApp." },
         { status: 400 }
       );
     }
