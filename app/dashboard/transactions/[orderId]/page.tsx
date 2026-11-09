@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
 import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, Undo2 } from "lucide-react";
 import RefundRequestCard from "@/components/dashboard/RefundRequestCard";
+import { VariantInfoById } from "@/components/product/VariantInfoBox";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -447,6 +448,8 @@ export default function TransactionDetailPage() {
                 </GlassCard>
               )}
 
+              {tx.db_status !== "REFUNDED" && tx.variantId && <VariantInfoById variantId={tx.variantId} />}
+
               <ProductReviewPanel
                 tx={tx}
                 onReviewCreated={(review) =>
@@ -486,7 +489,11 @@ export default function TransactionDetailPage() {
               </GlassCard>
 
               {COMPLAINT_STATUSES.includes(tx.db_status) && (
-                <RefundRequestCard orderId={tx.order_id} message={(opening, extra) => complaintMessage(tx, opening, extra)} />
+                <RefundRequestCard
+                  orderId={tx.order_id}
+                  context={`#${tx.order_id} · ${tx.productName}`}
+                  message={(opening, extra) => complaintMessage(tx, opening, extra)}
+                />
               )}
             </RevealItem>
           </Reveal>

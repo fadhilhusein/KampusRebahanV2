@@ -6,6 +6,7 @@ import { Calculator, MessageCircle, Undo2 } from "lucide-react";
 import GlassCard from "@/components/ui/GlassCard";
 import { buttonClass } from "@/components/ui/ButtonPrimary";
 import { whatsappLink } from "@/lib/contact";
+import BeforeChatButton from "@/components/ui/BeforeChatButton";
 
 type Estimate =
   | { eligible: true; kind: "UNDELIVERED" | "USED"; amount: number }
@@ -23,9 +24,12 @@ const dateTime = (iso: string) =>
 export default function RefundRequestCard({
   orderId,
   message,
+  context,
 }: {
   orderId: string;
   message: (opening: string, extra?: string[]) => string;
+  /** Order label shown in the "Sebelum chat admin" sheet. */
+  context?: string;
 }) {
   const [est, setEst] = useState<Estimate | null>(null);
 
@@ -41,15 +45,14 @@ export default function RefundRequestCard({
   }, [orderId]);
 
   const complaint = (
-    <a
+    <BeforeChatButton
       href={whatsappLink(message("Halo admin KampusRebahan, saya ingin klaim garansi / komplain."))}
-      target="_blank"
-      rel="noopener noreferrer"
+      context={context}
       className={`kr-press ${buttonClass(est?.eligible && est.kind === "UNDELIVERED" ? "secondary" : "primary")} w-full lg:w-fit`}
     >
       <MessageCircle size={16} aria-hidden="true" />
       {est && !est.eligible ? (est.eligibleAt ? "Tanya admin" : "Hubungi admin") : "Klaim garansi / komplain"}
-    </a>
+    </BeforeChatButton>
   );
 
   const refund = est?.eligible && (
