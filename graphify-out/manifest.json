@@ -126,10 +126,10 @@
     "semantic_hash": ""
   },
   "app/api/products/route.ts": {
-    "mtime": 1784605444.73642,
-    "seen": 1793935814.168319,
-    "ast_hash": "09de6ab035e40e7717c1813a64ace630",
-    "semantic_hash": "09de6ab035e40e7717c1813a64ace630"
+    "mtime": 1794228263.8682969,
+    "seen": 1794228302.4131238,
+    "ast_hash": "df0bfa4fc8b5eb2f0b2dc98fc509d427",
+    "semantic_hash": ""
   },
   "app/api/recent-purchases/route.ts": {
     "mtime": 1784605444.737932,
@@ -582,9 +582,9 @@
     "semantic_hash": "afc8c0f387d1e3f027b80547d12bfd8f"
   },
   "lib/products.ts": {
-    "mtime": 1794226017.651641,
-    "seen": 1794226322.0965102,
-    "ast_hash": "71ec3e7f40af63952d00376f43777214",
+    "mtime": 1794228264.064182,
+    "seen": 1794228302.4131238,
+    "ast_hash": "9225ae03f4a527961f90a850dec00d9a",
     "semantic_hash": ""
   },
   "lib/settings.ts": {
@@ -1869,6 +1869,144 @@
     "mtime": 1794225905.6132329,
     "seen": 1794226322.0965102,
     "ast_hash": "952d536e98cb4ea9f5e870a80d1c8955",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/capture.mjs": {
+    "mtime": 1794226855.346131,
+    "seen": 1794226884.8233433,
+    "ast_hash": "8be632451f3019e9d3a75693f6fe8e67",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/inpage.js": {
+    "mtime": 1794226855.3575008,
+    "seen": 1794226884.8233433,
+    "ast_hash": "cff312aef46017fc6ce5334887e986c4",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/match.mjs": {
+    "mtime": 1794226855.3671792,
+    "seen": 1794226884.8233433,
+    "ast_hash": "0a91fe7a236e7cdb757caded4f7c78dc",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/motion.mjs": {
+    "mtime": 1794226855.377615,
+    "seen": 1794226884.8233433,
+    "ast_hash": "cf74e095cbd71c5d088e2d48c75bfcf3",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/pixels.mjs": {
+    "mtime": 1794226855.38735,
+    "seen": 1794226884.8233433,
+    "ast_hash": "4797c755ae364de77e4c543feda05402",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/lib/report.mjs": {
+    "mtime": 1794226855.3966067,
+    "seen": 1794226884.8233433,
+    "ast_hash": "cb271824b1ecb98a0d6b02f95ef82f05",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package.json": {
+    "mtime": 1794226855.4142082,
+    "seen": 1794226884.8233433,
+    "ast_hash": "010f5b98758781b4b7249f294880cbe5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/replica.mjs": {
+    "mtime": 1794226855.4251814,
+    "seen": 1794226884.8233433,
+    "ast_hash": "2f396b400af4a80a9dd94d781ef814fb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/selftest.mjs": {
+    "mtime": 1794226855.5248036,
+    "seen": 1794226884.8233433,
+    "ast_hash": "87ef6687d50b055b3aae7a2be9937aa9",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/SKILL.md": {
+    "mtime": 1794226855.3020856,
+    "seen": 1794226884.8233433,
+    "ast_hash": "d6bf2a2374e65af6f0b1c3616353829f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/blueprint.md": {
+    "mtime": 1794226855.3097959,
+    "seen": 1794226884.8233433,
+    "ast_hash": "b34dadc0fa14542e9a0dbfa36a9c5f94",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/building.md": {
+    "mtime": 1794226855.3168309,
+    "seen": 1794226884.8233433,
+    "ast_hash": "0da3c7ded62eb56ca988011309b0affb",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/fixing.md": {
+    "mtime": 1794226855.3264773,
+    "seen": 1794226884.8233433,
+    "ast_hash": "cd45bf3d89ec0d0b0bc09374f501053f",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/references/sources.md": {
+    "mtime": 1794226855.3359087,
+    "seen": 1794226884.8233433,
+    "ast_hash": "e1e0ae95912081e442e286cff7f0a455",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-bad.html": {
+    "mtime": 1794226855.442068,
+    "seen": 1794226884.8233433,
+    "ast_hash": "6c4495560c48d967c5bf46434cdc856b",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/clone-good.html": {
+    "mtime": 1794226855.4508705,
+    "seen": 1794226884.8233433,
+    "ast_hash": "2b0f54838afec8ae7d4e3e9c289f6fa6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-bad.html": {
+    "mtime": 1794226855.4625533,
+    "seen": 1794226884.8233433,
+    "ast_hash": "180ef49eae60ceb71c528b7eee917613",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-clone-good.html": {
+    "mtime": 1794226855.472231,
+    "seen": 1794226884.8233433,
+    "ast_hash": "215ee79371aef7e3981a93a4d133e2a6",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/motion-ref.html": {
+    "mtime": 1794226855.4822698,
+    "seen": 1794226884.824344,
+    "ast_hash": "08b4abe35528d86da94b450f8f3597e8",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/ref.html": {
+    "mtime": 1794226855.4923427,
+    "seen": 1794226884.824344,
+    "ast_hash": "1576178155cdae1a52ef6ce7d7780e2c",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-clone.html": {
+    "mtime": 1794226855.5030913,
+    "seen": 1794226884.824344,
+    "ast_hash": "9fdebf7248ef4d860f3c6c1e6fc09f60",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/test/fixtures/resize-ref.html": {
+    "mtime": 1794226855.5131905,
+    "seen": 1794226884.824344,
+    "ast_hash": "4e8dac82fc35b3807ad3446388c2e750",
+    "semantic_hash": ""
+  },
+  ".claude/skills/replica/scripts/package-lock.json": {
+    "mtime": 1794226855.4048407,
+    "seen": 1794226884.824344,
+    "ast_hash": "febbcae59ad15dc35cdb1ad36d8230dc",
     "semantic_hash": ""
   },
   "package-lock.json": {
