@@ -8,6 +8,10 @@ import { getMarkupPercent, isBankTransferEnabled, isQrisGatewayEnabled, isQrisBr
 import { fulfillOrder } from "@/lib/fulfillOrder";
 import { REF_COOKIE, debitWallet, resolveReferrer } from "@/lib/referral";
 import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
+import { openUnpaidOrder, withStockLock } from "@/lib/stock";
+import { parseGatewayTime } from "@/lib/stockRules";
+
+const OUT_OF_STOCK = () => NextResponse.json({ success: false, message: "Stok tidak mencukupi." }, { status: 400 });
 
 export async function POST(req: NextRequest) {
   try {
@@ -135,7 +139,7 @@ export async function POST(req: NextRequest) {
       const wallet = paymentMethod === "BALANCE" ? "MAIN" : "REFERRAL";
       // Debit, order and ledger entry commit together, so a failure can't leave
       // the balance debited without an order.
-      const order = await prisma.$transaction(async (tx) => {
+      const order = await withStockLock(variantId, foundVariant.stock, quantity, async (tx) => {
         const balanceAfter = await debitWallet(tx, userId, wallet, totalSellPrice);
         if (balanceAfter === null) return null;
 
@@ -153,6 +157,7 @@ export async function POST(req: NextRequest) {
         return created;
       });
 
+      if (order === "OUT_OF_STOCK") return OUT_OF_STOCK();
       if (!order) {
         const label = wallet === "MAIN" ? "Saldo" : "Saldo referensi";
         return NextResponse.json({ success: false, message: `${label} tidak mencukupi.` }, { status: 400 });
@@ -162,7 +167,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, data: { order_id: order.id, unique_code: order.uniqueCode } });
     }
 
-    const order = await prisma.order.create({ data: { ...orderData, status: "PENDING_PAYMENT" } });
+    const locked = await withStockLock(variantId, foundVariant.stock, quantity, async (tx) => {
+      // Stops one account from locking stock with a pile of unpaid checkouts.
+      const open = await openUnpaidOrder(tx, userId, variantId);
+      if (open) return { duplicateOf: open.id };
+      return tx.order.create({ data: { ...orderData, status: "PENDING_PAYMENT" } });
+    });
+    if (locked === "OUT_OF_STOCK") return OUT_OF_STOCK();
+    if ("duplicateOf" in locked) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Kamu masih punya pesanan produk ini yang menunggu pembayaran. Selesaikan pembayarannya atau tunggu sampai kedaluwarsa (maks. 1 jam).",
+          data: { order_id: locked.duplicateOf },
+        },
+        { status: 409 }
+      );
+    }
+    const order = locked;
 
     if (paymentMethod === "QRIS_GATEWAY") {
       const appUrl = process.env.APP_URL || new URL(req.url).origin;
@@ -188,7 +210,7 @@ export async function POST(req: NextRequest) {
           gatewayInvoiceId: gatewayResult.data.invoice_id,
           gatewayQrString: gatewayResult.data.qris_string ?? null,
           gatewayStatus: gatewayResult.data.status,
-          gatewayExpiresAt: new Date(gatewayResult.data.expires_at),
+          gatewayExpiresAt: parseGatewayTime(gatewayResult.data.expires_at),
         },
       });
     }
@@ -200,6 +222,7 @@ export async function POST(req: NextRequest) {
       const bridgeResult = await paymentBridge.createPayment({
         order_id: order.id,
         amount: totalSellPrice,
+        expires_in_hours: 1,
         success_return_url: `${appUrl}/payment/success`,
         cancel_return_url: `${appUrl}/payment/cancel`,
         metadata: { user_id: userId },

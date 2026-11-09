@@ -5,6 +5,7 @@ import { warungApi } from "@/lib/api";
 import { fulfillOrder } from "@/lib/fulfillOrder";
 import { rateLimit, tooManyRequests } from "@/lib/rateLimit";
 import { LOYALTY_REWARD, LOYALTY_REWARD_VARIANT_ID } from "@/lib/loyalty";
+import { withStockLock } from "@/lib/stock";
 
 class CouponUnavailableError extends Error {}
 
@@ -68,48 +69,47 @@ export async function POST(req: NextRequest) {
     if (!productName || !variant) {
       return NextResponse.json({ success: false, message: "Produk hadiah sedang tidak tersedia." }, { status: 404 });
     }
-    if (variant.stock < 1) {
-      return NextResponse.json(
+    const rewardOutOfStock = () =>
+      NextResponse.json(
         { success: false, message: "Stok hadiah sedang habis. Kupon kamu tetap aman, coba lagi nanti." },
         { status: 400 }
       );
-    }
+    if (variant.stock < 1) return rewardOutOfStock();
 
     const rewardVariant = variant;
     const rewardProductName = productName;
 
     // Claim the coupon, create the free order and link them atomically: either all happen or none.
-    const order = await prisma.$transaction(
-      async (tx) => {
-        const claimed = await tx.coupon.updateMany({
-          where: { id: coupon.id, status: "ACTIVE" },
-          data: { status: "REDEEMED", redeemedAt: new Date() },
-        });
-        if (claimed.count === 0) throw new CouponUnavailableError();
+    // The stock lock also keeps units held by other customers' open orders out of reach.
+    const order = await withStockLock(rewardVariant.id, rewardVariant.stock, 1, async (tx) => {
+      const claimed = await tx.coupon.updateMany({
+        where: { id: coupon.id, status: "ACTIVE" },
+        data: { status: "REDEEMED", redeemedAt: new Date() },
+      });
+      if (claimed.count === 0) throw new CouponUnavailableError();
 
-        const created = await tx.order.create({
-          data: {
-            userId,
-            variantId: rewardVariant.id,
-            productName: rewardProductName,
-            variantName: rewardVariant.name,
-            duration: rewardVariant.duration,
-            type: rewardVariant.type,
-            sellPrice: 0,
-            costPrice: rewardVariant.price,
-            quantity: 1,
-            paymentMethod: "COUPON",
-            paymentNote: `Kupon ${coupon.code}`,
-            emailInvite,
-            status: "PAID",
-          },
-        });
+      const created = await tx.order.create({
+        data: {
+          userId,
+          variantId: rewardVariant.id,
+          productName: rewardProductName,
+          variantName: rewardVariant.name,
+          duration: rewardVariant.duration,
+          type: rewardVariant.type,
+          sellPrice: 0,
+          costPrice: rewardVariant.price,
+          quantity: 1,
+          paymentMethod: "COUPON",
+          paymentNote: `Kupon ${coupon.code}`,
+          emailInvite,
+          status: "PAID",
+        },
+      });
 
-        await tx.coupon.update({ where: { id: coupon.id }, data: { orderId: created.id } });
-        return created;
-      },
-      { timeout: 20000 }
-    );
+      await tx.coupon.update({ where: { id: coupon.id }, data: { orderId: created.id } });
+      return created;
+    });
+    if (order === "OUT_OF_STOCK") return rewardOutOfStock();
 
     // Same fulfilment path as any paid order; on failure it lands in AWAITING_RETRY for admin.
     const result = await fulfillOrder(order.id);
