@@ -9,9 +9,12 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import { CheckoutSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { Product, ProductVariant } from "@/lib/types";
-import { Gift, QrCode, Landmark, Wallet } from "lucide-react";
+import { Calculator, Gift, Lock, LockOpen, QrCode, Landmark, ScrollText, Wallet } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ProductImage from "@/components/product/ProductImage";
+import Badge from "@/components/ui/Badge";
+import { infoIcons } from "@/components/product/VariantInfoBox";
+import { consentText, variantFlags, variantPoints } from "@/lib/variantInfo";
 
 // Keep in sync with lib/bayarGg.ts QRIS_GATEWAY_MAX_AMOUNT (kept separate to avoid
 // bundling the server-only Bayar.gg client, which uses Node's crypto, into client code).
@@ -49,6 +52,7 @@ function CheckoutContent() {
   const [emailInvite, setEmailInvite] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [agreed, setAgreed] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings/public")
@@ -92,6 +96,7 @@ function CheckoutContent() {
   const qrisGatewayDisabled = totalSell > QRIS_GATEWAY_MAX_AMOUNT;
   const balanceInsufficient = totalSell > balance;
   const referralInsufficient = totalSell > referralBalance;
+  const flags = variant ? variantFlags(variant) : null;
   const isInvite = variant?.type === "Invite";
   const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value);
   const emailInviteMissing = isInvite && !isValidEmail(emailInvite);
@@ -113,7 +118,7 @@ function CheckoutContent() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!variantId) return;
+    if (!variantId || !agreed) return;
     setLoading(true);
     setError("");
 
@@ -312,6 +317,70 @@ function CheckoutContent() {
                 )}
               </div>
             )}
+
+            {variant && (
+              <section className="flex flex-col gap-3.5" aria-labelledby="checkout-terms">
+                <h2 id="checkout-terms" className="text-xl font-semibold text-ink">Sebelum bayar</h2>
+                <div className="flex flex-col gap-3 rounded-[20px] border border-hairline bg-surface p-4 md:rounded-3xl md:p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-ink">Syarat varian ini</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {flags?.noWarranty && <Badge color="tertiary">No Garansi</Badge>}
+                      {flags?.sharing && <Badge color="tertiary">Sharing</Badge>}
+                      {flags?.po && <Badge color="tertiary">PO</Badge>}
+                    </div>
+                  </div>
+                  <ul className="flex flex-col gap-2.5">
+                    {variantPoints(variant).map((p) => {
+                      const Icon = infoIcons[p.icon];
+                      return (
+                        <li key={p.key} className="flex gap-2.5 text-[13px] leading-[1.45] text-muted">
+                          <Icon size={16} aria-hidden="true" className="mt-px shrink-0" />
+                          <span><span className="font-semibold text-ink">{p.title}.</span> {p.desc}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <label
+                  className={`flex cursor-pointer gap-3 rounded-[20px] p-4 md:rounded-3xl md:p-[18px] ${agreed ? "border-2 border-accent bg-accent/5" : "border border-line bg-surface"}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-0.5 size-[22px] shrink-0 cursor-pointer accent-[var(--kr-accent)]"
+                  />
+                  <span className="text-sm leading-[1.45] font-medium text-ink">{consentText(product?.name ?? "Produk", variant)}</span>
+                </label>
+                <div className="-mt-1 flex flex-wrap gap-x-4 px-1">
+                  <Link href="/terms" target="_blank" className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-ink underline underline-offset-2">
+                    <ScrollText size={14} aria-hidden="true" /> S&amp;K toko
+                  </Link>
+                  <Link href="/refund-calculator" target="_blank" className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-ink underline underline-offset-2">
+                    <Calculator size={14} aria-hidden="true" /> Kalkulator refund
+                  </Link>
+                </div>
+              </section>
+            )}
+
+            {error && (
+              <div role="alert" className="kr-fade-in rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">
+                {error}
+              </div>
+            )}
+            <ButtonPrimary
+              type="submit"
+              disabled={!agreed || loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (paymentMethod === "REFERRAL_BALANCE" && referralInsufficient) || noMethodUsable}
+              className="w-full"
+              aria-describedby={agreed ? undefined : "checkout-agree-hint"}
+            >
+              {agreed ? <LockOpen size={16} aria-hidden="true" /> : <Lock size={16} aria-hidden="true" />}
+              {loading ? "Memproses..." : outOfStock ? "Stok habis" : `Bayar ${formatPrice(totalSell)}`}
+            </ButtonPrimary>
+            <p id="checkout-agree-hint" className="-mt-3 text-center text-xs text-muted">
+              {variant && !agreed ? "Centang pernyataan di atas untuk melanjutkan." : "Instruksi pembayaran akan ditampilkan setelah order dibuat."}
+            </p>
           </div>
 
           <aside style={{ animationDelay: "60ms" }} className="kr-fade-up order-1 flex w-full flex-col gap-5 rounded-[28px] bg-surface p-5 shadow-card md:p-7 lg:order-none lg:w-[420px] lg:shrink-0">
@@ -335,21 +404,6 @@ function CheckoutContent() {
                 <dd className="text-2xl font-bold text-ink">{formatPrice(totalSell)}</dd>
               </div>
             </dl>
-            {error && (
-              <div role="alert" className="kr-fade-in rounded-2xl bg-danger-bg px-4 py-3 text-[13px] font-medium text-danger">
-                {error}
-              </div>
-            )}
-            <ButtonPrimary
-              type="submit"
-              disabled={loading || stockExceeded || outOfStock || emailInviteMissing || (paymentMethod === "BALANCE" && balanceInsufficient) || (paymentMethod === "REFERRAL_BALANCE" && referralInsufficient) || noMethodUsable}
-              className="w-full"
-            >
-              {loading ? "Memproses..." : outOfStock ? "Stok habis" : `Bayar ${formatPrice(totalSell)}`}
-            </ButtonPrimary>
-            <p className="text-center text-xs text-muted">
-              Instruksi pembayaran akan ditampilkan setelah order dibuat.
-            </p>
           </aside>
         </form>
       </main>

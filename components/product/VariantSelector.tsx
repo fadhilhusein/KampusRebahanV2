@@ -1,7 +1,8 @@
 "use client";
 import { useRef } from "react";
-import { LockKeyhole, ShieldCheck, ShieldOff, UserPlus, Users, Zap } from "lucide-react";
+import { CalendarClock, LockKeyhole, ShieldCheck, ShieldOff, UserPlus, Users, Zap } from "lucide-react";
 import type { ProductVariant } from "@/lib/types";
+import { variantFlags } from "@/lib/variantInfo";
 
 // API types can carry suffixes like "Private 1P1U", so match by prefix.
 const typeIcon = (type: string) => {
@@ -50,7 +51,7 @@ export default function VariantSelector({
 
   return (
     <div
-      className="grid grid-cols-1 gap-x-3 gap-y-6 pt-3 sm:grid-cols-2"
+      className="grid grid-cols-1 gap-x-3 gap-y-6 pt-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2"
       role="radiogroup"
       aria-label="Pilihan varian"
     >
@@ -59,7 +60,11 @@ export default function VariantSelector({
           out = v.stock === 0,
           low = !out && v.stock <= 3,
           TypeIcon = typeIcon(v.type),
-          dim = out ? "text-muted" : "text-ink";
+          dim = out ? "text-muted" : "text-ink",
+          f = variantFlags(v),
+          // Risky attributes use the warning badge; sold-out cards stay muted.
+          badge = (warn: boolean) =>
+            `inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${out ? "bg-pill text-muted" : warn ? "bg-warn-bg text-warn" : "bg-pill text-ink"}`;
         return (
           <button
             key={v.id}
@@ -77,9 +82,11 @@ export default function VariantSelector({
             className={`kr-press relative flex flex-col gap-3 rounded-[20px] border-2 px-[18px] pt-[22px] pb-4 text-left disabled:cursor-not-allowed ${active ? "border-accent bg-accent/5" : out ? "border-hairline bg-card" : "border-hairline bg-surface hover:border-line"}`}
           >
             {!out && (
-              <span className="absolute -top-3 left-4 inline-flex items-center gap-1 rounded-full bg-success px-2.5 py-1 text-xs font-semibold text-surface">
-                <Zap size={12} aria-hidden="true" />
-                Pengiriman otomatis
+              <span className={`absolute -top-3 left-4 inline-flex max-w-[calc(100%-32px)] items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-surface ${f.po ? "bg-warn" : "bg-success"}`}>
+                {f.po ? <CalendarClock size={12} aria-hidden="true" className="shrink-0" /> : <Zap size={12} aria-hidden="true" className="shrink-0" />}
+                <span className="truncate">
+                  {f.po ? (f.poDate ? `PO · kirim ${f.poDate.replace(/(\p{L}{3})\p{L}+$/u, "$1")}` : "PO · bukan instan") : "Pengiriman otomatis"}
+                </span>
               </span>
             )}
             <span className="flex items-start gap-3">
@@ -98,17 +105,25 @@ export default function VariantSelector({
                 {active && <span className="size-2.5 rounded-full bg-accent" />}
               </span>
             </span>
-            <span className="flex flex-wrap items-center gap-2.5">
-              <span className={`inline-flex items-center gap-1 rounded-full bg-pill px-2.5 py-1 text-xs font-semibold ${dim}`}>
+            <span className="flex flex-wrap items-center gap-1.5">
+              <span className={badge(f.sharing)}>
                 <TypeIcon size={12} aria-hidden="true" />
                 {v.type}
               </span>
-              <span
-                className={`inline-flex items-center gap-1 text-[13px] ${out ? "text-muted" : v.warranty ? "text-success" : "text-muted"}`}
-              >
-                {v.warranty ? <ShieldCheck size={14} aria-hidden="true" /> : <ShieldOff size={14} aria-hidden="true" />}
-                {v.warranty ? `Garansi ${v.warranty}` : "Tanpa garansi"}
-              </span>
+              {f.noWarranty ? (
+                <span className={badge(true)}>
+                  <ShieldOff size={12} aria-hidden="true" /> No Garansi
+                </span>
+              ) : (
+                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${out ? "bg-pill text-muted" : "bg-success-bg text-success"}`}>
+                  <ShieldCheck size={12} aria-hidden="true" /> Garansi {f.warrantyDays} Hari
+                </span>
+              )}
+              {f.po && (
+                <span className={badge(true)}>
+                  <CalendarClock size={12} aria-hidden="true" /> PO
+                </span>
+              )}
             </span>
             <span className={`border-t border-hairline pt-3 font-display text-xl font-bold tracking-[-0.6px] ${dim}`}>
               {rupiah.format(v.price)}

@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "app/checkout/page.tsx": {
-    "mtime": 1794032106.0260825,
-    "seen": 1794032236.7717385,
-    "ast_hash": "507e3a06a38e1dd7e6501e3d93e003fc",
+    "mtime": 1794235158.63244,
+    "seen": 1794235450.2890456,
+    "ast_hash": "b7b53a62d09df55016f673d47addc004",
     "semantic_hash": ""
   },
   "app/dashboard/admin/layout.tsx": {
@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "app/dashboard/transactions/[orderId]/page.tsx": {
-    "mtime": 1794107657.766653,
-    "seen": 1794107765.306799,
-    "ast_hash": "25df0c64ea77e379b5132032683e00c4",
+    "mtime": 1794234962.670287,
+    "seen": 1794235450.2890456,
+    "ast_hash": "dc67ea69d703c1a150ed3d9fd9351334",
     "semantic_hash": ""
   },
   "app/dashboard/transactions/page.tsx": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "app/order/[orderId]/page.tsx": {
-    "mtime": 1794226068.578447,
-    "seen": 1794226322.0965102,
-    "ast_hash": "d84e33c2cd9f8ee17a593a7aced316fe",
+    "mtime": 1794234972.4052415,
+    "seen": 1794235450.2890456,
+    "ast_hash": "7bac92b118c85494d69238ad88c5d9e2",
     "semantic_hash": ""
   },
   "app/page.tsx": {
@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "app/products/[id]/page.tsx": {
-    "mtime": 1793945516.8823903,
-    "seen": 1793945635.4873402,
-    "ast_hash": "8f0bc3094b1d54a00e1ff71a8e066a3f",
+    "mtime": 1794236543.3453946,
+    "seen": 1794236581.4821775,
+    "ast_hash": "8014468e0fad8f2f416db732cb64146b",
     "semantic_hash": ""
   },
   "app/products/page.tsx": {
@@ -402,9 +402,9 @@
     "semantic_hash": ""
   },
   "components/product/VariantSelector.tsx": {
-    "mtime": 1793945591.2014222,
-    "seen": 1793945635.4873402,
-    "ast_hash": "3e5ba0b0d250cae89fee31ba6641bf44",
+    "mtime": 1794236299.5421088,
+    "seen": 1794236484.2480576,
+    "ast_hash": "8b34d5ab135c75aacc80d6a163b35829",
     "semantic_hash": ""
   },
   "components/ui/Badge.tsx": {
@@ -462,9 +462,9 @@
     "semantic_hash": ""
   },
   "components/ui/WhatsAppButton.tsx": {
-    "mtime": 1794108537.1009014,
-    "seen": 1794108641.9318686,
-    "ast_hash": "30bbc0247c7cbb8bcc80d3cc6645410b",
+    "mtime": 1794234942.3963883,
+    "seen": 1794235450.2890456,
+    "ast_hash": "d36c0cc5f9d11c0858e5a14194ecd198",
     "semantic_hash": ""
   },
   "components/ui/auth-kit.tsx": {
@@ -1836,9 +1836,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/RefundRequestCard.tsx": {
-    "mtime": 1794106786.1595106,
-    "seen": 1794106803.98988,
-    "ast_hash": "529f5bced3abf96573578656d44e885a",
+    "mtime": 1794234942.744639,
+    "seen": 1794235450.2890456,
+    "ast_hash": "27e61d3efa56dbe832fee971c7737922",
     "semantic_hash": ""
   },
   "components/dashboard/DashboardNav.tsx": {
@@ -2001,6 +2001,30 @@
     "mtime": 1794226855.5131905,
     "seen": 1794226884.824344,
     "ast_hash": "4e8dac82fc35b3807ad3446388c2e750",
+    "semantic_hash": ""
+  },
+  "components/product/VariantInfoBox.tsx": {
+    "mtime": 1794236321.9879653,
+    "seen": 1794236484.2480576,
+    "ast_hash": "862635dc486c3a9e53b9eee7b53e1356",
+    "semantic_hash": ""
+  },
+  "components/ui/BeforeChatButton.tsx": {
+    "mtime": 1794234924.837137,
+    "seen": 1794235450.2890456,
+    "ast_hash": "0e2f2ab67a447aaf0bcb3d1677696bf7",
+    "semantic_hash": ""
+  },
+  "lib/variantInfo.test.ts": {
+    "mtime": 1794234782.9479692,
+    "seen": 1794235450.2890456,
+    "ast_hash": "a0b59a80b0d3b9a0021480a72b4569a3",
+    "semantic_hash": ""
+  },
+  "lib/variantInfo.ts": {
+    "mtime": 1794234782.8785005,
+    "seen": 1794235450.2890456,
+    "ast_hash": "fc414970c1cb2f3de9078010c27f494f",
     "semantic_hash": ""
   },
   ".claude/skills/replica/scripts/package-lock.json": {

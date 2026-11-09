@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
+  ArrowLeft,
+  Calculator,
   MessageSquare,
   Truck,
   ScrollText,
@@ -14,6 +16,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductImage from "@/components/product/ProductImage";
 import VariantSelector from "@/components/product/VariantSelector";
+import VariantInfoBox from "@/components/product/VariantInfoBox";
+import { variantFlags } from "@/lib/variantInfo";
 import Badge from "@/components/ui/Badge";
 import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import RatingStars from "@/components/ui/RatingStars";
@@ -95,6 +99,7 @@ function ProductDetailContent({ id }: { id: string }) {
       }).format(selected.price)
     : null;
   const soldOut = !selected || selected.stock === 0;
+  const flags = selected ? variantFlags(selected) : null;
   return (
     <div className="kr-page">
       <Navbar />
@@ -132,11 +137,55 @@ function ProductDetailContent({ id }: { id: string }) {
               <Link href="/products" className="hover:text-ink hover:underline">Produk</Link> /{" "}
               {product.category} / <span aria-current="page">{product.name}</span>
             </nav>
-            <div className="grid gap-6 md:grid-cols-2 md:gap-14">
-              <div className="kr-fade-up relative h-[260px] overflow-hidden rounded-[28px] shadow-card md:h-[520px] md:rounded-[36px]">
-                <ProductImage name={product.name} category={product.category} priority iconSize={96} sizes="(min-width:768px) 560px, 100vw" />
+            {/* Desktop: left = image, info box, terms (sticky, stays in view when shorter than the right);
+                right = variants + buy, normal flow. On mobile the left wrapper is `contents`, and `order`
+                keeps the old sequence: image, variants, terms. */}
+            <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10 lg:grid-cols-[minmax(0,1fr)_560px] lg:gap-12">
+              <div className="contents md:sticky md:top-6 md:flex md:min-w-0 md:flex-col md:gap-7">
+              <div className="kr-fade-up relative order-1 h-[260px] overflow-hidden rounded-[28px] shadow-card md:order-none md:h-[460px] md:rounded-[36px]">
+                <ProductImage name={product.name} category={product.category} priority iconSize={96} sizes="(min-width:1024px) 640px, (min-width:768px) 50vw, 100vw" />
               </div>
-              <div className="kr-fade-up flex min-w-0 flex-col gap-4 md:gap-5" style={{ animationDelay: "100ms" }}>
+              {selected && (
+                <div id="info-varian-box" className="hidden scroll-mt-6 md:block">
+                  <VariantInfoBox variant={selected} link={selected.terms || selected.delivery_terms ? "scroll" : "terms"} />
+                </div>
+              )}
+              {(selected?.terms || selected?.delivery_terms) && (
+                <section id="syarat" aria-labelledby="syarat-title" className="order-3 scroll-mt-6 max-md:mt-2 md:order-none">
+                  <Reveal className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-xs font-semibold tracking-[1.2px] text-muted">SYARAT LENGKAP</p>
+                      <h2 id="syarat-title" className="text-2xl font-bold tracking-[-0.8px] text-ink md:text-[28px] md:tracking-[-1px]">
+                        Syarat varian {selected.name}
+                      </h2>
+                    </div>
+                    {[
+                      { text: selected.terms, title: "Syarat penggunaan akun", Icon: ScrollText },
+                      { text: selected.delivery_terms, title: "Info pengiriman", Icon: Truck },
+                    ]
+                      .filter((t) => t.text)
+                      .map(({ text, title, Icon }) => (
+                        <div key={title} className="flex flex-col gap-4 rounded-[22px] bg-surface p-[18px] shadow-card md:rounded-[24px] md:p-6">
+                          <h3 className="flex items-center gap-2 text-base font-semibold text-ink md:text-lg">
+                            <Icon size={18} aria-hidden="true" />
+                            {title}
+                          </h3>
+                          <Terms text={text!} />
+                        </div>
+                      ))}
+                    <div className="flex flex-col gap-1 md:flex-row md:gap-5">
+                      <Link href="/terms" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2">
+                        <ScrollText size={16} aria-hidden="true" /> Baca S&amp;K toko
+                      </Link>
+                      <Link href="/refund-calculator" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2">
+                        <Calculator size={16} aria-hidden="true" /> Hitung estimasi refund
+                      </Link>
+                    </div>
+                  </Reveal>
+                </section>
+              )}
+              </div>
+              <div className="kr-fade-up order-2 flex min-w-0 flex-col gap-4 md:order-none md:gap-5" style={{ animationDelay: "100ms" }}>
                 <div className="flex flex-wrap gap-2">
                   <Badge>{product.category}</Badge>
                   {!soldOut && <Badge color="secondary">Stok tersedia</Badge>}
@@ -161,10 +210,16 @@ function ProductDetailContent({ id }: { id: string }) {
                   selected={selected}
                   onSelect={setSelected}
                 />
-                <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-[24px] bg-surface p-4 shadow-card md:static md:justify-start md:gap-5 md:rounded-none md:bg-transparent md:p-0 md:pt-4 md:shadow-none">
+                {selected && (
+                  <div className="md:hidden">
+                    <VariantInfoBox variant={selected} link={selected.terms || selected.delivery_terms ? "scroll" : "terms"} />
+                  </div>
+                )}
+                <div className="sticky bottom-4 z-10 flex flex-col gap-3.5 rounded-[24px] bg-surface p-4 shadow-card md:static md:p-5">
+                <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold text-muted md:sr-only">Total</p>
-                    <p className="font-display text-2xl font-bold tracking-[-0.8px] text-ink md:text-4xl md:tracking-[-1.5px]">
+                    <p className="text-xs font-semibold text-muted">Total</p>
+                    <p className="font-display text-2xl font-bold tracking-[-0.8px] text-ink md:text-[32px] md:tracking-[-1.2px]">
                       {price ?? "-"}
                     </p>
                   </div>
@@ -180,33 +235,20 @@ function ProductDetailContent({ id }: { id: string }) {
                     {soldOut ? "Stok habis" : "Beli sekarang"}
                   </ButtonPrimary>
                 </div>
-                <p className="text-[13px] text-muted">
-                  Bayar via QRIS atau saldo. Periksa syarat penggunaan sebelum membeli.
-                </p>
+                {selected && (flags?.sharing || flags?.noWarranty || flags?.po) && (
+                  <div className="hidden flex-wrap items-center gap-1.5 md:flex">
+                    {flags.sharing && <Badge color="tertiary">Sharing</Badge>}
+                    {flags.noWarranty && <Badge color="tertiary">No Garansi</Badge>}
+                    {flags.po && <Badge color="tertiary">{flags.poDate ? `PO ${flags.poDate}` : "PO"}</Badge>}
+                  </div>
+                )}
+                <a href="#info-varian-box" className="hidden min-h-11 items-center gap-1.5 self-start text-[13px] font-semibold text-ink underline underline-offset-2 md:inline-flex">
+                  <ArrowLeft size={14} aria-hidden="true" /> Baca dulu: Yang perlu kamu tahu
+                </a>
+                </div>
+                <p className="text-[13px] text-muted">Bayar via QRIS atau saldo.</p>
               </div>
             </div>
-            {(selected?.terms || selected?.delivery_terms) && (
-              <Reveal as="section" className="space-y-8 rounded-[28px] bg-surface p-5 shadow-card md:p-7">
-                {selected.terms && (
-                  <div>
-                    <h2 className="mb-4 flex items-center gap-3 text-xl font-semibold text-ink">
-                      <ScrollText size={20} aria-hidden="true" />
-                      Syarat penggunaan akun
-                    </h2>
-                    <Terms text={selected.terms} />
-                  </div>
-                )}
-                {selected.delivery_terms && (
-                  <div>
-                    <h2 className="mb-4 flex items-center gap-3 text-xl font-semibold text-ink">
-                      <Truck size={20} aria-hidden="true" />
-                      Info pengiriman
-                    </h2>
-                    <Terms text={selected.delivery_terms} />
-                  </div>
-                )}
-              </Reveal>
-            )}
             <section className="flex flex-col gap-5">
               <h2 className="text-[28px] font-bold tracking-[-1px] text-ink md:text-[32px]">
                 Ulasan pembeli

@@ -13,10 +13,13 @@ import Countdown from "@/components/payment/Countdown";
 import { PAYMENT_WINDOW_MS } from "@/lib/stockRules";
 import {
   Clock, CheckCircle2, Loader2, PartyPopper, XCircle, Ban, TimerOff, Package,
-  Landmark, Copy, Check, Download, ArrowRight,
+  Landmark, Copy, Check, Download, ArrowRight, MessageCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { displayStatus } from "@/lib/orderStatus";
+import { whatsappLink } from "@/lib/contact";
+import BeforeChatButton from "@/components/ui/BeforeChatButton";
+import { VariantInfoById } from "@/components/product/VariantInfoBox";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
@@ -48,6 +51,7 @@ const toneClass = {
 interface Order {
   id: string;
   productName: string;
+  variantId: string;
   variantName: string;
   duration: string;
   type: string;
@@ -379,7 +383,8 @@ export default function OrderDetailPage() {
               </header>
 
               <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-12">
-                <section className="kr-fade-up flex min-w-0 flex-1 items-start gap-4 rounded-[24px] bg-surface p-5 shadow-card md:rounded-[32px] md:p-8" style={{ animationDelay: "80ms" }}>
+                <div className="flex min-w-0 flex-1 flex-col gap-6">
+                <section className="kr-fade-up flex min-w-0 items-start gap-4 rounded-[24px] bg-surface p-5 shadow-card md:rounded-[32px] md:p-8" style={{ animationDelay: "80ms" }}>
                   <div className={`flex size-12 shrink-0 items-center justify-center rounded-full ${toneClass[info.color]}`} aria-hidden="true">
                     <info.icon size={24} className={info.spin ? "animate-spin" : ""} />
                   </div>
@@ -395,7 +400,18 @@ export default function OrderDetailPage() {
                     )}
                   </div>
                 </section>
-                <div className="w-full lg:w-[420px] lg:shrink-0"><OrderSummary order={order} /></div>
+                {order.status !== "REFUNDED" && <VariantInfoById variantId={order.variantId} />}
+                </div>
+                <div className="flex w-full flex-col gap-4 lg:w-[420px] lg:shrink-0">
+                  <OrderSummary order={order} />
+                  <BeforeChatButton
+                    href={whatsappLink(`Halo admin KampusRebahan, saya butuh bantuan untuk pesanan #${order.id} (${order.productName} · ${order.variantName}).`)}
+                    context={`#${order.id} · ${order.productName}`}
+                    className={`kr-press ${buttonClass("secondary")} w-full`}
+                  >
+                    <MessageCircle size={16} aria-hidden="true" /> Butuh bantuan?
+                  </BeforeChatButton>
+                </div>
               </div>
 
               <div>
