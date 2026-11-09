@@ -50,5 +50,9 @@ next-env.d.ts
 # devflow workspace
 .devflow/
 
+# replica skill: its dependencies and capture/compare output
+/.claude/skills/replica/scripts/node_modules/
+/.replica/
+
 # Obsidian vault settings and plugins (local app state; plugins bundle third-party OAuth secrets)
 /graphify-out/obsidian/.obsidian/
