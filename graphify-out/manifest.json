@@ -126,8 +126,8 @@
     "semantic_hash": ""
   },
   "app/api/products/route.ts": {
-    "mtime": 1794228263.8682969,
-    "seen": 1794228302.4131238,
+    "mtime": 1794271224.1670885,
+    "seen": 1794271413.494063,
     "ast_hash": "df0bfa4fc8b5eb2f0b2dc98fc509d427",
     "semantic_hash": ""
   },
@@ -582,9 +582,9 @@
     "semantic_hash": "afc8c0f387d1e3f027b80547d12bfd8f"
   },
   "lib/products.ts": {
-    "mtime": 1794228264.064182,
-    "seen": 1794228302.4131238,
-    "ast_hash": "9225ae03f4a527961f90a850dec00d9a",
+    "mtime": 1794271224.0858078,
+    "seen": 1794271413.494063,
+    "ast_hash": "f4fbb2a5a49f91bd86cd5660d8568030",
     "semantic_hash": ""
   },
   "lib/settings.ts": {
