@@ -1,6 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { warungApi } from "@/lib/api";
 import { creditCommission } from "@/lib/referral";
+import { completedOrderText, orderAlert, sendOwnerWhatsApp } from "@/lib/whatsapp";
+
+/** WhatsApp the store owner that an order was delivered (free coupon rewards excluded). */
+export async function notifyOrderCompleted(orderId: string): Promise<void> {
+  const order = await prisma.order.findUnique({ where: { id: orderId }, include: { user: { select: { name: true, email: true } } } });
+  if (!order || order.paymentMethod === "COUPON") return;
+  await sendOwnerWhatsApp(completedOrderText(orderAlert(order)), `completed:${orderId}`);
+}
 
 // warungrebahan accepts an order as "processing" and later reports "completed" once the
 // account is delivered (PO products can take days). Our order only becomes COMPLETED then.
@@ -14,6 +22,7 @@ export async function markOrderCompleted(orderId: string): Promise<boolean> {
   });
   if (claimed.count === 0) return false;
   await creditCommission(orderId);
+  await notifyOrderCompleted(orderId);
   return true;
 }
 

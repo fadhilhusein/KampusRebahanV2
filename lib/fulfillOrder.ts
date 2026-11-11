@@ -3,12 +3,16 @@ import { warungApi } from "@/lib/api";
 import type { OrderPayload } from "@/lib/types";
 import { creditCommission } from "@/lib/referral";
 import { sendPaidOrderEmail } from "@/lib/mailer";
+import { notifyOrderCompleted } from "@/lib/supplierSync";
+import { orderAlert, paidOrderText, sendOwnerWhatsApp } from "@/lib/whatsapp";
 import type { Order } from "@/lib/generated/prisma";
 
 export interface FulfillOrderResult {
   success: boolean;
   message: string;
   apiOrderId?: string;
+  /** Supplier delivered right away, so the order is already COMPLETED. */
+  delivered?: boolean;
 }
 
 export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult> {
@@ -38,19 +42,14 @@ export async function fulfillOrder(orderId: string): Promise<FulfillOrderResult>
 
   // Free coupon rewards aren't purchases, so they don't alert the owner.
   if (firstClaim.count > 0 && order.paymentMethod !== "COUPON") {
-    await sendPaidOrderEmail({
-      id: order.id,
-      productName: order.productName,
-      variantName: order.variantName,
-      quantity: order.quantity,
-      sellPrice: order.sellPrice,
-      costPrice: order.costPrice,
-      paymentMethod: order.paymentMethod,
-      buyer: order.user.name ? `${order.user.name} (${order.user.email})` : order.user.email,
-      status: result.success ? "Diteruskan ke supplier" : "Gagal ke supplier, perlu retry admin",
-      note: result.success ? undefined : result.message,
-    });
+    const alert = orderAlert(order);
+    const status = result.success ? "Diteruskan ke supplier" : "Gagal ke supplier, perlu retry admin";
+    await Promise.all([
+      sendPaidOrderEmail({ ...alert, status, note: result.success ? undefined : result.message }),
+      sendOwnerWhatsApp(paidOrderText(alert, status), `paid:${order.id}`),
+    ]);
   }
+  if (result.delivered) await notifyOrderCompleted(order.id);
   return result;
 }
 
@@ -94,6 +93,7 @@ async function processClaimedOrder(order: Order): Promise<FulfillOrderResult> {
         success: true,
         message: delivered ? "Order dikonfirmasi dan akun dikirim." : "Order diteruskan ke supplier, akun dikirim setelah supplier menyelesaikannya.",
         apiOrderId,
+        delivered,
       };
     } else {
       // Payment was already received — don't dead-end the order as FAILED.

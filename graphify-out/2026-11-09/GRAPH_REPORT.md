@@ -1,12 +1,12 @@
 # Graph Report - KampusRebahanV2  (2026-11-09)
 
 ## Corpus Check
-- 210 files · ~101,164 words
+- 210 files · ~101,157 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: (none) 2, .ico 2, .pen 2)
 
 ## Summary
-- 1147 nodes · 3061 edges · 53 communities (48 shown, 5 thin omitted)
+- 1147 nodes · 3059 edges · 53 communities (48 shown, 5 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 71 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
@@ -109,8 +109,8 @@ Cohesion: 0.18
 Nodes (24): ActionButton(), ActionKind, filters, isRefundable(), isRejectable(), MethodIcon(), OrderCard, OrderRow (+16 more)
 
 ### Community 1 - "dashboard/page.tsx"
-Cohesion: 0.07
-Nodes (51): DashboardHomePage(), formatDate(), formatPrice(), StatCard(), BalanceHistoryTable(), formatDate(), formatPrice(), typeInfo (+43 more)
+Cohesion: 0.06
+Nodes (53): DashboardHomePage(), formatDate(), formatPrice(), StatCard(), BalanceHistoryTable(), formatDate(), formatPrice(), typeInfo (+45 more)
 
 ### Community 2 - "2. Komponen"
 Cohesion: 0.05
@@ -258,7 +258,7 @@ Nodes (18): bezier(), bracket(), CHANNELS, colorDist(), EASINGS, EPS, fitEasing(
 
 ### Community 40 - "lucide-react"
 Cohesion: 0.06
-Nodes (57): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, ProductDetailContent(), ProductDetailPage(), Terms(), CredentialVisual() (+49 more)
+Nodes (55): CheckoutContent(), CheckoutPage(), formatPrice(), PaymentMethod, ProductDetailContent(), ProductDetailPage(), Terms(), CredentialVisual() (+47 more)
 
 ### Community 41 - "@prisma/adapter-pg"
 Cohesion: 0.33
@@ -309,17 +309,17 @@ Nodes (4): dotenv@^17.4.2, prisma@^7.8.0, dotenv, prisma
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `auth.ts` to `OrdersView.tsx`, `dashboard/page.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `ButtonPrimary.tsx`, `types.ts`, `products.ts`, `Dev Dependencies`, `settings.ts`, `react`, `dependencies`, `prisma.ts`, `supplierSync.ts`, `transactions/[orderId]/page.tsx`, `referral.ts`, `Route Protection Middleware`, `AdminShell.tsx`, `auth`, `order/[orderId]/page.tsx`, `SettingsView.tsx`, `balance/page.tsx`, `lucide-react`, `app/layout.tsx`, `Order (Prisma model)`?**
-  _High betweenness centrality (0.294) - this node is a cross-community bridge._
+  _High betweenness centrality (0.255) - this node is a cross-community bridge._
 - **What connects `{ GET, POST }`, `Setting (Prisma model)`, `Keyboard/Focus & ARIA Issues (outline-none, Link wrapping button, dropdown/toast)` to the rest of the system?**
   _14 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dashboard/page.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06749482401656315 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0649452269170579 - nodes in this community are weakly interconnected._
 - **Why does `react` connect `react` to `order/[orderId]/page.tsx`, `dashboard/page.tsx`, `OrdersView.tsx`, `SettingsView.tsx`, `loyalty.ts`, `balance/page.tsx`, `ButtonPrimary.tsx`, `Badge`, `lucide-react`, `AdminPopupSettings.tsx`, `GradientBorder.tsx`, `Dev Dependencies`, `dependencies`, `app/layout.tsx`, `PayoutsView.tsx`, `transactions/[orderId]/page.tsx`, `Skeleton`, `AdminShell.tsx`?**
-  _High betweenness centrality (0.100) - this node is a cross-community bridge._
+  _High betweenness centrality (0.109) - this node is a cross-community bridge._
 - **Should `2. Komponen` be split into smaller, more focused modules?**
   _Cohesion score 0.05398110661268556 - nodes in this community are weakly interconnected._
 - **Why does `lucide-react` connect `lucide-react` to `order/[orderId]/page.tsx`, `dashboard/page.tsx`, `OrdersView.tsx`, `AdminPopupSettings.tsx`, `loyalty.ts`, `balance/page.tsx`, `ButtonPrimary.tsx`, `SettingsView.tsx`, `Dev Dependencies`, `react`, `dependencies`, `app/layout.tsx`, `PayoutsView.tsx`, `transactions/[orderId]/page.tsx`, `Skeleton`, `AdminShell.tsx`?**
-  _High betweenness centrality (0.058) - this node is a cross-community bridge._
+  _High betweenness centrality (0.069) - this node is a cross-community bridge._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._

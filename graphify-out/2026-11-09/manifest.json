@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "app/products/[id]/page.tsx": {
-    "mtime": 1794236400.2799938,
-    "seen": 1794236484.2480576,
-    "ast_hash": "b4779c5168bb38eae8ef8adbd77f0e44",
+    "mtime": 1794236543.3453946,
+    "seen": 1794236581.4821775,
+    "ast_hash": "8014468e0fad8f2f416db732cb64146b",
     "semantic_hash": ""
   },
   "app/products/page.tsx": {
