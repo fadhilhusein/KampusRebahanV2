@@ -11,9 +11,51 @@ import ButtonPrimary, { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
 import type { ProductReview, Transaction } from "@/lib/types";
-import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, Undo2 } from "lucide-react";
+import { Copy, Clock, CheckCircle2, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Star, Undo2, Mail, MessageCircle } from "lucide-react";
 import RefundRequestCard from "@/components/dashboard/RefundRequestCard";
 import { VariantInfoById } from "@/components/product/VariantInfoBox";
+
+function ManualDeliveryCard({ channel, note }: { channel: string | null; note: string | null }) {
+  const via = channel === "EMAIL" ? "email" : "WhatsApp";
+  const steps: [string, "done" | "now" | "todo"][] = [["Dibayar", "done"], ["Diproses manual", "now"], ["Terkirim", "todo"]];
+  return (
+    <GlassCard className="flex flex-col gap-4 p-6 md:p-8">
+      <div className="flex items-center gap-3">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-warn-bg text-warn">
+          {channel === "EMAIL" ? <Mail size={22} aria-hidden="true" /> : <MessageCircle size={22} aria-hidden="true" />}
+        </span>
+        <span className="min-w-0">
+          <span className="block font-display text-[17px] font-bold md:text-xl">Diproses manual oleh admin</span>
+          <span className="block text-[13px] text-muted">Dikirim lewat {via}</span>
+        </span>
+      </div>
+      <p className="text-sm text-muted">
+        Akun untuk pesanan ini dikirim langsung oleh admin lewat {via}
+        {channel === "EMAIL" ? " ke email akunmu" : ", ke nomor yang kamu pakai saat chat admin"}. Status berubah menjadi Selesai setelah akun terkirim.
+      </p>
+      {note && (
+        <div className="rounded-[14px] bg-card px-4 py-3">
+          <span className="block text-xs font-semibold text-muted">Catatan admin</span>
+          <span className="block text-sm [overflow-wrap:anywhere]">{note}</span>
+        </div>
+      )}
+      <ol className="flex items-center gap-2 text-xs" aria-label="Status pengiriman">
+        {steps.map(([label, state], i) => (
+          <li key={label} className="flex flex-1 items-center gap-2 last:flex-none">
+            <span className="flex shrink-0 items-center gap-1.5">
+              <span aria-hidden="true" className={`size-2.5 rounded-full ${state === "done" ? "bg-success" : state === "now" ? "bg-warn" : "bg-hairline"}`} />
+              <span className={state === "now" ? "font-semibold" : state === "todo" ? "text-muted" : ""}>
+                {label}
+                {state === "now" && <span className="sr-only"> (sekarang)</span>}
+              </span>
+            </span>
+            {i < steps.length - 1 && <span aria-hidden="true" className="h-px flex-1 bg-hairline" />}
+          </li>
+        ))}
+      </ol>
+    </GlassCard>
+  );
+}
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -364,6 +406,8 @@ export default function TransactionDetailPage() {
       : typeof tx.account_details === "object"
       ? Object.keys(tx.account_details as object).length > 0
       : false);
+  // Admin is delivering this order by hand (WhatsApp / email) instead of the supplier.
+  const manualPending = !!tx?.manual_channel && tx.db_status === "PROCESSING";
 
   const paymentLabel =
     { QRIS_GATEWAY: "QRIS", QRIS_BRIDGE: "QRIS", QRIS: "QRIS", BALANCE: "Saldo", REFERRAL_BALANCE: "Saldo Referensi", COUPON: "Kupon" }[tx?.paymentMethod ?? ""] ??
@@ -389,7 +433,11 @@ export default function TransactionDetailPage() {
       ) : tx ? (
         <>
           <div className="kr-fade-in flex flex-wrap items-center gap-2">
-            <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status ?? "—"}</Badge>
+            {manualPending ? (
+              <Badge color="tertiary">Diproses manual</Badge>
+            ) : (
+              <Badge color={statusColor[tx.db_status] ?? "default"}>{statusLabel[tx.db_status] ?? tx.db_status ?? "—"}</Badge>
+            )}
             <Badge color="default">{tx.quantity}x</Badge>
             <span className="text-[13px] text-muted">
               Dibayar via {paymentLabel} · {tx.variantName} · {tx.duration} · {tx.type}
@@ -420,6 +468,18 @@ export default function TransactionDetailPage() {
                   <Link href={`/order/${tx.db_order_id}`} className={`kr-press ${buttonClass("secondary", "sm")}`}>
                     {tx.db_status === "PAID" ? "Lihat detail order" : "Lihat instruksi bayar"} <ArrowRight size={14} aria-hidden="true" />
                   </Link>
+                </GlassCard>
+              ) : manualPending ? (
+                <ManualDeliveryCard channel={tx.manual_channel ?? null} note={tx.manual_note ?? null} />
+              ) : tx.manual_channel && tx.db_status === "COMPLETED" ? (
+                <GlassCard className="flex items-start gap-3 p-5 md:p-6">
+                  <CheckCircle2 size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-success" />
+                  <div>
+                    <div className="text-base font-semibold">Akun sudah dikirim admin</div>
+                    <div className="text-[13px] text-muted">
+                      Dikirim manual lewat {tx.manual_channel === "EMAIL" ? "email" : "WhatsApp"}. Cek {tx.manual_channel === "EMAIL" ? "kotak masuk email" : "chat WhatsApp"} kamu.
+                    </div>
+                  </div>
                 </GlassCard>
               ) : (tx.db_status === "PROCESSING" || tx.db_status === "AWAITING_RETRY" || tx.status === "processing") ? (
                 <GlassCard className="p-6 text-center">

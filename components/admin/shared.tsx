@@ -25,6 +25,9 @@ export interface AdminOrder {
   bridgeStatus: string | null;
   refundedAt: string | null;
   completedAt: string | null;
+  manualChannel: string | null;
+  manualAt: string | null;
+  manualNote: string | null;
   createdAt: string;
   user: { email: string; name: string | null };
 }
@@ -46,13 +49,16 @@ export function timeAgo(d: string) {
   return `${Math.round(h / 24)} hari lalu`;
 }
 
-export const orderStatusKey = (o: AdminOrder) => displayStatus(o.status, o.refundedAt);
+export const isManual = (o: AdminOrder) => o.status === "PROCESSING" && !!o.manualAt;
+export const orderStatusKey = (o: AdminOrder) => (isManual(o) ? "MANUAL" : displayStatus(o.status, o.refundedAt));
+export const manualChannelLabel = (c: string | null) => (c === "EMAIL" ? "email" : "WhatsApp");
 
 // Admin wording; the customer pages use lib/orderStatus.ts.
 const statusInfo: Record<string, { label: string; color: "primary" | "secondary" | "tertiary" | "default"; tone?: string }> = {
   PENDING_PAYMENT: { label: "Menunggu bayar", color: "tertiary" },
   PAID: { label: "Menunggu verifikasi", color: "tertiary" },
   PROCESSING: { label: "Diproses", color: "default", tone: "!text-accent" },
+  MANUAL: { label: "Diproses manual", color: "tertiary" },
   AWAITING_RETRY: { label: "Perlu retry", color: "primary" },
   COMPLETED: { label: "Selesai", color: "secondary" },
   FAILED: { label: "Gagal", color: "primary" },

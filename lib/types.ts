@@ -77,6 +77,10 @@ export interface Transaction {
   refunded_at?: string | null;
   refund_amount?: number | null;
   refund_wallet?: "MAIN" | "REFERRAL" | "MANUAL" | null;
+  /** Set when the admin delivers this order by hand: "WHATSAPP" or "EMAIL". */
+  manual_channel?: string | null;
+  manual_at?: string | null;
+  manual_note?: string | null;
   payment_status: string;
   products: Product[];
   account_details: AccountDetail[];

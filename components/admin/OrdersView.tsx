@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, CircleDashed, Copy, Info, Landmark, QrCode, Search, Wallet, X as XIcon } from "lucide-react";
+import { Check, CircleDashed, Copy, Hand, Info, Landmark, Mail, MessageCircle, QrCode, Search, Wallet, X as XIcon } from "lucide-react";
 import { buttonClass } from "@/components/ui/ButtonPrimary";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastContext";
@@ -17,13 +17,15 @@ import {
   failureReason,
   formatDateTime,
   formatPrice,
+  isManual,
+  manualChannelLabel,
   methodLabel,
   needsAction,
   orderStatusKey,
   timeAgo,
 } from "@/components/admin/shared";
 
-type ActionKind = "retry" | "confirm" | "gateway" | "bridge" | "refund";
+type ActionKind = "retry" | "confirm" | "gateway" | "bridge" | "refund" | "manual" | "complete";
 
 function MethodIcon({ method, size, className }: { method: string; size: number; className?: string }) {
   const props = { size, className, "aria-hidden": true as const };
@@ -33,10 +35,13 @@ function MethodIcon({ method, size, className }: { method: string; size: number;
 }
 
 const isRefundable = (o: AdminOrder) => !o.refundedAt && REFUND_ELIGIBLE_STATUSES.includes(o.status);
+// Paid but not delivered yet, and not already handed to the admin.
+const canProcessManually = (o: AdminOrder) => !o.refundedAt && !o.manualAt && ["PAID", "PROCESSING", "AWAITING_RETRY"].includes(o.status);
 const isRejectable = (o: AdminOrder) => isRefundable(o) || (o.status === "PENDING_PAYMENT" && o.paymentMethod === "BANK_TRANSFER");
 
 /** The one action the card/row shows for an order, by status. */
 function primaryAction(o: AdminOrder): { kind: ActionKind; label: string; style: "primary" | "secondary" | "danger" } | null {
+  if (isManual(o)) return { kind: "complete", label: "Tandai selesai", style: "primary" };
   if (o.status === "AWAITING_RETRY") return { kind: "retry", label: "Retry", style: "primary" };
   if (o.status === "PAID" && o.paymentMethod === "BANK_TRANSFER") return { kind: "confirm", label: "Konfirmasi", style: "primary" };
   // Transfer arrived after the payment window: the admin can still confirm once the money is seen.
@@ -131,9 +136,10 @@ const OrderRow = memo(function OrderRow({ order, busy, onAction, onOpen }: RowPr
   );
 });
 
-function Step({ label, time, state }: { label: string; time?: string; state: "done" | "failed" | "todo" }) {
-  const tone = state === "done" ? "bg-success-bg text-success" : state === "failed" ? "bg-danger-bg text-danger" : "bg-pill text-muted";
-  const Icon = state === "done" ? Check : state === "failed" ? XIcon : CircleDashed;
+function Step({ label, time, state }: { label: string; time?: string; state: "done" | "failed" | "manual" | "todo" }) {
+  const tone =
+    state === "done" ? "bg-success-bg text-success" : state === "failed" ? "bg-danger-bg text-danger" : state === "manual" ? "bg-warn-bg text-warn" : "bg-pill text-muted";
+  const Icon = state === "done" ? Check : state === "failed" ? XIcon : state === "manual" ? Hand : CircleDashed;
   return (
     <li className="flex flex-1 flex-col items-center gap-1 text-center">
       <span className={`flex size-9 items-center justify-center rounded-full ${tone}`}><Icon size={16} aria-hidden="true" /></span>
@@ -152,7 +158,12 @@ function OrderSheet({ order, busy, onAction, onClose }: { order: AdminOrder | nu
   const reason = failureReason(order);
   const rawGateway = order.gatewayStatus ?? order.bridgeStatus;
   const gateway = rawGateway ? ({ paid: "Lunas", pending: "Menunggu", expired: "Kedaluwarsa", failed: "Gagal", cancelled: "Dibatalkan" } as Record<string, string>)[rawGateway.toLowerCase()] ?? rawGateway : null;
-  const supplier = order.status === "COMPLETED" ? "Selesai" : failed ? "Gagal" : order.apiOrderId ? "Diteruskan, menunggu supplier" : "Belum diteruskan";
+  const manual = isManual(order);
+  const supplier = manual
+    ? "Ditangani manual"
+    : order.status === "COMPLETED"
+      ? order.manualAt ? "Dikirim manual" : "Selesai"
+      : failed ? "Gagal" : order.apiOrderId ? "Diteruskan, menunggu supplier" : "Belum diteruskan";
   const rows: [string, React.ReactNode][] = [
     ["Pembeli", order.user.name ? `${order.user.name} · ${order.user.email}` : order.user.email],
     ["Metode", methodLabel[order.paymentMethod] ?? order.paymentMethod],
@@ -161,7 +172,7 @@ function OrderSheet({ order, busy, onAction, onClose }: { order: AdminOrder | nu
     ["Profit", <span key="p" className="text-success">{formatPrice(order.sellPrice - order.costPrice)}</span>],
     ...(order.uniqueCode > 0 ? ([["Nominal transfer", <span key="u" className="text-warn">{formatPrice(order.sellPrice + order.uniqueCode)}</span>]] as [string, React.ReactNode][]) : []),
     ...(gateway ? ([["Pembayaran gateway", gateway]] as [string, React.ReactNode][]) : []),
-    ["Status supplier", <span key="s" className={failed ? "text-danger" : ""}>{supplier}</span>],
+    ["Status supplier", <span key="s" className={failed ? "text-danger" : manual ? "text-warn" : ""}>{supplier}</span>],
   ];
   const a = primaryAction(order);
 
@@ -196,7 +207,19 @@ function OrderSheet({ order, busy, onAction, onClose }: { order: AdminOrder | nu
         ))}
       </dl>
 
-      {(reason || order.paymentNote) && (
+      {order.manualAt && (
+        <p className="flex gap-2.5 rounded-[16px] bg-card px-4 py-3 text-[13px] font-medium">
+          {order.manualChannel === "EMAIL" ? <Mail size={16} aria-hidden="true" className="mt-0.5 shrink-0" /> : <MessageCircle size={16} aria-hidden="true" className="mt-0.5 shrink-0" />}
+          <span className="[overflow-wrap:anywhere]">
+            {manual
+              ? `Diproses manual via ${manualChannelLabel(order.manualChannel)} sejak ${formatDateTime(order.manualAt)}. Kirim akunnya ke customer, lalu tandai selesai.`
+              : `Dikirim manual via ${manualChannelLabel(order.manualChannel)}.`}
+            {order.manualNote && <span className="mt-1 block text-muted">Catatan untuk customer: {order.manualNote}</span>}
+          </span>
+        </p>
+      )}
+
+      {!manual && (reason || order.paymentNote) && (
         <p className="flex gap-2.5 rounded-[16px] bg-warn-bg px-4 py-3 text-[13px] font-medium text-warn">
           <Info size={16} aria-hidden="true" className="mt-0.5 shrink-0" />
           <span className="[overflow-wrap:anywhere]">{reason ? `Alasan gagal: ${reason}` : order.paymentNote}</span>
@@ -206,14 +229,25 @@ function OrderSheet({ order, busy, onAction, onClose }: { order: AdminOrder | nu
       <ol className="flex gap-1" aria-label="Riwayat pesanan">
         <Step label="Dibuat" time={formatDateTime(order.createdAt).split(", ")[1]} state="done" />
         <Step label="Dibayar" state={paid ? "done" : "todo"} />
-        <Step label="Ke supplier" state={failed ? "failed" : order.apiOrderId ? "done" : "todo"} />
+        {order.manualAt ? (
+          <Step label="Manual" time={formatDateTime(order.manualAt).split(", ")[1]} state={manual ? "manual" : "done"} />
+        ) : (
+          <Step label="Ke supplier" state={failed ? "failed" : order.apiOrderId ? "done" : "todo"} />
+        )}
         <Step label="Selesai" time={order.completedAt ? formatDateTime(order.completedAt).split(", ")[1] : undefined} state={order.status === "COMPLETED" ? "done" : "todo"} />
       </ol>
 
       <div className="flex flex-col gap-2">
         {a && a.kind !== "refund" && (
           <button type="button" disabled={busy} onClick={() => onAction(order, a.kind)} className={`${buttonClass(a.style)} min-h-12 w-full`}>
-            {busy ? "Memproses..." : a.kind === "retry" ? "Retry fulfillment" : a.kind === "confirm" ? "Konfirmasi pembayaran" : "Cek status pembayaran"}
+            {busy
+              ? "Memproses..."
+              : ({ retry: "Retry fulfillment", confirm: "Konfirmasi pembayaran", complete: "Tandai selesai" } as Record<string, string>)[a.kind] ?? "Cek status pembayaran"}
+          </button>
+        )}
+        {canProcessManually(order) && (
+          <button type="button" disabled={busy} onClick={() => onAction(order, "manual")} className={`${buttonClass("secondary")} min-h-12 w-full`}>
+            <Hand size={16} aria-hidden="true" /> Proses manual
           </button>
         )}
         {isRejectable(order) && (
@@ -221,6 +255,80 @@ function OrderSheet({ order, busy, onAction, onClose }: { order: AdminOrder | nu
             {isRefundable(order) ? "Refund / Tolak" : "Tolak"}
           </button>
         )}
+      </div>
+    </Sheet>
+  );
+}
+
+function ManualSheet({ order, onClose, onDone }: { order: AdminOrder | null; onClose: () => void; onDone: (id: string) => void }) {
+  const { addToast } = useToast();
+  const [channel, setChannel] = useState<"WHATSAPP" | "EMAIL">("WHATSAPP");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  if (!order) return <Sheet open={false} onClose={onClose} title="" labelId="manual-sheet">{null}</Sheet>;
+
+  async function submit() {
+    if (!order) return;
+    setBusy(true);
+    const data = await fetch("/api/admin/manual", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: order.id, action: "START", channel, note: note.trim() || null }),
+    })
+      .then((r) => r.json())
+      .catch(() => ({ success: false, message: "Terjadi kesalahan. Coba lagi." }));
+    setBusy(false);
+    addToast(data.message ?? (data.success ? "Tersimpan." : "Gagal."), data.success ? "success" : "error");
+    if (data.success) onDone(order.id);
+  }
+
+  const label = channel === "WHATSAPP" ? "WhatsApp" : "email";
+  return (
+    <Sheet
+      open
+      onClose={() => !busy && onClose()}
+      labelId="manual-sheet"
+      title={`${order.productName} · ${order.variantName}`}
+      subtitle={<StatusBadge statusKey={orderStatusKey(order)} />}
+    >
+      <div className="flex flex-col gap-1">
+        <h3 className="font-display text-xl font-bold">Proses pesanan secara manual</h3>
+        <p className="text-sm text-muted">Kirim akunnya sendiri ke customer. Customer langsung melihat bahwa pesanannya diproses manual oleh admin.</p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span id="manual-channel" className="text-[13px] font-semibold">Dikirim lewat</span>
+        <div role="group" aria-labelledby="manual-channel" className="grid grid-cols-2 gap-2">
+          {([["WHATSAPP", "WhatsApp", MessageCircle], ["EMAIL", "Email", Mail]] as const).map(([id, text, Icon]) => (
+            <button key={id} type="button" aria-pressed={channel === id} onClick={() => setChannel(id)} className="kr-chip kr-press min-h-12 gap-2">
+              <Icon size={18} aria-hidden="true" /> {text}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <label htmlFor="manual-note" className="text-[13px] font-semibold">Catatan untuk customer (opsional)</label>
+        <textarea
+          id="manual-note"
+          rows={3}
+          maxLength={300}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Contoh: akun dikirim ke WhatsApp 0812-xxxx dalam 1 jam"
+          className="min-h-[88px] resize-none rounded-[14px] border border-hairline bg-surface px-4 py-3 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+        />
+      </div>
+      <div className="flex flex-col gap-1 rounded-[18px] bg-card px-4 py-3">
+        <span className="text-xs font-semibold text-muted">Yang dilihat customer</span>
+        <span className="text-sm">Pesananmu diproses manual oleh admin. Akun akan dikirim lewat {label}.</span>
+        {note.trim() && <span className="text-sm text-muted">Catatan admin: {note.trim()}</span>}
+      </div>
+      <div className="flex flex-col gap-2">
+        <button type="button" disabled={busy} onClick={submit} className={`${buttonClass("primary")} min-h-12 w-full`}>
+          {busy ? "Memproses..." : "Tandai diproses manual"}
+        </button>
+        <button type="button" disabled={busy} onClick={onClose} className={`${buttonClass("secondary")} min-h-12 w-full`}>
+          Batal
+        </button>
       </div>
     </Sheet>
   );
@@ -238,6 +346,7 @@ export default function OrdersView({ initialFilter }: { initialFilter?: string }
   const [busyId, setBusyId] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [refundId, setRefundId] = useState<string | null>(null);
+  const [manualId, setManualId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -269,11 +378,20 @@ export default function OrdersView({ initialFilter }: { initialFilter?: string }
       setRefundId(order.id);
       return;
     }
+    if (kind === "manual") {
+      setOpenId(null);
+      setManualId(order.id);
+      return;
+    }
     setBusyId(order.id);
+    const post = (url: string, body: object) =>
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const req =
       kind === "gateway" || kind === "bridge"
         ? fetch(`/api/order/${order.id}/${kind === "gateway" ? "gateway-status" : "bridge-status"}`)
-        : fetch("/api/admin/confirm", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: order.id }) });
+        : kind === "complete"
+          ? post("/api/admin/manual", { orderId: order.id, action: "COMPLETE" })
+          : post("/api/admin/confirm", { orderId: order.id });
     const data = await req.then((r) => r.json()).catch(() => ({ success: false, message: "Terjadi kesalahan." }));
     const text = kind === "gateway" || kind === "bridge"
       ? data.success ? `Status pembayaran: ${data.data?.status ?? "?"}` : data.message ?? "Gagal cek status."
@@ -355,10 +473,20 @@ export default function OrdersView({ initialFilter }: { initialFilter?: string }
         </>
       )}
 
-      <OrderSheet key={openId ?? "none"} order={openOrder} busy={busyId === openId} onAction={onAction} onClose={() => setOpenId(null)} />
+      <OrderSheet key={`order-${openId ?? "none"}`} order={openOrder} busy={busyId === openId} onAction={onAction} onClose={() => setOpenId(null)} />
+
+      <ManualSheet
+        key={`manual-${manualId ?? "none"}`}
+        order={orders.find((o) => o.id === manualId) ?? null}
+        onClose={() => setManualId(null)}
+        onDone={(id) => {
+          setManualId(null);
+          refreshOne(id);
+        }}
+      />
 
       <RefundDialog
-        key={refundId ?? "closed"}
+        key={`refund-${refundId ?? "closed"}`}
         orderId={refundId}
         onClose={() => setRefundId(null)}
         onDone={(r) => {
