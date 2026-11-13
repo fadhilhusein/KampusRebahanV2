@@ -150,9 +150,9 @@
     "semantic_hash": ""
   },
   "app/api/transactions/route.ts": {
-    "mtime": 1794107657.766653,
-    "seen": 1794107765.3017995,
-    "ast_hash": "ea43dd59453fd2b90fc4f635f295703c",
+    "mtime": 1794582485.1509044,
+    "seen": 1794583171.6382916,
+    "ast_hash": "444c64d02ec1c38f676b4e4820098e4e",
     "semantic_hash": ""
   },
   "app/api/webhook/bayar-gg/route.ts": {
@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "app/dashboard/transactions/[orderId]/page.tsx": {
-    "mtime": 1794234962.670287,
-    "seen": 1794235450.2890456,
-    "ast_hash": "dc67ea69d703c1a150ed3d9fd9351334",
+    "mtime": 1794582508.806771,
+    "seen": 1794583171.6433518,
+    "ast_hash": "b1a36d320d1a0273ec23f12c934d8c58",
     "semantic_hash": ""
   },
   "app/dashboard/transactions/page.tsx": {
@@ -258,9 +258,9 @@
     "semantic_hash": ""
   },
   "app/order/[orderId]/page.tsx": {
-    "mtime": 1794234972.4052415,
-    "seen": 1794235450.2890456,
-    "ast_hash": "7bac92b118c85494d69238ad88c5d9e2",
+    "mtime": 1794582551.6620438,
+    "seen": 1794583171.6443515,
+    "ast_hash": "12ec87e164bbac321dfa889350e94b6c",
     "semantic_hash": ""
   },
   "app/page.tsx": {
@@ -594,9 +594,9 @@
     "semantic_hash": ""
   },
   "lib/types.ts": {
-    "mtime": 1794107670.4531653,
-    "seen": 1794107765.335978,
-    "ast_hash": "18dd3cd58f8dfdfb90e697b992049734",
+    "mtime": 1794582485.1519432,
+    "seen": 1794583171.671072,
+    "ast_hash": "37a1bc062fffaf138a134321f7ddb353",
     "semantic_hash": ""
   },
   "lib/utils.ts": {
@@ -1584,9 +1584,9 @@
     "semantic_hash": ""
   },
   "lib/supplierSync.ts": {
-    "mtime": 1794358710.4221945,
-    "seen": 1794358883.4213028,
-    "ast_hash": "a768789421cdf91e8f8bd001df71d17e",
+    "mtime": 1794583052.1152837,
+    "seen": 1794583171.671072,
+    "ast_hash": "6bfe971405d40c7f67ea5e083bc6ee4e",
     "semantic_hash": ""
   },
   "design/marketing/caption-update-november.md": {
@@ -1710,9 +1710,9 @@
     "semantic_hash": ""
   },
   "components/admin/OrdersView.tsx": {
-    "mtime": 1794226068.578447,
-    "seen": 1794226322.0965102,
-    "ast_hash": "3eb966a5a0ce7003a1fc897a1b82406c",
+    "mtime": 1794583053.2991202,
+    "seen": 1794583171.6474423,
+    "ast_hash": "f455db40f25b605032c1df8bd5aab311",
     "semantic_hash": ""
   },
   "components/admin/PayoutsView.tsx": {
@@ -1728,9 +1728,9 @@
     "semantic_hash": ""
   },
   "components/admin/shared.tsx": {
-    "mtime": 1794066661.7459302,
-    "seen": 1794067645.304335,
-    "ast_hash": "1e0ccf96ab04cd84aac25c8a8fe17a74",
+    "mtime": 1794582372.7112906,
+    "seen": 1794583171.648459,
+    "ast_hash": "b81d0eb99527a43d22a420715d783c12",
     "semantic_hash": ""
   },
   "design/admin-v2/beranda-desktop.png": {
@@ -2034,9 +2034,33 @@
     "semantic_hash": ""
   },
   "lib/whatsapp.ts": {
-    "mtime": 1794358709.2503486,
-    "seen": 1794358883.4213028,
-    "ast_hash": "87c5c84d8edad611af94fc70e2b39513",
+    "mtime": 1794583138.1436088,
+    "seen": 1794583171.6720693,
+    "ast_hash": "01d842b8b73ad8392f7636e2abe615a1",
+    "semantic_hash": ""
+  },
+  "app/api/admin/manual/route.ts": {
+    "mtime": 1794582440.444336,
+    "seen": 1794583171.6290567,
+    "ast_hash": "93fc745ca07da5bd45b2026e766147d1",
+    "semantic_hash": ""
+  },
+  "design/manual-process/1-admin-pilih-saluran.png": {
+    "mtime": 1794581120.6802504,
+    "seen": 1794583171.694152,
+    "ast_hash": "7bdce712d7f48dcab89784306b8f3c36",
+    "semantic_hash": ""
+  },
+  "design/manual-process/2-admin-menunggu-kirim.png": {
+    "mtime": 1794581120.6822548,
+    "seen": 1794583171.694152,
+    "ast_hash": "42150c5b329d1923e20f8292c7ec6277",
+    "semantic_hash": ""
+  },
+  "design/manual-process/3-customer-diproses-manual.png": {
+    "mtime": 1794581120.684255,
+    "seen": 1794583171.694152,
+    "ast_hash": "cf551c82b00e154b205fa59cca30a625",
     "semantic_hash": ""
   },
   ".claude/skills/replica/scripts/package-lock.json": {

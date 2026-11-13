@@ -13,7 +13,7 @@ import Countdown from "@/components/payment/Countdown";
 import { PAYMENT_WINDOW_MS } from "@/lib/stockRules";
 import {
   Clock, CheckCircle2, Loader2, PartyPopper, XCircle, Ban, TimerOff, Package,
-  Landmark, Copy, Check, Download, ArrowRight, MessageCircle,
+  Landmark, Copy, Check, Download, ArrowRight, MessageCircle, Hand,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { displayStatus } from "@/lib/orderStatus";
@@ -68,6 +68,8 @@ interface Order {
   bridgePaymentUrl: string | null;
   bridgeExpiresAt: string | null;
   refundedAt: string | null;
+  manualChannel: string | null;
+  manualNote: string | null;
   createdAt: string;
 }
 
@@ -319,9 +321,17 @@ export default function OrderDetailPage() {
     }
   }
 
-  const info = order
-    ? (statusInfo[displayStatus(order.status, order.refundedAt)] ?? { label: order.status, color: "default" as const, icon: Package, desc: "" })
-    : null;
+  const via = order?.manualChannel === "EMAIL" ? "email" : "WhatsApp";
+  const info = !order
+    ? null
+    : order.manualChannel && order.status === "PROCESSING"
+      ? {
+          label: "Diproses Manual",
+          color: "tertiary" as const,
+          icon: Hand,
+          desc: `Pesananmu diproses manual oleh admin. Akun akan dikirim lewat ${via}.${order.manualNote ? ` Catatan admin: ${order.manualNote}` : ""}`,
+        }
+      : (statusInfo[displayStatus(order.status, order.refundedAt)] ?? { label: order.status, color: "default" as const, icon: Package, desc: "" });
   const isPending = order?.status === "PENDING_PAYMENT";
   const isAutoQris = order?.paymentMethod === "QRIS_GATEWAY" || order?.paymentMethod === "QRIS_BRIDGE";
 

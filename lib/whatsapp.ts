@@ -84,7 +84,7 @@ export async function sendOwnerWhatsApp(text: string, dedupeKey: string): Promis
           method: "POST",
           headers: { "Content-Type": "application/json", "X-API-Key": OPENWA_API_KEY, "Idempotency-Key": `${dedupeKey}:${chatId}` },
           body: JSON.stringify({ chatId, text }),
-          signal: AbortSignal.timeout(8000),
+          signal: AbortSignal.timeout(15000),
         });
         if (!res.ok) console.error("OpenWA send failed", res.status, dedupeKey, (await res.text().catch(() => "")).slice(0, 300));
       } catch (err) {

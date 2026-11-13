@@ -61,6 +61,10 @@ model Order {
   // What the customer got back and how: "BALANCE" (credited to their wallet) or "MANUAL" (admin paid out directly).
   refundAmount     Int?
   refundMethod     String?
+  // Admin took over delivery by hand: "WHATSAPP" or "EMAIL", when, and a note shown to the customer.
+  manualChannel    String?
+  manualAt         DateTime?
+  manualNote       String?
   // When the supplier confirmed delivery; drives the loyalty coupon waiting period.
   completedAt      DateTime?
   bridgeRef        String?

@@ -36,8 +36,9 @@ export async function applySupplierStatus(apiOrderId: string, status: string): P
     await markOrderCompleted(order.id);
   } else if (FAILED_STATUSES.includes(s)) {
     // Paid but the supplier gave up: hand it to admin (retry or refund) instead of completing it.
+    // An order the admin is delivering by hand stays theirs.
     await prisma.order.updateMany({
-      where: { id: order.id, status: "PROCESSING" },
+      where: { id: order.id, status: "PROCESSING", manualAt: null },
       data: { status: "AWAITING_RETRY", apiResponse: { supplier_status: s } },
     });
   }
@@ -50,7 +51,12 @@ export async function applySupplierStatus(apiOrderId: string, status: string): P
 export async function syncSupplierOrders(filter: { userId?: string; orderId?: string } = {}): Promise<void> {
   try {
     const waiting = await prisma.order.findMany({
-      where: { status: "PROCESSING", apiOrderId: { not: null }, ...filter },
+      where: {
+        status: "PROCESSING",
+        apiOrderId: { not: null },
+        ...(filter.userId ? { userId: filter.userId } : {}),
+        ...(filter.orderId ? { id: filter.orderId } : {}),
+      },
       select: { apiOrderId: true },
     });
     if (waiting.length === 0) return;
