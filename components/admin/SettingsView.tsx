@@ -175,6 +175,7 @@ export default function SettingsView() {
         <Skeleton className="h-96 w-full" radius="rounded-[28px]" />
       ) : (
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:items-start">
+          <div className="flex flex-col gap-5">
           <Group title="Harga" description="Markup ditambahkan ke harga modal dari supplier.">
             <Field id="markup" label="Markup harga" suffix="%" min={0} max={1000} step={0.1} value={markup} onChange={setMarkup} />
             <button type="button" disabled={saving === "price"} onClick={() => save("price", [{ markup_percent: Number(markup) }])} className={`${buttonClass("primary")} min-h-12 w-full`}>
@@ -185,14 +186,9 @@ export default function SettingsView() {
           <Group title="Metode pembayaran" description="Metode yang nonaktif disembunyikan di checkout.">
             {methodGroup("methods", methods, "Simpan metode")}
           </Group>
+          </div>
 
-          <Group title="Top up saldo" description="Metode QRIS untuk isi saldo. Kalau keduanya aktif, user memilih sendiri.">
-            {methodGroup("topup", topupMethods, "Simpan metode top up")}
-            {!enabled.topup_qris_gateway_enabled && !enabled.topup_qris_bridge_enabled && (
-              <p className="text-[13px] font-medium text-danger">Keduanya mati: user tidak bisa top up saldo.</p>
-            )}
-          </Group>
-
+          <div className="flex flex-col gap-5">
           <Group title="Afiliasi" description="Komisi dihitung dengan persentase yang berlaku saat pesanan selesai, dibatasi margin toko.">
             <Field id="ref-percent" label="Komisi afiliasi" suffix="%" min={0} max={50} step={0.1} value={percent} onChange={setPercent} />
             <Field id="ref-min" label="Minimum pencairan" suffix="Rp" min={10000} step={1000} value={minPayout} onChange={setMinPayout} />
@@ -206,6 +202,13 @@ export default function SettingsView() {
             </button>
           </Group>
 
+          <Group title="Top up saldo" description="Metode QRIS untuk isi saldo. Kalau keduanya aktif, user memilih sendiri.">
+            {methodGroup("topup", topupMethods, "Simpan metode top up")}
+            {!enabled.topup_qris_gateway_enabled && !enabled.topup_qris_bridge_enabled && (
+              <p className="text-[13px] font-medium text-danger">Keduanya mati: user tidak bisa top up saldo.</p>
+            )}
+          </Group>
+
           <Group title="Popup informasi" description="Popup yang tampil di beranda situs.">
             <Link href="/dashboard/admin/settings/popup" className="kr-press flex min-h-16 items-center gap-3 rounded-[18px] bg-card px-4 py-3">
               {popup ? (
@@ -217,6 +220,7 @@ export default function SettingsView() {
               <ChevronRight size={18} aria-hidden="true" className="text-muted" />
             </Link>
           </Group>
+          </div>
         </div>
       )}
     </>
