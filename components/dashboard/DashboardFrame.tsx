@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { DashboardBottomBar, DashboardSidebar } from "@/components/dashboard/DashboardNav";
+import { AdminSummaryProvider } from "@/components/admin/AdminShell";
 
 export type SidebarUser = { name: string | null; email: string; isAdmin: boolean };
 
@@ -17,21 +18,9 @@ export function useDashboardUser() {
 }
 
 export default function DashboardFrame({ user, children }: { user: SidebarUser; children: React.ReactNode }) {
-  // The admin area keeps its own shell (AdminShell + its bottom bar), so it gets the plain frame.
+  // Admin pages use the same frame; the summary sits up here so the sidebar can show its counts.
   const isAdminArea = usePathname().startsWith("/dashboard/admin");
-
-  if (isAdminArea)
-    return (
-      <DashboardUserContext.Provider value={user}>
-        <div className="kr-page lg:max-w-[1600px] lg:px-10 xl:px-14">
-          <Navbar />
-          <main className="flex w-full min-w-0 flex-1 flex-col gap-6 py-8 md:gap-10 md:py-10">{children}</main>
-          <Footer />
-        </div>
-      </DashboardUserContext.Provider>
-    );
-
-  return (
+  const frame = (
     <DashboardUserContext.Provider value={user}>
       <div className="lg:flex">
         <DashboardSidebar user={user} />
@@ -47,4 +36,5 @@ export default function DashboardFrame({ user, children }: { user: SidebarUser; 
       <DashboardBottomBar isAdmin={user.isAdmin} />
     </DashboardUserContext.Provider>
   );
+  return isAdminArea && user.isAdmin ? <AdminSummaryProvider>{frame}</AdminSummaryProvider> : frame;
 }

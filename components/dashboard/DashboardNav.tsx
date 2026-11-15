@@ -7,8 +7,9 @@ import { signOut } from "next-auth/react";
 import { LayoutGrid, LogOut, MessageCircle, Receipt, Share2, Shield, ShoppingBag, Wallet, type LucideIcon } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import type { SidebarUser } from "@/components/dashboard/DashboardFrame";
+import { CountBadge, adminTabs, useAdminSummary } from "@/components/admin/AdminShell";
 
-type Item = { href: string; label: string; icon: LucideIcon; exact?: boolean };
+type Item = { href: string; label: string; icon: LucideIcon; exact?: boolean; badge?: number; tone?: "danger" };
 
 const accountItems: Item[] = [
   { href: "/dashboard", label: "Ringkasan", icon: LayoutGrid, exact: true },
@@ -18,11 +19,31 @@ const accountItems: Item[] = [
 ];
 const adminItem: Item = { href: "/dashboard/admin", label: "Admin", icon: Shield };
 
+// Leaves the admin area from the admin sidebar.
+const backItems: Item[] = [
+  { href: "/dashboard", label: "Dashboard saya", icon: LayoutGrid, exact: true },
+  { href: "/products", label: "Lihat toko", icon: ShoppingBag },
+];
+
+/** Inside /dashboard/admin the menu switches to the admin pages, with their "needs action" counts. */
 function useNav(isAdmin: boolean) {
   const pathname = usePathname();
-  const items = isAdmin ? [...accountItems, adminItem] : accountItems;
+  const { summary } = useAdminSummary();
+  const adminArea = pathname.startsWith("/dashboard/admin");
+  const items: Item[] = adminArea
+    ? adminTabs.map((t) => ({
+        href: t.href,
+        label: t.label,
+        icon: t.icon,
+        exact: t.href === "/dashboard/admin",
+        badge: summary && t.badge ? t.badge(summary.counts) : 0,
+        tone: t.tone,
+      }))
+    : isAdmin
+      ? [...accountItems, adminItem]
+      : accountItems;
   const isActive = (i: Item) => (i.exact ? pathname === i.href : pathname.startsWith(i.href));
-  return { items, isActive };
+  return { items, isActive, adminArea };
 }
 
 const rowClass = "kr-press flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm transition-colors";
@@ -31,7 +52,7 @@ const groupLabel = "px-3 pb-1 text-[11px] font-semibold tracking-[0.8px] text-mu
 /** Desktop (lg+) left sidebar: menu, shop links, and the signed-in user with theme + logout. */
 export function DashboardSidebar({ user }: { user: SidebarUser }) {
   const router = useRouter();
-  const { items, isActive } = useNav(user.isAdmin);
+  const { items, isActive, adminArea } = useNav(user.isAdmin);
   const display = user.name || user.email;
 
   async function logout() {
@@ -55,8 +76,8 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
           />
         </Link>
 
-        <nav aria-label="Dashboard" className="flex flex-col gap-1">
-          <p className={groupLabel}>AKUN</p>
+        <nav aria-label={adminArea ? "Menu admin" : "Dashboard"} className="flex flex-col gap-1">
+          <p className={groupLabel}>{adminArea ? "ADMIN" : "AKUN"}</p>
           {items.map((i) => {
             const active = isActive(i);
             const Icon = i.icon;
@@ -69,11 +90,23 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
               >
                 <Icon size={18} aria-hidden="true" className={active ? "" : "text-muted"} />
                 {i.label}
+                <CountBadge n={i.badge ?? 0} tone={active ? undefined : i.tone} className={`ml-auto ${active ? "!bg-on-ink !text-ink" : ""}`} />
+                {!!i.badge && <span className="sr-only">({i.badge} perlu tindakan)</span>}
               </Link>
             );
           })}
         </nav>
 
+        {adminArea ? (
+          <nav aria-label="Akun" className="flex flex-col gap-1">
+            <p className={groupLabel}>AKUN</p>
+            {backItems.map((i) => (
+              <Link key={i.href} href={i.href} className={`${rowClass} font-medium text-ink hover:bg-pill`}>
+                <i.icon size={18} aria-hidden="true" className="text-muted" /> {i.label}
+              </Link>
+            ))}
+          </nav>
+        ) : (
         <nav aria-label="Toko" className="flex flex-col gap-1">
           <p className={groupLabel}>TOKO</p>
           <Link href="/products" className={`${rowClass} font-medium text-ink hover:bg-pill`}>
@@ -88,6 +121,7 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
             <MessageCircle size={18} aria-hidden="true" className="text-muted" /> Bantuan
           </a>
         </nav>
+        )}
       </div>
 
       <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-card p-3">
@@ -117,11 +151,11 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
 
 /** Phone/tablet (< lg) fixed bottom bar, same pattern as the admin bottom bar. */
 export function DashboardBottomBar({ isAdmin }: { isAdmin: boolean }) {
-  const { items, isActive } = useNav(isAdmin);
+  const { items, isActive, adminArea } = useNav(isAdmin);
 
   return (
     <nav
-      aria-label="Dashboard"
+      aria-label={adminArea ? "Menu admin" : "Dashboard"}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
     >
       <ul className="mx-auto flex max-w-[560px] items-stretch justify-between px-1.5 pt-1.5 pb-1">
@@ -135,10 +169,12 @@ export function DashboardBottomBar({ isAdmin }: { isAdmin: boolean }) {
                 aria-current={active ? "page" : undefined}
                 className="kr-press flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold"
               >
-                <span className={`flex h-8 w-14 items-center justify-center rounded-full ${active ? "bg-pill text-ink" : "text-muted"}`}>
+                <span className={`relative flex h-8 w-14 items-center justify-center rounded-full ${active ? "bg-pill text-ink" : "text-muted"}`}>
                   <Icon size={20} aria-hidden="true" />
+                  <CountBadge n={i.badge ?? 0} tone={i.tone} className="absolute -top-1.5 right-1" />
                 </span>
                 <span className={active ? "text-ink" : "text-muted"}>{i.label}</span>
+                {!!i.badge && <span className="sr-only">({i.badge} perlu tindakan)</span>}
               </Link>
             </li>
           );

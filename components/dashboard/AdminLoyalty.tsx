@@ -91,18 +91,28 @@ export default function AdminLoyalty() {
       ) : shown.length === 0 ? (
         <div className="py-10 text-center text-sm font-medium text-muted">Tidak ada data.</div>
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {shown.map((r) => {
             const pct = Math.min(100, Math.floor((r.total / threshold) * 100));
             const info = stateInfo[r.state] ?? stateInfo.BELOW;
+            const note = [
+              r.state === "WAITING" && r.unlockAt && `Terbuka ${formatDate(r.unlockAt, true)}`,
+              r.state === "REDEEMED" && r.redeemedAt && `Ditukar ${formatDate(r.redeemedAt)}`,
+              r.state === "ACTIVE" && r.couponCode,
+              r.revokedAt && `dicabut ${formatDate(r.revokedAt)}`,
+              r.clawbackAmount && `refund dipotong ${formatPrice(r.clawbackAmount)}`,
+            ].filter(Boolean);
             return (
-              <li key={r.userId} className="flex flex-col gap-3 rounded-[22px] bg-surface p-4 shadow-card md:flex-row md:items-center md:gap-6 md:px-6">
-                <div className="min-w-0 md:w-[220px]">
-                  <div className="truncate text-sm font-semibold">{r.name ?? r.email}</div>
-                  <div className="truncate text-xs text-muted">{r.email}</div>
+              <li key={r.userId} className="flex flex-col gap-3 rounded-[22px] bg-surface p-4 shadow-card md:p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-semibold">{r.name ?? r.email}</div>
+                    <div className="truncate text-xs text-muted">{r.email}</div>
+                  </div>
+                  <Badge color={info.color}>{info.label}</Badge>
                 </div>
 
-                <div className="min-w-0 md:flex-1">
+                <div className="min-w-0">
                   <div className="mb-1.5 flex items-baseline justify-between gap-2 text-xs font-semibold">
                     <span>
                       {formatPrice(r.total)} <span className="text-muted">/ {formatPrice(threshold)}</span>
@@ -123,16 +133,7 @@ export default function AdminLoyalty() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-start gap-1 md:w-[230px] md:items-end">
-                  <Badge color={info.color}>{info.label}</Badge>
-                  <span className="text-xs text-muted md:text-right">
-                    {r.state === "WAITING" && r.unlockAt && `Terbuka ${formatDate(r.unlockAt, true)}`}
-                    {r.state === "REDEEMED" && r.redeemedAt && `Ditukar ${formatDate(r.redeemedAt)}`}
-                    {r.state === "ACTIVE" && r.couponCode}
-                    {r.revokedAt && ` · dicabut ${formatDate(r.revokedAt)}`}
-                    {r.clawbackAmount ? ` · refund dipotong ${formatPrice(r.clawbackAmount)}` : ""}
-                  </span>
-                </div>
+                {note.length > 0 && <p className="text-xs text-muted">{note.join(" · ")}</p>}
               </li>
             );
           })}
