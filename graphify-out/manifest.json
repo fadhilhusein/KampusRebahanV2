@@ -324,9 +324,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/DashboardFrame.tsx": {
-    "mtime": 1794108530.2641006,
-    "seen": 1794108641.9216604,
-    "ast_hash": "a1053648da5b29ec6cda06d7149ff71e",
+    "mtime": 1794719985.8126318,
+    "seen": 1794720171.3406727,
+    "ast_hash": "d1571706925b49dfff25ea9788ab86fa",
     "semantic_hash": ""
   },
   "components/dashboard/DataTable.tsx": {
@@ -1608,9 +1608,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/AdminLoyalty.tsx": {
-    "mtime": 1794047978.1464615,
-    "seen": 1794048420.7711883,
-    "ast_hash": "da4191bf3e5be9f4c10a84d48f77631a",
+    "mtime": 1794720008.3247087,
+    "seen": 1794720171.3396738,
+    "ast_hash": "c8148216b8d85e2c3e415feb22031282",
     "semantic_hash": ""
   },
   "components/dashboard/RefundDialog.tsx": {
@@ -1704,9 +1704,9 @@
     "semantic_hash": ""
   },
   "components/admin/AdminShell.tsx": {
-    "mtime": 1794066706.1528287,
-    "seen": 1794067645.304335,
-    "ast_hash": "0ebaab856ce4290a1a02aafff52a114f",
+    "mtime": 1794719985.06243,
+    "seen": 1794720171.338229,
+    "ast_hash": "a60e43720c63cc8915848ae3cf2a08de",
     "semantic_hash": ""
   },
   "components/admin/OrdersView.tsx": {
@@ -1722,9 +1722,9 @@
     "semantic_hash": ""
   },
   "components/admin/SettingsView.tsx": {
-    "mtime": 1794080307.529689,
-    "seen": 1794080500.5012124,
-    "ast_hash": "96b5ac46ad33ef970d03563a52f8656f",
+    "mtime": 1794720008.1764421,
+    "seen": 1794720171.338229,
+    "ast_hash": "3c19d8bb6ad93602079ace36b7257a85",
     "semantic_hash": ""
   },
   "components/admin/shared.tsx": {
@@ -1842,9 +1842,9 @@
     "semantic_hash": ""
   },
   "components/dashboard/DashboardNav.tsx": {
-    "mtime": 1794108516.8373313,
-    "seen": 1794108641.9216604,
-    "ast_hash": "c9c0f5ab7ab32397c10184da6f10cf3e",
+    "mtime": 1794719985.6191218,
+    "seen": 1794720171.341827,
+    "ast_hash": "b77d597ed1d31d61087e26a7956f4ed5",
     "semantic_hash": ""
   },
   "prisma/migrations/20261108150000_order_refund_method/migration.sql": {
@@ -2061,6 +2061,12 @@
     "mtime": 1794581120.684255,
     "seen": 1794583171.694152,
     "ast_hash": "cf551c82b00e154b205fa59cca30a625",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20261113120000_order_manual_delivery/migration.sql": {
+    "mtime": 1794582283.5503564,
+    "seen": 1794720537.9386635,
+    "ast_hash": "ec4dac22b466856992f6bc5658720c6f",
     "semantic_hash": ""
   },
   ".claude/skills/replica/scripts/package-lock.json": {
