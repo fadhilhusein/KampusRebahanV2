@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { Banknote, Gift, House, Receipt, Settings, type LucideIcon } from "lucide-react";
+import { Banknote, Gift, House, Receipt, Settings, Wallet, type LucideIcon } from "lucide-react";
 
 export interface AdminSummary {
   counts: { retry: number; processing: number; transfer: number; payouts: number; orders: number };
@@ -30,6 +30,7 @@ export const adminTabs: Tab[] = [
   { href: "/dashboard/admin", label: "Beranda", icon: House },
   { href: "/dashboard/admin/orders", label: "Pesanan", icon: Receipt, badge: (c) => c.orders, tone: "danger" },
   { href: "/dashboard/admin/payouts", label: "Pencairan", icon: Banknote, badge: (c) => c.payouts },
+  { href: "/dashboard/admin/balance", label: "Saldo", icon: Wallet },
   { href: "/dashboard/admin/loyalty", label: "Loyalitas", icon: Gift },
   { href: "/dashboard/admin/settings", label: "Pengaturan", icon: Settings },
 ];
